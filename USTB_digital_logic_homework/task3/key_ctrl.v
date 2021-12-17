@@ -1,15 +1,15 @@
 module key_ctrl(
 	input		clk,
 	input		rst_n,
-	input		key_wei,//¸ü¸ÄÎ»ÊıÊÇ°´¼ü£¬°´ÏÂ¼Ó1
-	input		key_shuzi,//¸ü¸ÄÊı×ÖµÄ°´¼ü£¬°´ÏÂ¼Ó1
-	input		key_enter,//È·ÈÏ°´¼ü
-	input		key_input,//ÊäÈëÄ£Ê½°´¼ü£¬Èç¹ûĞèÒªÊäÈëÑ§ºÅ°´ÏÂ¸Ã°´¼ü£¬½øÈëÊäÈë×´Ì¬
-	input		key_disp,//ÏÔÊ¾Ä£Ê½°´¼ü£¬°´ÏÂÔòÑ­»·ÏÔÊ¾Ñ§ºÅ
-	output	reg	[3:0]	weishu,//ÊäÈëÑ§ºÅµÄÎ»Êı
-	output	reg	[3:0]	shuzi=0,//ÊµÊ±ÊäÈëµÄÊı×Ö
-	output		[31:0]	disp_data,//ĞèÒªÏÔÊ¾µÄÊı×Ö
-	output	reg			disp_data_en//µ±¸ßµçÆ½Ê±ºóËÄ¸öÊıÂë¹ÜÏÔÊ¾£¬µÍµçÆ½Ê±Ç°ËÄ¸öÊıÂë¹ÜÏÔÊ¾
+	input		key_wei,//æ›´æ”¹ä½æ•°æ˜¯æŒ‰é”®ï¼ŒæŒ‰ä¸‹åŠ 1
+	input		key_shuzi,//æ›´æ”¹æ•°å­—çš„æŒ‰é”®ï¼ŒæŒ‰ä¸‹åŠ 1
+	input		key_enter,//ç¡®è®¤æŒ‰é”®
+	input		key_input,//è¾“å…¥æ¨¡å¼æŒ‰é”®ï¼Œå¦‚æœéœ€è¦è¾“å…¥å­¦å·æŒ‰ä¸‹è¯¥æŒ‰é”®ï¼Œè¿›å…¥è¾“å…¥çŠ¶æ€
+	input		key_disp,//æ˜¾ç¤ºæ¨¡å¼æŒ‰é”®ï¼ŒæŒ‰ä¸‹åˆ™å¾ªç¯æ˜¾ç¤ºå­¦å·
+	output	reg	[3:0]	weishu,//è¾“å…¥å­¦å·çš„ä½æ•°
+	output	reg	[3:0]	shuzi=0,//å®æ—¶è¾“å…¥çš„æ•°å­—
+	output		[31:0]	disp_data,//éœ€è¦æ˜¾ç¤ºçš„æ•°å­—
+	output	reg			disp_data_en//å½“é«˜ç”µå¹³æ—¶åå››ä¸ªæ•°ç ç®¡æ˜¾ç¤ºï¼Œä½ç”µå¹³æ—¶å‰å››ä¸ªæ•°ç ç®¡æ˜¾ç¤º
 );
 parameter	IDLE		=4'd0;
 parameter	INPUT_ST    =4'd1;
@@ -17,14 +17,14 @@ parameter	DISP_ST     =4'd2;
 parameter	INPUT_ENTER	=4'd3;
 reg	[3:0]	curr_st;
 reg	[31:0]	disp_cnt;
-reg	[3:0]	shuzi_7=0;//ÊäÈëµÚ7Î»µÄÊı×Ö
-reg	[3:0]	shuzi_6=0;//ÊäÈëµÚ6Î»µÄÊı×Ö
-reg	[3:0]	shuzi_5=0;//ÊäÈëµÚ5Î»µÄÊı×Ö
-reg	[3:0]	shuzi_4=0;//ÊäÈëµÚ4Î»µÄÊı×Ö
-reg	[3:0]	shuzi_3=0;//ÊäÈëµÚ3Î»µÄÊı×Ö
-reg	[3:0]	shuzi_2=0;//ÊäÈëµÚ2Î»µÄÊı×Ö
-reg	[3:0]	shuzi_1=0;//ÊäÈëµÚ1Î»µÄÊı×Ö
-reg	[3:0]	shuzi_0=0;//ÊäÈëµÚ0Î»µÄÊı×Ö
+reg	[3:0]	shuzi_7=0;//è¾“å…¥ç¬¬7ä½çš„æ•°å­—
+reg	[3:0]	shuzi_6=0;//è¾“å…¥ç¬¬6ä½çš„æ•°å­—
+reg	[3:0]	shuzi_5=0;//è¾“å…¥ç¬¬5ä½çš„æ•°å­—
+reg	[3:0]	shuzi_4=0;//è¾“å…¥ç¬¬4ä½çš„æ•°å­—
+reg	[3:0]	shuzi_3=0;//è¾“å…¥ç¬¬3ä½çš„æ•°å­—
+reg	[3:0]	shuzi_2=0;//è¾“å…¥ç¬¬2ä½çš„æ•°å­—
+reg	[3:0]	shuzi_1=0;//è¾“å…¥ç¬¬1ä½çš„æ•°å­—
+reg	[3:0]	shuzi_0=0;//è¾“å…¥ç¬¬0ä½çš„æ•°å­—
 //assign	disp_data={4'h1,4'h2,4'h3,4'h4,4'h5,4'h6,4'h7,4'h8};
 assign	disp_data={shuzi_7,shuzi_6,shuzi_5,shuzi_4,shuzi_3,shuzi_2,shuzi_1,shuzi_0};
 always@(posedge clk or negedge rst_n)begin
@@ -51,7 +51,7 @@ always@(posedge clk or negedge rst_n)begin
 			curr_st<=IDLE;
 		end
 		DISP_ST:begin
-			if(disp_cnt==5000000)//ÎªÁË3HZµÄÊ±ÖÓÓòÄÜ¹»¼ì²âµ½
+			if(disp_cnt==5000000)//ä¸ºäº†3HZçš„æ—¶é’ŸåŸŸèƒ½å¤Ÿæ£€æµ‹åˆ°
 				curr_st<=IDLE;
 			else 
 				;
@@ -101,15 +101,15 @@ always@(posedge clk or negedge rst_n)begin
 end
 always@(posedge clk or negedge rst_n)begin
 	if(!rst_n)begin
-		shuzi_7<=0;//ÊäÈëµÚ7Î»µÄÊı×Ö
-		shuzi_6<=0;//ÊäÈëµÚ6Î»µÄÊı×Ö
-		shuzi_5<=0;//ÊäÈëµÚ5Î»µÄÊı×Ö
-		shuzi_4<=0;//ÊäÈëµÚ4Î»µÄÊı×Ö
-		shuzi_3<=0;//ÊäÈëµÚ3Î»µÄÊı×Ö
-		shuzi_2<=0;//ÊäÈëµÚ2Î»µÄÊı×Ö
-		shuzi_1<=0;//ÊäÈëµÚ1Î»µÄÊı×Ö
-		shuzi_0<=0;//ÊäÈëµÚ0Î»µÄÊı×Ö
-	end else if(curr_st==INPUT_ENTER)begin//µ±ÔÚÊäÈë×´Ì¬Ê±
+		shuzi_7<=0;//è¾“å…¥ç¬¬7ä½çš„æ•°å­—
+		shuzi_6<=0;//è¾“å…¥ç¬¬6ä½çš„æ•°å­—
+		shuzi_5<=0;//è¾“å…¥ç¬¬5ä½çš„æ•°å­—
+		shuzi_4<=0;//è¾“å…¥ç¬¬4ä½çš„æ•°å­—
+		shuzi_3<=0;//è¾“å…¥ç¬¬3ä½çš„æ•°å­—
+		shuzi_2<=0;//è¾“å…¥ç¬¬2ä½çš„æ•°å­—
+		shuzi_1<=0;//è¾“å…¥ç¬¬1ä½çš„æ•°å­—
+		shuzi_0<=0;//è¾“å…¥ç¬¬0ä½çš„æ•°å­—
+	end else if(curr_st==INPUT_ENTER)begin//å½“åœ¨è¾“å…¥çŠ¶æ€æ—¶
 		case(weishu)
 		0:shuzi_0<=shuzi;
 		1:shuzi_1<=shuzi;

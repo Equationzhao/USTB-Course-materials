@@ -1,16 +1,16 @@
 module dianti_top(
 	input 		clk100mhz,
 	input 		rst_n,
-	input 		kin1			,//1Â¥°´¼ü£¬²¦Âë¿ª¹Ø
-	input 		kin2			,//2Â¥°´¼ü£¬²¦Âë¿ª¹Ø
-	input 		kin3			,//3Â¥°´¼ü£¬²¦Âë¿ª¹Ø
-	input 		kin4			,//4Â¥°´¼ü£¬²¦Âë¿ª¹Ø
-	input 		kin1_up			,//1Â¥UP¼ü£¬ÒòÎª1Â¥ÊÇ×îµ×Â¥£¬ËùÒÔÃ»ÓĞDOWN¼ü£¬²¦Âë¿ª¹Ø
-	input 		kin2_up			,//2Â¥UP¼ü£¬²¦Âë¿ª¹Ø
-	input 		kin2_down		,//2Â¥DOWN¼ü£¬²¦Âë¿ª¹Ø
-	input 		kin3_up			,//3Â¥UP¼ü£¬²¦Âë¿ª¹Ø
-	input 		kin3_down		,//3Â¥DOWN¼ü£¬Çá´¥°´¼ü
-	input 		kin4_down		,//4Â¥DOWN¼ü,ÒòÎª4Â¥ÊÇ×î¶¥Â¥£¬ËùÒÔÃ»ÓĞUP¼ü£¬Çá´¥°´¼ü
+	input 		kin1			,//1æ¥¼æŒ‰é”®ï¼Œæ‹¨ç å¼€å…³
+	input 		kin2			,//2æ¥¼æŒ‰é”®ï¼Œæ‹¨ç å¼€å…³
+	input 		kin3			,//3æ¥¼æŒ‰é”®ï¼Œæ‹¨ç å¼€å…³
+	input 		kin4			,//4æ¥¼æŒ‰é”®ï¼Œæ‹¨ç å¼€å…³
+	input 		kin1_up			,//1æ¥¼UPé”®ï¼Œå› ä¸º1æ¥¼æ˜¯æœ€åº•æ¥¼ï¼Œæ‰€ä»¥æ²¡æœ‰DOWNé”®ï¼Œæ‹¨ç å¼€å…³
+	input 		kin2_up			,//2æ¥¼UPé”®ï¼Œæ‹¨ç å¼€å…³
+	input 		kin2_down		,//2æ¥¼DOWNé”®ï¼Œæ‹¨ç å¼€å…³
+	input 		kin3_up			,//3æ¥¼UPé”®ï¼Œæ‹¨ç å¼€å…³
+	input 		kin3_down		,//3æ¥¼DOWNé”®ï¼Œè½»è§¦æŒ‰é”®
+	input 		kin4_down		,//4æ¥¼DOWNé”®,å› ä¸º4æ¥¼æ˜¯æœ€é¡¶æ¥¼ï¼Œæ‰€ä»¥æ²¡æœ‰UPé”®ï¼Œè½»è§¦æŒ‰é”®
 	output	reg	[7:0]	led		,
 	output  [3:0] 	pos			,
 	output 	[7:0]	seg	
@@ -184,34 +184,34 @@ module dianti_top(
 dianti Udianti_1(
 	.clk		(clk190hz),
 	.rst_n		(~rst_n),
-	.kin1		(kin1_1		),//1Â¥°´¼ü
-	.kin2		(kin2_1		),//2Â¥°´¼ü
-	.kin3		(kin3_1		),//3Â¥°´¼ü
-	.kin4		(kin4_1		),//4Â¥°´¼ü
-	.kin1_up	(kin1_up_1	),//1Â¥UP¼ü£¬ÒòÎª1Â¥ÊÇ×îµ×Â¥£¬ËùÒÔÃ»ÓĞDOWN¼ü
-	.kin2_up	(kin2_up_1	),//2Â¥UP¼ü
-	.kin2_down	(kin2_down_1),//2Â¥DOWN¼ü
-	.kin3_up	(kin3_up_1	),//3Â¥UP¼ü
-	.kin3_down	(kin3_down_1),//3Â¥DOWN¼ü
-	.kin4_down	(kin4_down_1),//4Â¥DOWN¼ü,ÒòÎª4Â¥ÊÇ×î¶¥Â¥£¬ËùÒÔÃ»ÓĞUP¼ü
-	.led_up		(led_up_1	),//µçÌİÄÚUPÖ¸Ê¾µÆ
-	.led_down	(led_down_1	),//µçÌİÄÚDOWNÖ¸Ê¾µÆ
-	.led_open	(led_open_1	),//µçÌİ¿ªÃÅÖ¸Ê¾µÆ
-	.led_close	(led_close_1),//µçÌİ¹ØÃÅÖ¸Ê¾µÆ
-	.led1_up	(led1_up_1	),//1Â¥UPÇëÇóÖ¸Ê¾µÆ
+	.kin1		(kin1_1		),//1æ¥¼æŒ‰é”®
+	.kin2		(kin2_1		),//2æ¥¼æŒ‰é”®
+	.kin3		(kin3_1		),//3æ¥¼æŒ‰é”®
+	.kin4		(kin4_1		),//4æ¥¼æŒ‰é”®
+	.kin1_up	(kin1_up_1	),//1æ¥¼UPé”®ï¼Œå› ä¸º1æ¥¼æ˜¯æœ€åº•æ¥¼ï¼Œæ‰€ä»¥æ²¡æœ‰DOWNé”®
+	.kin2_up	(kin2_up_1	),//2æ¥¼UPé”®
+	.kin2_down	(kin2_down_1),//2æ¥¼DOWNé”®
+	.kin3_up	(kin3_up_1	),//3æ¥¼UPé”®
+	.kin3_down	(kin3_down_1),//3æ¥¼DOWNé”®
+	.kin4_down	(kin4_down_1),//4æ¥¼DOWNé”®,å› ä¸º4æ¥¼æ˜¯æœ€é¡¶æ¥¼ï¼Œæ‰€ä»¥æ²¡æœ‰UPé”®
+	.led_up		(led_up_1	),//ç”µæ¢¯å†…UPæŒ‡ç¤ºç¯
+	.led_down	(led_down_1	),//ç”µæ¢¯å†…DOWNæŒ‡ç¤ºç¯
+	.led_open	(led_open_1	),//ç”µæ¢¯å¼€é—¨æŒ‡ç¤ºç¯
+	.led_close	(led_close_1),//ç”µæ¢¯å…³é—¨æŒ‡ç¤ºç¯
+	.led1_up	(led1_up_1	),//1æ¥¼UPè¯·æ±‚æŒ‡ç¤ºç¯
 	.led1_down	(led1_down_1),
-	.led2_up	(led2_up_1	),//2Â¥UPÇëÇóÖ¸Ê¾µÆ
-	.led2_down	(led2_down_1),//2Â¥DOWNÇëÇóÖ¸Ê¾µÆ
-	.led3_up	(led3_up_1	),//3Â¥UPÇëÇóÖ¸Ê¾µÆ
-	.led3_down	(led3_down_1),//3Â¥DOWNÇëÇóÖ¸Ê¾µÆ
+	.led2_up	(led2_up_1	),//2æ¥¼UPè¯·æ±‚æŒ‡ç¤ºç¯
+	.led2_down	(led2_down_1),//2æ¥¼DOWNè¯·æ±‚æŒ‡ç¤ºç¯
+	.led3_up	(led3_up_1	),//3æ¥¼UPè¯·æ±‚æŒ‡ç¤ºç¯
+	.led3_down	(led3_down_1),//3æ¥¼DOWNè¯·æ±‚æŒ‡ç¤ºç¯
 	.led4_up	(led4_up_1	),
-	.led4_down	(led4_down_1),//4Â¥DOWNÇëÇóÖ¸Ê¾µÆ
+	.led4_down	(led4_down_1),//4æ¥¼DOWNè¯·æ±‚æŒ‡ç¤ºç¯
 	.curr_st	(curr_st	),
 	.fl_num		(fl_num		)
 	);
 	segMsg UsegMsg(
 	.clk190hz		(clk190hz),
-	.dataBus		(dataBus), //ÊäÈëµÄÊı¾İ×ÜÏß
+	.dataBus		(dataBus), //è¾“å…¥çš„æ•°æ®æ€»çº¿
 	.pos			(pos),
 	.seg            (seg)
     );

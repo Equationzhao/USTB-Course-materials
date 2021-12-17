@@ -2,9 +2,9 @@ module time_top(
 	input			clk,
 	input			rst_n,
 	input			key_start,
-	input			key_hour_up,//ÉèÖÃĞ¡Ê±
-	input			key_min_up,//ÉèÖÃ·ÖÖÓ
-	input			key_sec_up	,//ÉèÖÃÃë
+	input			key_hour_up,//è®¾ç½®å°æ—¶
+	input			key_min_up,//è®¾ç½®åˆ†é’Ÿ
+	input			key_sec_up	,//è®¾ç½®ç§’
 	input			key_enter,
 	output 		[3:0] 	pos_f,
 	output 		[7:0] 	seg_f,
@@ -67,8 +67,8 @@ key_xd Ukey_enter(
 time_set Utime_set(
 	.clk				(clk),
 	.rst_n				(rst_n),
-	.key_hour_up		(key_hour_up_out),//Ê±µ÷Õû
-	.key_min_up			(key_min_up_out ),//·Öµ÷Õû
+	.key_hour_up		(key_hour_up_out),//æ—¶è°ƒæ•´
+	.key_min_up			(key_min_up_out ),//åˆ†è°ƒæ•´
 	.key_sec_up			(key_sec_up_out ),
 	.key_enter			(key_enter_out),
 	.hour_set			(hour_set	),
@@ -79,8 +79,8 @@ time_calc Utime_calc(
 	.clk				(clk),
 	.rst_n				(rst_n),
 	.key_start			(key_start),
-	.key_hour_up		(key_hour_up_out),//Ê±µ÷Õû
-	.key_min_up			(key_min_up_out ),//·Öµ÷Õû
+	.key_hour_up		(key_hour_up_out),//æ—¶è°ƒæ•´
+	.key_min_up			(key_min_up_out ),//åˆ†è°ƒæ•´
 	.key_sec_up			(key_sec_up_out ),
 	.key_enter			(key_enter_out),
 	.hour_set			(hour_set	),
@@ -93,13 +93,13 @@ time_calc Utime_calc(
 	);
 segMsg UsegMsg_f(
 	.clk190hz		(clk190hz),
-	.dataBus		(databus_f), //ÊäÈëµÄÊı¾İ×ÜÏß
+	.dataBus		(databus_f), //è¾“å…¥çš„æ•°æ®æ€»çº¿
 	.pos			(pos_f),
 	.seg            (seg_f)
     );
 segMsg UsegMsg_b(
 	.clk190hz		(clk190hz),
-	.dataBus		(databus_b), //ÊäÈëµÄÊı¾İ×ÜÏß
+	.dataBus		(databus_b), //è¾“å…¥çš„æ•°æ®æ€»çº¿
 	.pos			(pos_b),
 	.seg            (seg_b)
     );

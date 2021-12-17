@@ -2,8 +2,8 @@ module time_calc(
 	input				clk				,
 	input				rst_n			,
 	input				key_start		,
-	input				key_hour_up		,//Ê±µ÷Õû
-	input				key_min_up		,//·Öµ÷Õû
+	input				key_hour_up		,//æ—¶è°ƒæ•´
+	input				key_min_up		,//åˆ†è°ƒæ•´
 	input				key_sec_up		,
 	input				key_enter		,
 	input	[7:0]		hour_set		,
@@ -17,12 +17,12 @@ module time_calc(
 	//parameter	time_sec=10;
 	//for sim
 	parameter	IDLE	=4'd0;
-	parameter	DJS_ST  =4'd1;//µ¹¼ÆÊ±×´Ì¬
-	parameter	SET_ST  =4'd2;//ÉèÖÃÊ±¼ä×´Ì¬
+	parameter	DJS_ST  =4'd1;//å€’è®¡æ—¶çŠ¶æ€
+	parameter	SET_ST  =4'd2;//è®¾ç½®æ—¶é—´çŠ¶æ€
 	parameter	DJS_OVER=4'd3;
 	parameter	time_sec=100000000;
 	reg	[31:0]	time_cnt	;
-	reg			pulse_sec	;//ÃëÂö³å£¬Ò»Ãë²úÉúÒ»¸öÂö³åĞÅºÅ
+	reg			pulse_sec	;//ç§’è„‰å†²ï¼Œä¸€ç§’äº§ç”Ÿä¸€ä¸ªè„‰å†²ä¿¡å·
 	reg	[3:0]	curr_st	;
 	reg	[3:0]	curr_st_ff1;
 	reg	[31:0]	alarm_cnt;
@@ -86,7 +86,7 @@ module time_calc(
 			else
 				pulse_sec<=0;
 		end
-	//Ãë¼ÆÊı
+	//ç§’è®¡æ•°
 	always@(posedge clk or negedge rst_n)
 		begin
 			if(!rst_n)

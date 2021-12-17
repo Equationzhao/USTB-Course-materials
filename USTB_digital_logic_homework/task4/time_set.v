@@ -1,8 +1,8 @@
 module time_set(
 	input				clk				,
 	input				rst_n			,
-	input				key_hour_up		,//Ê±µ÷Õû
-	input				key_min_up		,//·Öµ÷Õû
+	input				key_hour_up		,//æ—¶è°ƒæ•´
+	input				key_min_up		,//åˆ†è°ƒæ•´
 	input				key_sec_up		,
 	input				key_enter		,
 	output	reg	[7:0]	hour_set		,

@@ -1,13 +1,13 @@
-//ÕâÊÇ¶¥²ãÄ£¿é
+//è¿™æ˜¯é¡¶å±‚æ¨¡å—
 module top(
 input 				clk100mhz,
 input 				clr,
-input				key_rd,//¸ßµçÆ½¶ÁSRAM
-input				key_wei,//¸ü¸ÄÎ»ÊıÊÇ°´¼ü£¬°´ÏÂ¼Ó1
-input				key_shuzi,//¸ü¸ÄÊı×ÖµÄ°´¼ü£¬°´ÏÂ¼Ó1
-input				key_enter,//È·ÈÏ°´¼ü
-input				key_input,//ÊäÈëÄ£Ê½°´¼ü£¬Èç¹ûĞèÒªÊäÈëÑ§ºÅ°´ÏÂ¸Ã°´¼ü£¬½øÈëÊäÈë×´Ì¬
-input				key_disp,//ÏÔÊ¾Ä£Ê½°´¼ü£¬Ñ§ºÅĞ´ÈëSRAM
+input				key_rd,//é«˜ç”µå¹³è¯»SRAM
+input				key_wei,//æ›´æ”¹ä½æ•°æ˜¯æŒ‰é”®ï¼ŒæŒ‰ä¸‹åŠ 1
+input				key_shuzi,//æ›´æ”¹æ•°å­—çš„æŒ‰é”®ï¼ŒæŒ‰ä¸‹åŠ 1
+input				key_enter,//ç¡®è®¤æŒ‰é”®
+input				key_input,//è¾“å…¥æ¨¡å¼æŒ‰é”®ï¼Œå¦‚æœéœ€è¦è¾“å…¥å­¦å·æŒ‰ä¸‹è¯¥æŒ‰é”®ï¼Œè¿›å…¥è¾“å…¥çŠ¶æ€
+input				key_disp,//æ˜¾ç¤ºæ¨¡å¼æŒ‰é”®ï¼Œå­¦å·å†™å…¥SRAM
 output 		[3:0] 	pos_f,
 output 		[7:0] 	seg_f,
 output 		[3:0] 	pos_b,
@@ -22,17 +22,17 @@ inout		[15:0]		sram_data,
 output		[18:0]		sram_addr
 
     );
-    /*¶¥²ãÁ¬½ÓÏß£º
-        clk190hz:½«·ÖÆµÄ£¿éµÄ190hzĞÅºÅÁ¬½Óµ½ÊıÂë¹ÜÏÔÊ¾Ä£¿é
-        clk3hz:½«·ÖÆµÄ£¿éµÄ3
-        hzĞÅºÅÁ¬½Óµ½´¦ÀíÏÔÊ¾GPUÄ£¿é
-        dataBus£º½«´¦ÀíÄ£¿é´¦ÀíºóµÄÊı¾İÁ¬½Óµ½ÊıÂë¹ÜÏÔÊ¾Ä£¿é
+    /*é¡¶å±‚è¿æ¥çº¿ï¼š
+        clk190hz:å°†åˆ†é¢‘æ¨¡å—çš„190hzä¿¡å·è¿æ¥åˆ°æ•°ç ç®¡æ˜¾ç¤ºæ¨¡å—
+        clk3hz:å°†åˆ†é¢‘æ¨¡å—çš„3
+        hzä¿¡å·è¿æ¥åˆ°å¤„ç†æ˜¾ç¤ºGPUæ¨¡å—
+        dataBusï¼šå°†å¤„ç†æ¨¡å—å¤„ç†åçš„æ•°æ®è¿æ¥åˆ°æ•°ç ç®¡æ˜¾ç¤ºæ¨¡å—
         */
     wire clk190hz,clk3hz;
     wire 	[15:0]	dataBus_f;
-	wire	[3:0]	pos_f_tmp;//Ç°ËÄ¸öÊıÂë¹Ü
+	wire	[3:0]	pos_f_tmp;//å‰å››ä¸ªæ•°ç ç®¡
 	wire	[15:0]	dataBus_b;
-	wire	[3:0]	pos_b_tmp;//ºóËÄ¸öÊıÂë¹Ü
+	wire	[3:0]	pos_b_tmp;//åå››ä¸ªæ•°ç ç®¡
 	wire	[31:0]	disp_data;
 	wire	[31:0]	disp_data_b;
 	wire	[3:0]	shuzi;
@@ -48,7 +48,7 @@ output		[18:0]		sram_addr
 	always@(posedge clk3hz)key_rd_ff1<=key_rd;
 	always@(posedge clk3hz)key_rd_ff2<=key_rd_ff1;
 	assign	key_rd_rise=key_rd_ff1&(key_rd_ff2==0);
-    //Àı»¯Èı¸ö×ÓÄ£¿é£¬²¢½«ËûÃÇÁ¬½Ó
+    //ä¾‹åŒ–ä¸‰ä¸ªå­æ¨¡å—ï¼Œå¹¶å°†ä»–ä»¬è¿æ¥
 	
 	clkDiv U1(clk100mhz,clk190hz,clk3hz,clk10m);
 	key_xd Ukey_wei_xd(
@@ -84,15 +84,15 @@ output		[18:0]		sram_addr
 	key_ctrl Ukey_ctrl(
 	.clk			(clk10m),
 	.rst_n			(clr),
-	.key_wei		(key_wei_out	),//¸ü¸ÄÎ»ÊıÊÇ°´¼ü£¬°´ÏÂ¼Ó1
-	.key_shuzi		(key_shuzi_out	),//¸ü¸ÄÊı×ÖµÄ°´¼ü£¬°´ÏÂ¼Ó1
-	.key_enter		(key_enter_out	),//È·ÈÏ°´¼ü
-	.key_input		(key_input_out	),//ÊäÈëÄ£Ê½°´¼ü£¬Èç¹ûĞèÒªÊäÈëÑ§ºÅ°´ÏÂ¸Ã°´¼ü£¬½øÈëÊäÈë×´Ì¬
-	.key_disp		(key_disp_out	),//ÏÔÊ¾Ä£Ê½°´¼ü£¬°´ÏÂÔòÑ­»·ÏÔÊ¾Ñ§ºÅ
-	.weishu			(weishu),//ÊäÈëÑ§ºÅµÄÎ»Êı
-	.shuzi			(shuzi),//ÊµÊ±ÊäÈëµÄÊı×Ö
-	.disp_data		(disp_data_b),//ĞèÒªÏÔÊ¾µÄÊı×Ö
-	.disp_data_en	(disp_data_en)//µ±¸ßµçÆ½Ê±ºóËÄ¸öÊıÂë¹ÜÏÔÊ¾£¬µÍµçÆ½Ê±Ç°ËÄ¸öÊıÂë¹ÜÏÔÊ¾
+	.key_wei		(key_wei_out	),//æ›´æ”¹ä½æ•°æ˜¯æŒ‰é”®ï¼ŒæŒ‰ä¸‹åŠ 1
+	.key_shuzi		(key_shuzi_out	),//æ›´æ”¹æ•°å­—çš„æŒ‰é”®ï¼ŒæŒ‰ä¸‹åŠ 1
+	.key_enter		(key_enter_out	),//ç¡®è®¤æŒ‰é”®
+	.key_input		(key_input_out	),//è¾“å…¥æ¨¡å¼æŒ‰é”®ï¼Œå¦‚æœéœ€è¦è¾“å…¥å­¦å·æŒ‰ä¸‹è¯¥æŒ‰é”®ï¼Œè¿›å…¥è¾“å…¥çŠ¶æ€
+	.key_disp		(key_disp_out	),//æ˜¾ç¤ºæ¨¡å¼æŒ‰é”®ï¼ŒæŒ‰ä¸‹åˆ™å¾ªç¯æ˜¾ç¤ºå­¦å·
+	.weishu			(weishu),//è¾“å…¥å­¦å·çš„ä½æ•°
+	.shuzi			(shuzi),//å®æ—¶è¾“å…¥çš„æ•°å­—
+	.disp_data		(disp_data_b),//éœ€è¦æ˜¾ç¤ºçš„æ•°å­—
+	.disp_data_en	(disp_data_en)//å½“é«˜ç”µå¹³æ—¶åå››ä¸ªæ•°ç ç®¡æ˜¾ç¤ºï¼Œä½ç”µå¹³æ—¶å‰å››ä¸ªæ•°ç ç®¡æ˜¾ç¤º
 );
 	SRAM USRAM(
 	.ctr_r			(key_rd_rise),
@@ -118,13 +118,13 @@ output		[18:0]		sram_addr
     );
 	segMsg UsegMsg_f(
 	.clk190hz		(clk190hz),
-	.dataBus		(dataBus_f), //ÊäÈëµÄÊı¾İ×ÜÏß
+	.dataBus		(dataBus_f), //è¾“å…¥çš„æ•°æ®æ€»çº¿
 	.pos			(pos_f_tmp),
 	.seg            (seg_f)
     );
 	segMsg UsegMsg_b(
 	.clk190hz		(clk190hz),
-	.dataBus		(dataBus_b), //ÊäÈëµÄÊı¾İ×ÜÏß
+	.dataBus		(dataBus_b), //è¾“å…¥çš„æ•°æ®æ€»çº¿
 	.pos			(pos_b_tmp),
 	.seg            (seg_b)
     );
