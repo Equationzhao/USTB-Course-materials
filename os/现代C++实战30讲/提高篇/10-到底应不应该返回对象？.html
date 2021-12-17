@@ -1,0 +1,1165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>10-到底应不应该返回对象？</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <style>
+        html {
+            color: #333;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            text-rendering: optimizelegibility;
+            font-family: Helvetica Neue, PingFang SC, Verdana, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif
+        }
+
+        html.borderbox *,
+        html.borderbox :after,
+        html.borderbox :before {
+            box-sizing: border-box
+        }
+
+        article,
+        aside,
+        blockquote,
+        body,
+        button,
+        code,
+        dd,
+        details,
+        dl,
+        dt,
+        fieldset,
+        figcaption,
+        figure,
+        footer,
+        form,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        header,
+        hr,
+        input,
+        legend,
+        li,
+        menu,
+        nav,
+        ol,
+        p,
+        pre,
+        section,
+        td,
+        textarea,
+        th,
+        ul {
+            margin: 0;
+            padding: 0
+        }
+
+        article,
+        aside,
+        details,
+        figcaption,
+        figure,
+        footer,
+        header,
+        menu,
+        nav,
+        section {
+            display: block
+        }
+
+        audio,
+        canvas,
+        video {
+            display: inline-block
+        }
+
+        body,
+        button,
+        input,
+        select,
+        textarea {
+            font: 300 1em/1.8 PingFang SC, Lantinghei SC, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, Helvetica, sans-serif
+        }
+
+        button::-moz-focus-inner,
+        input::-moz-focus-inner {
+            padding: 0;
+            border: 0
+        }
+
+        table {
+            border-collapse: collapse;
+            border-spacing: 0
+        }
+
+        fieldset,
+        img {
+            border: 0
+        }
+
+        blockquote {
+            position: relative;
+            color: #999;
+            font-weight: 400;
+            border-left: 1px solid #1abc9c;
+            padding-left: 1em;
+            margin: 1em 3em 1em 2em
+        }
+
+        @media only screen and (max-width: 640px) {
+            blockquote {
+                margin: 1em 0
+            }
+        }
+
+        abbr,
+        acronym {
+            border-bottom: 1px dotted;
+            font-variant: normal
+        }
+
+        abbr {
+            cursor: help
+        }
+
+        del {
+            text-decoration: line-through
+        }
+
+        address,
+        caption,
+        cite,
+        code,
+        dfn,
+        em,
+        th,
+        var {
+            font-style: normal;
+            font-weight: 400
+        }
+
+        ol,
+        ul {
+            list-style: none
+        }
+
+        caption,
+        th {
+            text-align: left
+        }
+
+        q:after,
+        q:before {
+            content: ""
+        }
+
+        sub,
+        sup {
+            font-size: 75%;
+            line-height: 0;
+            position: relative
+        }
+
+        :root sub,
+        :root sup {
+            vertical-align: baseline
+        }
+
+        sup {
+            top: -.5em
+        }
+
+        sub {
+            bottom: -.25em
+        }
+
+        a {
+            color: #1abc9c
+        }
+
+        a:hover {
+            text-decoration: underline
+        }
+
+        .typo a {
+            border-bottom: 1px solid #1abc9c
+        }
+
+        .typo a:hover {
+            border-bottom-color: #555;
+            color: #555
+        }
+
+        .typo a:hover,
+        a,
+        ins {
+            text-decoration: none
+        }
+
+        .typo-u,
+        u {
+            text-decoration: underline
+        }
+
+        mark {
+            background: #fffdd1;
+            border-bottom: 1px solid #ffedce;
+            padding: 2px;
+            margin: 0 5px
+        }
+
+        code,
+        pre,
+        pre tt {
+            font-family: Courier, Courier New, monospace
+        }
+
+        pre {
+            background: hsla(0, 0%, 97%, .7);
+            border: 1px solid #ddd;
+            padding: 1em 1.5em;
+            display: block;
+            -webkit-overflow-scrolling: touch
+        }
+
+        hr {
+            border: none;
+            border-bottom: 1px solid #cfcfcf;
+            margin-bottom: .8em;
+            height: 10px
+        }
+
+        .typo-small,
+        figcaption,
+        small {
+            font-size: .9em;
+            color: #888
+        }
+
+        b,
+        strong {
+            font-weight: 700;
+            color: #000
+        }
+
+        [draggable] {
+            cursor: move
+        }
+
+        .clearfix:after,
+        .clearfix:before {
+            content: "";
+            display: table
+        }
+
+        .clearfix:after {
+            clear: both
+        }
+
+        .clearfix {
+            zoom: 1
+        }
+
+        .textwrap,
+        .textwrap td,
+        .textwrap th {
+            word-wrap: break-word;
+            word-break: break-all
+        }
+
+        .textwrap-table {
+            table-layout: fixed
+        }
+
+        .serif {
+            font-family: Palatino, Optima, Georgia, serif
+        }
+
+        .typo-dl,
+        .typo-form,
+        .typo-hr,
+        .typo-ol,
+        .typo-p,
+        .typo-pre,
+        .typo-table,
+        .typo-ul,
+        .typo dl,
+        .typo form,
+        .typo hr,
+        .typo ol,
+        .typo p,
+        .typo pre,
+        .typo table,
+        .typo ul,
+        blockquote {
+            margin-bottom: 1rem
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: PingFang SC, Helvetica Neue, Verdana, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif;
+            color: #000;
+            line-height: 1.35
+        }
+
+        .typo-h1,
+        .typo-h2,
+        .typo-h3,
+        .typo-h4,
+        .typo-h5,
+        .typo-h6,
+        .typo h1,
+        .typo h2,
+        .typo h3,
+        .typo h4,
+        .typo h5,
+        .typo h6 {
+            margin-top: 1.2em;
+            margin-bottom: .6em;
+            line-height: 1.35
+        }
+
+        .typo-h1,
+        .typo h1 {
+            font-size: 2em
+        }
+
+        .typo-h2,
+        .typo h2 {
+            font-size: 1.8em
+        }
+
+        .typo-h3,
+        .typo h3 {
+            font-size: 1.6em
+        }
+
+        .typo-h4,
+        .typo h4 {
+            font-size: 1.4em
+        }
+
+        .typo-h5,
+        .typo-h6,
+        .typo h5,
+        .typo h6 {
+            font-size: 1.2em
+        }
+
+        .typo-ul,
+        .typo ul {
+            margin-left: 1.3em;
+            list-style: disc
+        }
+
+        .typo-ol,
+        .typo ol {
+            list-style: decimal;
+            margin-left: 1.9em
+        }
+
+        .typo-ol ol,
+        .typo-ol ul,
+        .typo-ul ol,
+        .typo-ul ul,
+        .typo li ol,
+        .typo li ul {
+            margin-bottom: .8em;
+            margin-left: 2em
+        }
+
+        .typo-ol ul,
+        .typo-ul ul,
+        .typo li ul {
+            list-style: circle
+        }
+
+        .typo-table td,
+        .typo-table th,
+        .typo table caption,
+        .typo table td,
+        .typo table th {
+            border: 1px solid #ddd;
+            padding: .5em 1em;
+            color: #666
+        }
+
+        .typo-table th,
+        .typo table th {
+            background: #fbfbfb
+        }
+
+        .typo-table thead th,
+        .typo table thead th {
+            background: hsla(0, 0%, 95%, .7)
+        }
+
+        .typo table caption {
+            border-bottom: none
+        }
+
+        .typo-input,
+        .typo-textarea {
+            -webkit-appearance: none;
+            border-radius: 0
+        }
+
+        .typo-em,
+        .typo em,
+        caption,
+        legend {
+            color: #000;
+            font-weight: inherit
+        }
+
+        .typo-em {
+            position: relative
+        }
+
+        .typo-em:after {
+            position: absolute;
+            top: .65em;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            content: "\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB"
+        }
+
+        .typo img {
+            max-width: 100%
+        }
+
+        .common-content {
+            font-weight: 400;
+            color: #353535;
+            line-height: 1.75rem;
+            white-space: normal;
+            word-break: normal;
+            font-size: 1rem
+        }
+
+        .common-content img {
+            display: block;
+            max-width: 100%;
+            background-color: #eee
+        }
+
+        .common-content audio,
+        .common-content video {
+            width: 100%;
+            background-color: #eee
+        }
+
+        .common-content center,
+        .common-content font {
+            margin-top: 1rem;
+            display: inline-block
+        }
+
+        .common-content center {
+            width: 100%
+        }
+
+        .common-content pre {
+            margin-top: 1rem;
+            padding-left: 0;
+            padding-right: 0;
+            position: relative;
+            overflow: hidden
+        }
+
+        .common-content pre code {
+            font-size: .8rem;
+            font-family: Consolas, Liberation Mono, Menlo, monospace, Courier;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            overflow-x: auto
+        }
+
+        .common-content hr {
+            border: none;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-top: 1px solid #f5f5f5;
+            height: 1px;
+            background: none
+        }
+
+        .common-content b,
+        .common-content h1,
+        .common-content h2,
+        .common-content h3,
+        .common-content h4,
+        .common-content h5,
+        .common-content strong {
+            font-weight: 700
+        }
+
+        .common-content h1,
+        .common-content h2 {
+            font-size: 1.125rem;
+            margin-bottom: .45rem
+        }
+
+        .common-content h3,
+        .common-content h4,
+        .common-content h5 {
+            font-size: 1rem;
+            margin-bottom: .45rem
+        }
+
+        .common-content p {
+            font-weight: 400;
+            color: #353535;
+            margin-top: .15rem
+        }
+
+        .common-content .orange {
+            color: #ff5a05
+        }
+
+        .common-content .reference {
+            font-size: 1rem;
+            color: #888
+        }
+
+        .custom-rich-content h1 {
+            margin-top: 0;
+            font-weight: 400;
+            font-size: 15.25px;
+            border-bottom: 1px solid #eee;
+            line-height: 2.8
+        }
+
+        .custom-rich-content li,
+        .custom-rich-content p {
+            font-size: 14px;
+            color: #888;
+            line-height: 1.6
+        }
+
+        table.hljs-ln {
+            margin-bottom: 0;
+            border-spacing: 0;
+            border-collapse: collapse
+        }
+
+        table.hljs-ln,
+        table.hljs-ln tbody,
+        table.hljs-ln td,
+        table.hljs-ln tr {
+            box-sizing: border-box
+        }
+
+        table.hljs-ln td {
+            padding: 0;
+            border: 0
+        }
+
+        table.hljs-ln td.hljs-ln-numbers {
+            min-width: 15px;
+            color: rgba(27, 31, 35, .3);
+            text-align: right;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none
+        }
+
+        table.hljs-ln td.hljs-ln-code,
+        table.hljs-ln td.hljs-ln-numbers {
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
+            font-size: 12px;
+            line-height: 20px;
+            vertical-align: top
+        }
+
+        table.hljs-ln td.hljs-ln-code {
+            position: relative;
+            padding-right: 10px;
+            padding-left: 10px;
+            overflow: visible;
+            color: #24292e;
+            word-wrap: normal;
+            white-space: pre
+        }
+
+        video::-webkit-media-controls {
+            overflow: hidden !important
+        }
+
+        video::-webkit-media-controls-enclosure {
+            width: calc(100% + 32px);
+            margin-left: auto
+        }
+
+        ._29HP61GA_0 {
+            max-width:800px;
+            margin:0 auto;
+            margin-bottom: 20px;
+            font-weight: 400;
+            color: #353535;
+            line-height: 1.76;
+            white-space: normal;
+            word-break: normal;
+            font-size: 17px;
+            -webkit-transition: background-color .3s ease;
+            transition: background-color .3s ease
+        }
+
+        ._29HP61GA_0 .MathJax_Display {
+            overflow: auto
+        }
+
+        ._29HP61GA_0 .poster {
+            position: fixed;
+            left: -10000px;
+            top: -10000px;
+            overflow: hidden;
+            padding: 1rem;
+            background: #ececec
+        }
+
+        ._29HP61GA_0 .richcontent-pre-copy {
+            font-size: 13px;
+            color: #888;
+            position: absolute;
+            right: 1em;
+            top: .5em;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none
+        }
+
+        ._29HP61GA_0 .richcontent-pre-copy .iconfont {
+            font-size: 12px;
+            margin-right: .2em
+        }
+
+        ._29HP61GA_0 a {
+            color: #fa8919;
+            border-bottom: 1px solid #fa8919
+        }
+
+        ._29HP61GA_0 img {
+            display: block;
+            max-width: 100%;
+            position: relative;
+            left: 50%;
+            -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+            background-color: #eee;
+            vertical-align: top;
+            border-radius: 0
+        }
+
+        ._29HP61GA_0 audio,
+        ._29HP61GA_0 video {
+            width: 100%;
+            background-color: #eee
+        }
+
+        ._29HP61GA_0 pre {
+            margin-top: 16px;
+            padding: 34px 0 0;
+            margin-bottom: 30px;
+            position: relative;
+            border-radius: 6px;
+            background: rgba(246, 247, 251, .749);
+            border: 0
+        }
+
+        ._29HP61GA_0 pre code {
+            font-size: 12px;
+            font-family: Consolas, Liberation Mono, Menlo, monospace, Courier;
+            display: block;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            margin-left: 16px;
+            margin-right: 16px;
+            overflow-x: scroll
+        }
+
+        ._29HP61GA_0 pre code:after {
+            content: "";
+            height: 30px;
+            width: 100%;
+            display: block
+        }
+
+        ._29HP61GA_0 hr {
+            border: none;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-top: 1px solid #f5f5f5;
+            height: 1px;
+            background: none
+        }
+
+        ._29HP61GA_0 h1,
+        ._29HP61GA_0 h2,
+        ._29HP61GA_0 h3,
+        ._29HP61GA_0 h4,
+        ._29HP61GA_0 h5 {
+            margin-bottom: 20px;
+            margin-top: 0;
+            font-weight: 700
+        }
+
+        ._29HP61GA_0 b,
+        ._29HP61GA_0 strong {
+            font-weight: 700
+        }
+
+        ._29HP61GA_0 h1 {
+            font-size: 21px
+        }
+
+        ._29HP61GA_0 h2 {
+            font-size: 20px
+        }
+
+        ._29HP61GA_0 h3 {
+            font-size: 19px
+        }
+
+        ._29HP61GA_0 h4 {
+            font-size: 18px
+        }
+
+        ._29HP61GA_0 h5 {
+            font-size: 17px
+        }
+
+        ._29HP61GA_0 center,
+        ._29HP61GA_0 p {
+            font-weight: 400;
+            color: #353535;
+            margin-top: 0;
+            margin-bottom: 30px;
+            word-break: break-word
+        }
+
+        ._29HP61GA_0 center {
+            text-align: center
+        }
+
+        ._29HP61GA_0 blockquote {
+            margin-top: 0;
+            margin-bottom: 34px;
+            border-left: 3px solid #e8e8e8;
+            padding-left: 17px;
+            color: #353535
+        }
+
+        ._29HP61GA_0 blockquote p {
+            margin-top: 0;
+            margin-bottom: 0
+        }
+
+        ._29HP61GA_0 ol,
+        ._29HP61GA_0 ul {
+            margin-bottom: 30px
+        }
+
+        ._29HP61GA_0 ol p,
+        ._29HP61GA_0 ul p {
+            margin-top: 0;
+            margin-bottom: 0
+        }
+
+        ._29HP61GA_0 ol {
+            list-style: decimal;
+            margin-left: 20px
+        }
+
+        ._29HP61GA_0 ul li {
+            padding-left: 17px;
+            position: relative;
+            margin-bottom: 10px
+        }
+
+        ._29HP61GA_0 ul li:after {
+            content: "";
+            height: 6px;
+            width: 6px;
+            border-radius: 50%;
+            background: #353535;
+            position: absolute;
+            top: 10px;
+            left: 0
+        }
+
+        ._29HP61GA_0 .orange {
+            color: #fa8919
+        }
+
+        ._29HP61GA_0 .reference {
+            color: #888
+        }
+
+        ._29HP61GA_0 .m-right {
+            text-align: right
+        }
+
+        ._29HP61GA_0 .m-center {
+            text-align: center;
+            display: block
+        }
+
+        ._29HP61GA_0 .m-gray {
+            color: #888
+        }
+
+        ._29HP61GA_0 .m-small {
+            font-size: 15px
+        }
+
+        ._29HP61GA_0 table.hljs-ln {
+            margin-bottom: 0;
+            border-spacing: 0;
+            border-collapse: collapse
+        }
+
+        ._29HP61GA_0 table.hljs-ln,
+        ._29HP61GA_0 table.hljs-ln tbody,
+        ._29HP61GA_0 table.hljs-ln td,
+        ._29HP61GA_0 table.hljs-ln tr {
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box
+        }
+
+        ._29HP61GA_0 table.hljs-ln td {
+            padding: 0;
+            border: 0
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-numbers {
+            min-width: 15px;
+            font-size: 12px;
+            color: rgba(27, 31, 35, .3);
+            text-align: right;
+            white-space: nowrap;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-code,
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-numbers {
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
+            line-height: 20px;
+            vertical-align: top
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-code {
+            position: relative;
+            padding-right: 10px;
+            padding-left: 10px;
+            overflow: visible;
+            font-size: 13px;
+            color: #666;
+            word-wrap: normal;
+            white-space: pre
+        }
+
+    </style>
+</head>
+<body>
+<div class="_29HP61GA_0">
+<h1>10-到底应不应该返回对象？</h1>
+<p>你好，我是吴咏炜。</p><p>前几讲里我们已经约略地提到了返回对象的问题，本讲里我们进一步展开这个话题，把返回对象这个问题讲深讲透。</p><h2>F.20</h2><p>《C++ 核心指南》的 F.20 这一条款是这么说的 <span class="orange">[1]</span>：</p><blockquote>
+<p>F.20: For “out” output values, prefer return values to output parameters</p>
+</blockquote><p>翻译一下：</p><blockquote>
+<p>在函数输出数值时，尽量使用返回值而非输出参数</p>
+</blockquote><p>这条可能会让一些 C++ 老手感到惊讶——在 C++11 之前的实践里，我们完全是采用相反的做法的啊！</p><p>在解释 F.20 之前，我们先来看看我们之前的做法。</p><h3>调用者负责管理内存，接口负责生成</h3><p>一种常见的做法是，接口的调用者负责分配一个对象所需的内存并负责其生命周期，接口负责生成或修改该对象。这种做法意味着对象可以默认构造（甚至只是一个结构），代码一般使用错误码而非异常。</p><p>示例代码如下：</p><pre><code class="language-c++">MyObj obj;
+ec = initialize(&amp;obj);
+…
+</code></pre><p>这种做法和 C 是兼容的，很多程序员出于惯性也沿用了 C 的这种做法。一种略为 C++ 点的做法是使用引用代替指针，这样在上面的示例中就不需要使用 <code>&amp;</code> 运算符了；但这样只是语法略有区别，本质完全相同。如果对象有合理的析构函数的话，那这种做法的主要问题是啰嗦、难于组合。你需要写更多的代码行，使用更多的中间变量，也就更容易犯错误。</p><!-- [[[read_end]]] --><p>假如我们已有矩阵变量 $\mathbf{A}$、$\mathbf{B}$ 和 $\mathbf{C}$，要执行一个操作</p><p>$$<br>
+\mathbf{R} = \mathbf{A} \times \mathbf{B} + \mathbf{C}<br>
+$$</p><p>那在这种做法下代码大概会写成：</p><pre><code class="language-c++">error_code_t add(
+  matrix* result,
+  const matrix&amp; lhs,
+  const matrix&amp; rhs);
+error_code_t multiply(
+  matrix* result,
+  const matrix&amp; lhs,
+  const matrix&amp; rhs);
+…
+  error_code_t ec;
+  …
+  matrix temp;
+  ec = multiply(&amp;temp, a, b);
+  if (ec != SUCCESS) {
+    goto end;
+  }
+  matrix r;
+  ec = add(&amp;r, temp, c);
+  if (ec != SUCCESS) {
+    goto end;
+  }
+  …
+end:
+  // 返回 ec 或类似错误处理
+</code></pre><p>理论上该方法可以有一个变体，不使用返回值，而使用异常来表示错误。实践中，我从来没在实际系统中看到过这样的代码。</p><h3>接口负责对象的堆上生成和内存管理</h3><p>另外一种可能的做法是接口提供生成和销毁对象的函数，对象在堆上维护。<code>fopen</code> 和 <code>fclose</code> 就是这样的接口的实例。注意使用这种方法一般不推荐由接口生成对象，然后由调用者通过调用 <code>delete</code> 来释放。在某些环境里，比如 Windows 上使用不同的运行时库时，这样做会引发问题。</p><p>同样以上面的矩阵运算为例，代码大概就会写成这个样子：</p><pre><code class="language-c++">matrix* add(
+  const matrix* lhs,
+  const matrix* rhs,
+  error_code_t* ec);
+matrix* multiply(
+  const matrix* lhs,
+  const matrix* rhs,
+  error_code_t* ec);
+void deinitialize(matrix** mat);
+…
+  error_code_t ec;
+  …
+  matrix* temp = nullptr;
+  matrix* r = nullptr;
+  temp = multiply(a, b, &amp;ec);
+  if (!temp) {
+    goto end;
+  }
+  r = add(temp, c, &amp;ec);
+  if (!r) {
+    goto end;
+  }
+  …
+end:
+  if (temp) {
+    deinitialize(&amp;temp);
+  }
+  // 返回 ec 或类似错误处理
+</code></pre><p>可以注意到，虽然代码看似稍微自然了一点，但啰嗦程度却增加了，原因是正确的处理需要考虑到各种不同错误路径下的资源释放问题。这儿也没有使用异常，因为异常在这种表达下会产生内存泄漏，除非用上一堆 <code>try</code> 和 <code>catch</code>，但那样异常在表达简洁性上的优势就没有了，没有实际的好处。</p><p>不过，如果我们同时使用智能指针和异常的话，就可以得到一个还不错的变体。如果接口接受和返回的都是 <code>shared_ptr&lt;matrix&gt;</code>，那调用代码就简单了：</p><pre><code class="language-c++">shared_ptr&lt;matrix&gt; add(
+  const shared_ptr&lt;matrix&gt;&amp; lhs,
+  const shared_ptr&lt;matrix&gt;&amp; rhs);
+shared_ptr&lt;matrix&gt; multiply(
+  const shared_ptr&lt;matrix&gt;&amp; lhs,
+  const shared_ptr&lt;matrix&gt;&amp; rhs);
+…
+  auto r = add(multiply(a, b), c);
+</code></pre><p>调用这些接口必须要使用 <code>shared_ptr</code>，这不能不说是一个限制。另外，对象永远是在堆上分配的，在很多场合，也会有一定的性能影响。</p><h3>接口直接返回对象</h3><p>最直接了当的代码，当然就是直接返回对象了。这回我们看实际可编译、运行的代码：</p><pre><code class="language-c++">#include &lt;armadillo&gt;
+#include &lt;iostream&gt;
+
+using arma::imat22;
+using std::cout;
+
+int main()
+{
+  imat22 a{{1, 1}, {2, 2}};
+  imat22 b{{1, 0}, {0, 1}};
+  imat22 c{{2, 2}, {1, 1}};
+  auto r = a * b + c;
+  cout &lt;&lt; r;
+}
+</code></pre><p>这段代码使用了 Armadillo，一个利用现代 C++ 特性的开源线性代数库 <span class="orange">[2]</span>。你可以看到代码非常简洁，完全表意（<code>imat22</code> 是元素类型为整数的大小固定为 2 x 2 的矩阵）。它有以下优点：</p><ul>
+<li>代码直观、容易理解。</li>
+<li>乘法和加法可以组合在一行里写出来，无需中间变量。</li>
+<li>性能也没有问题。实际执行中，没有复制发生，计算结果直接存放到了变量 <code>r</code> 上。更妙的是，因为矩阵大小是已知的，这儿不需要任何动态内存，所有对象及其数据全部存放在栈上。</li>
+</ul><p>Armadillo 是个比较复杂的库，我们就不以 Armadillo 的代码为例来进一步讲解了。我们可以用一个假想的 <code>matrix</code> 类来看看返回对象的代码是怎样编写的。</p><h2>如何返回一个对象？</h2><p>一个用来返回的对象，通常应当是可移动构造/赋值的，一般也同时是可拷贝构造/赋值的。如果这样一个对象同时又可以默认构造，我们就称其为一个半正则（semiregular）的对象。如果可能的话，我们应当尽量让我们的类满足半正则这个要求。</p><p>半正则意味着我们的 <code>matrix</code> 类提供下面的成员函数：</p><pre><code class="language-c++">class matrix {
+public:
+  // 普通构造
+  matrix(size_t rows, size_t cols);
+  // 半正则要求的构造
+  matrix();
+  matrix(const matrix&amp;);
+  matrix(matrix&amp;&amp;);
+  // 半正则要求的赋值
+  matrix&amp; operator=(const matrix&amp;);
+  matrix&amp; operator=(matrix&amp;&amp;);
+};
+</code></pre><p>我们先看一下在没有返回值优化的情况下 C++ 是怎样返回对象的。以矩阵乘法为例，代码应该像下面这样：</p><pre><code class="language-c++">matrix operator*(const matrix&amp; lhs,
+                 const matrix&amp; rhs)
+{
+  if (lhs.cols() != rhs.rows()) {
+    throw runtime_error(
+      "sizes mismatch");
+  }
+  matrix result(lhs.rows(),
+                rhs.cols());
+  // 具体计算过程
+  return result;
+}
+</code></pre><p>注意对于一个本地变量，我们永远不应该返回其引用（或指针），不管是作为左值还是右值。从标准的角度，这会导致未定义行为（undefined behavior），从实际的角度，这样的对象一般放在栈上可以被调用者正常覆盖使用的部分，随便一个函数调用或变量定义就可能覆盖这个对象占据的内存。这还是这个对象的析构不做事情的情况：如果析构函数会释放内存或破坏数据的话，那你访问到的对象即使内存没有被覆盖，也早就不是有合法数据的对象了……</p><p>回到正题。我们需要回想起，在 <a href="https://time.geekbang.org/column/article/169268">[第 3 讲]</a> 里说过的，返回非引用类型的表达式结果是个纯右值（prvalue）。在执行 <code>auto r = …</code> 的时候，编译器会认为我们实际是在构造 <code>matrix r(…)</code>，而“…”部分是一个纯右值。因此编译器会首先试图匹配 <code>matrix(matrix&amp;&amp;)</code>，在没有时则试图匹配 <code>matrix(const matrix&amp;)</code>；也就是说，有移动支持时使用移动，没有移动支持时则拷贝。</p><h2>返回值优化（拷贝消除）</h2><p>我们再来看一个能显示生命期过程的对象的例子：</p><pre><code class="language-c++">#include &lt;iostream&gt;
+
+using namespace std;
+
+// Can copy and move
+class A {
+public:
+  A() { cout &lt;&lt; "Create A\n"; }
+  ~A() { cout &lt;&lt; "Destroy A\n"; }
+  A(const A&amp;) { cout &lt;&lt; "Copy A\n"; }
+  A(A&amp;&amp;) { cout &lt;&lt; "Move A\n"; }
+};
+
+A getA_unnamed()
+{
+  return A();
+}
+
+int main()
+{
+  auto a = getA_unnamed();
+}
+</code></pre><p>如果你认为执行结果里应当有一行“Copy A”或“Move A”的话，你就忽视了返回值优化的威力了。即使完全关闭优化，三种主流编译器（GCC、Clang 和 MSVC）都只输出两行：</p><blockquote>
+<p><code>Create A</code><br>
+<code>Destroy A</code></p>
+</blockquote><p>我们把代码稍稍改一下：</p><pre><code class="language-c++">A getA_named()
+{
+  A a;
+  return a;
+}
+
+int main()
+{
+  auto a = getA_named();
+}
+</code></pre><p>这回结果有了一点点小变化。虽然 GCC 和 Clang 的结果完全不变，但 MSVC 在非优化编译的情况下产生了不同的输出（优化编译——使用命令行参数 <code>/O1</code>、<code>/O2</code> 或 <code>/Ox</code>——则不变）：</p><blockquote>
+<p><code>Create A</code><br>
+<code>Move A</code><br>
+<code>Destroy A</code><br>
+<code>Destroy A</code></p>
+</blockquote><p>也就是说，返回内容被移动构造了。</p><p>我们继续变形一下：</p><pre><code class="language-c++">#include &lt;stdlib.h&gt;
+
+A getA_duang()
+{
+  A a1;
+  A a2;
+  if (rand() &gt; 42) {
+    return a1;
+  } else {
+    return a2;
+  }
+}
+
+int main()
+{
+  auto a = getA_duang();
+}
+</code></pre><p>这回所有的编译器都被难倒了，输出是：</p><blockquote>
+<p><code>Create A</code><br>
+<code>Create A</code><br>
+<code>Move A</code><br>
+<code>Destroy A</code><br>
+<code>Destroy A</code><br>
+<code>Destroy A</code></p>
+</blockquote><p>关于返回值优化的实验我们就做到这里。下一步，我们试验一下把移动构造函数删除：</p><pre><code class="language-c++">  A(A&amp;&amp;) = delete;
+</code></pre><p>我们可以立即看到“Copy A”出现在了结果输出中，说明目前结果变成拷贝构造了。</p><p>如果再进一步，把拷贝构造函数也删除呢？是不是上面的 <code>getA_unnamed</code>、<code>getA_named</code> 和 <code>getA_duang</code> 都不能工作了？</p><p>在 C++14 及之前确实是这样的。但从 C++17 开始，对于类似于 <code>getA_unnamed</code> 这样的情况，即使对象不可拷贝、不可移动，这个对象仍然是可以被返回的！C++17 要求对于这种情况，对象必须被直接构造在目标位置上，不经过任何拷贝或移动的步骤 <span class="orange">[3]</span>。</p><h2>回到 F.20</h2><p>理解了 C++ 里的对返回值的处理和返回值优化之后，我们再回过头看一下 F.20 里陈述的理由的话，应该就显得很自然了：</p><blockquote>
+<p>A return value is self-documenting, whereas a <code>&amp;</code> could be either in-out or out-only and is liable to be misused.</p>
+<p>返回值是可以自我描述的；而 <code>&amp;</code> 参数既可能是输入输出，也可能是仅输出，且很容易被误用。</p>
+</blockquote><p>我想我对返回对象的可读性，已经给出了充足的例子。对于其是否有性能影响这一问题，也给出了充分的说明。</p><p>我们最后看一下 F.20 里描述的例外情况：</p><ul>
+<li>“对于非值类型，比如返回值可能是子对象的情况，使用 <code>unique_ptr</code> 或 <code>shared_ptr</code> 来返回对象。”也就是面向对象、工厂方法这样的情况，像 <a href="https://time.geekbang.org/column/article/169225">[第 1 讲]</a> 里给出的 <code>create_shape</code> 应该这样改造。</li>
+<li>“对于移动代价很高的对象，考虑将其分配在堆上，然后返回一个句柄（如 <code>unique_ptr</code>），或传递一个非 const 的目标对象的引用来填充（用作输出参数）。”也就是说不方便移动的，那就只能使用一个 RAII 对象来管理生命周期，或者老办法输出参数了。</li>
+<li>“要在一个内层循环里在多次函数调用中重用一个自带容量的对象：将其当作输入/输出参数并将其按引用传递。”这也是个需要继续使用老办法的情况。</li>
+</ul><h2>内容小结</h2><p>C++ 里已经对返回对象做了大量的优化，目前在函数里直接返回对象可以得到更可读、可组合的代码，同时在大部分情况下我们可以利用移动和返回值优化消除性能问题。</p><h2>课后思考</h2><p>请你考虑一下：</p><ol>
+<li>你的项目使用了返回对象了吗？如果没有的话，本讲内容有没有说服你？</li>
+<li>这讲里我们没有深入讨论赋值；请你思考一下，如果例子里改成赋值，会有什么样的变化？</li>
+</ol><p>欢迎留言和我交流你的想法。</p><h2><span class="reference">参考资料</span></h2><p><span class="reference">[1] Bjarne Stroustrup and Herb Sutter (editors), “C++ core guidelines”, item F.20. <a href="https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Rf-out">https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Rf-out</a> (非官方中文版可参见 <a href="https://github.com/lynnboy/CppCoreGuidelines-zh-CN">https://github.com/lynnboy/CppCoreGuidelines-zh-CN</a>) </span></p><p><span class="reference">[2] Conrad Sanderson and Ryan Curtin, Armadillo. <a href="http://arma.sourceforge.net/">http://arma.sourceforge.net/</a> </span></p><p><span class="reference">[3] cppreference.com, “Copy elision”. <a href="https://en.cppreference.com/w/cpp/language/copy_elision">https://en.cppreference.com/w/cpp/language/copy_elision</a> </span></p><p><span class="reference">[3a] cppreference.com, “复制消除”. <a href="https://zh.cppreference.com/w/cpp/language/copy_elision">https://zh.cppreference.com/w/cpp/language/copy_elision</a> </span></p><h2>精选留言：</h2>
+        <ul>
+        
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            木瓜777  2019-12-18 12:30:54
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            项目中一直使用您说的老方法，目前看编译器有优化的话，后面会逐步考虑采用返回对象的方法！ 有个问题问下，如果要返回空对象，该如何做？ 是直接采用空的构造函数？ [2赞]
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-12-18 13:33:47</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">用默认构造函数代表空，或者用 optional&lt;对象&gt; （不构造）代表空，或者抛异常代表不正常（视是否不正常而定）。<br><br>optional 会在第 22 讲里讨论。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            小一日一  2019-12-18 12:09:02
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            我认为老师应该讲一下NRVO&#47;RVO与std::move()的区别，这个问题曾经困扰过我，从stackoverflow的问题来看，学习c++11时大多数人都思考过这个问题：https:&#47;&#47;stackoverflow.com&#47;questions&#47;4986673&#47;c11-rvalues-and-move-semantics-confusion-return-statement [2赞]
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-12-18 13:19:59</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">简单来说，在对本地变量进行返回时，不用 std::move。实际上，我在第 3 讲就写了：<br><br>“有一种常见的 C++ 编程错误，是在函数里返回一个本地对象的引用。由于在函数结束时本地对象即被销毁，返回一个指向本地对象的引用属于未定义行为。理论上来说，程序出任何奇怪的行为都是正常的。<br><br>“在 C++11 之前，返回一个本地对象意味着这个对象会被拷贝，除非编译器发现可以做返回值优化（named return value optimization，或 NRVO），能把对象直接构造到调用者的栈上。从 C++11 开始，返回值优化仍可以发生，但在没有返回值优化的情况下，编译器将试图把本地对象移动出去，而不是拷贝出去。这一行为不需要程序员手工用 `std::move` 进行干预——使用`std::move` 对于移动行为没有帮助，反而会影响返回值优化。”</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            nelson  2019-12-19 00:15:34
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            文稿中的代码片段<br>ec = multiply(&amp;temp, a, b); <br>if (result != SUCCESS) <br>{ <br>  goto end; <br>}<br><br>result 应该是 ec吧 [1赞]
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-12-19 14:13:51</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">多谢。已修正。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            hello world  2019-12-18 07:52:35
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            请问老师这个C++20什么时候发布编译器之类的啊？还是说已经有了？ [1赞]
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-12-18 09:37:56</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">看这个页面吧：<br><br>https:&#47;&#47;en.cppreference.com&#47;w&#47;cpp&#47;compiler_support<br><br>目前 GCC 领先一些（可以用 -std=c++2a 启用 20 的功能），但还没有哪家完整支持 C++20。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            西钾钾  2019-12-20 09:41:01
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            以下的代码中，无论是将拷贝构造函数还是移动构造函数置为delete，都不能正常编译（vs2017）。为啥只是使用一次构造函数，老师能简单讲下这个原理么？<br>#include &lt;iostream&gt;<br><br>using namespace std;<br><br>&#47;&#47; Can copy and move<br>class A {<br>public:<br>  A() { cout &lt;&lt; &quot;Create A\n&quot;; }<br>  ~A() { cout &lt;&lt; &quot;Destroy A\n&quot;; }<br>  A(const A&amp;) { cout &lt;&lt; &quot;Copy A\n&quot;; }<br>  A(A&amp;&amp;) { cout &lt;&lt; &quot;Move A\n&quot;; }<br>};<br><br>A getA_unnamed()<br>{<br>  return A();<br>}<br><br>int main()<br>{<br>  auto a = getA_unnamed();<br>} 
+        </div>
+        
+    </div>
+</li>
+            </ul>
+</div>
+</body>
+</html>

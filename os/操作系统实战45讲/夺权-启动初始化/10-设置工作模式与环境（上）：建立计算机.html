@@ -1,0 +1,1260 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <!--<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>-->
+    <title>10-设置工作模式与环境（上）：建立计算机</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <style>
+        html {
+            color: #333;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            text-rendering: optimizelegibility;
+            font-family: Helvetica Neue, PingFang SC, Verdana, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif
+        }
+
+        html.borderbox *,
+        html.borderbox :after,
+        html.borderbox :before {
+            box-sizing: border-box
+        }
+
+        article,
+        aside,
+        blockquote,
+        body,
+        button,
+        code,
+        dd,
+        details,
+        dl,
+        dt,
+        fieldset,
+        figcaption,
+        figure,
+        footer,
+        form,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        header,
+        hr,
+        input,
+        legend,
+        li,
+        menu,
+        nav,
+        ol,
+        p,
+        pre,
+        section,
+        td,
+        textarea,
+        th,
+        ul {
+            margin: 0;
+            padding: 0
+        }
+
+        article,
+        aside,
+        details,
+        figcaption,
+        figure,
+        footer,
+        header,
+        menu,
+        nav,
+        section {
+            display: block
+        }
+
+        audio,
+        canvas,
+        video {
+            display: inline-block
+        }
+
+        body,
+        button,
+        input,
+        select,
+        textarea {
+            font: 300 1em/1.8 PingFang SC, Lantinghei SC, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, Helvetica, sans-serif
+        }
+
+        button::-moz-focus-inner,
+        input::-moz-focus-inner {
+            padding: 0;
+            border: 0
+        }
+
+        table {
+            border-collapse: collapse;
+            border-spacing: 0
+        }
+
+        fieldset,
+        img {
+            border: 0
+        }
+
+        blockquote {
+            position: relative;
+            color: #999;
+            font-weight: 400;
+            border-left: 1px solid #1abc9c;
+            padding-left: 1em;
+            margin: 1em 3em 1em 2em
+        }
+
+        @media only screen and (max-width: 640px) {
+            blockquote {
+                margin: 1em 0
+            }
+        }
+
+        abbr,
+        acronym {
+            border-bottom: 1px dotted;
+            font-variant: normal
+        }
+
+        abbr {
+            cursor: help
+        }
+
+        del {
+            text-decoration: line-through
+        }
+
+        address,
+        caption,
+        cite,
+        code,
+        dfn,
+        em,
+        th,
+        var {
+            font-style: normal;
+            font-weight: 400
+        }
+
+        ol,
+        ul {
+            list-style: none
+        }
+
+        caption,
+        th {
+            text-align: left
+        }
+
+        q:after,
+        q:before {
+            content: ""
+        }
+
+        sub,
+        sup {
+            font-size: 75%;
+            line-height: 0;
+            position: relative
+        }
+
+        :root sub,
+        :root sup {
+            vertical-align: baseline
+        }
+
+        sup {
+            top: -.5em
+        }
+
+        sub {
+            bottom: -.25em
+        }
+
+        a {
+            color: #1abc9c
+        }
+
+        a:hover {
+            text-decoration: underline
+        }
+
+        .typo a {
+            border-bottom: 1px solid #1abc9c
+        }
+
+        .typo a:hover {
+            border-bottom-color: #555;
+            color: #555
+        }
+
+        .typo a:hover,
+        a,
+        ins {
+            text-decoration: none
+        }
+
+        .typo-u,
+        u {
+            text-decoration: underline
+        }
+
+        mark {
+            background: #fffdd1;
+            border-bottom: 1px solid #ffedce;
+            padding: 2px;
+            margin: 0 5px
+        }
+
+        code,
+        pre,
+        pre tt {
+            font-family: Courier, Courier New, monospace
+        }
+
+        pre {
+            background: hsla(0, 0%, 97%, .7);
+            border: 1px solid #ddd;
+            padding: 1em 1.5em;
+            display: block;
+            -webkit-overflow-scrolling: touch
+        }
+
+        hr {
+            border: none;
+            border-bottom: 1px solid #cfcfcf;
+            margin-bottom: .8em;
+            height: 10px
+        }
+
+        .typo-small,
+        figcaption,
+        small {
+            font-size: .9em;
+            color: #888
+        }
+
+        b,
+        strong {
+            font-weight: 700;
+            color: #000
+        }
+
+        [draggable] {
+            cursor: move
+        }
+
+        .clearfix:after,
+        .clearfix:before {
+            content: "";
+            display: table
+        }
+
+        .clearfix:after {
+            clear: both
+        }
+
+        .clearfix {
+            zoom: 1
+        }
+
+        .textwrap,
+        .textwrap td,
+        .textwrap th {
+            word-wrap: break-word;
+            word-break: break-all
+        }
+
+        .textwrap-table {
+            table-layout: fixed
+        }
+
+        .serif {
+            font-family: Palatino, Optima, Georgia, serif
+        }
+
+        .typo-dl,
+        .typo-form,
+        .typo-hr,
+        .typo-ol,
+        .typo-p,
+        .typo-pre,
+        .typo-table,
+        .typo-ul,
+        .typo dl,
+        .typo form,
+        .typo hr,
+        .typo ol,
+        .typo p,
+        .typo pre,
+        .typo table,
+        .typo ul,
+        blockquote {
+            margin-bottom: 1rem
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: PingFang SC, Helvetica Neue, Verdana, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif;
+            color: #000;
+            line-height: 1.35
+        }
+
+        .typo-h1,
+        .typo-h2,
+        .typo-h3,
+        .typo-h4,
+        .typo-h5,
+        .typo-h6,
+        .typo h1,
+        .typo h2,
+        .typo h3,
+        .typo h4,
+        .typo h5,
+        .typo h6 {
+            margin-top: 1.2em;
+            margin-bottom: .6em;
+            line-height: 1.35
+        }
+
+        .typo-h1,
+        .typo h1 {
+            font-size: 2em
+        }
+
+        .typo-h2,
+        .typo h2 {
+            font-size: 1.8em
+        }
+
+        .typo-h3,
+        .typo h3 {
+            font-size: 1.6em
+        }
+
+        .typo-h4,
+        .typo h4 {
+            font-size: 1.4em
+        }
+
+        .typo-h5,
+        .typo-h6,
+        .typo h5,
+        .typo h6 {
+            font-size: 1.2em
+        }
+
+        .typo-ul,
+        .typo ul {
+            margin-left: 1.3em;
+            list-style: disc
+        }
+
+        .typo-ol,
+        .typo ol {
+            list-style: decimal;
+            margin-left: 1.9em
+        }
+
+        .typo-ol ol,
+        .typo-ol ul,
+        .typo-ul ol,
+        .typo-ul ul,
+        .typo li ol,
+        .typo li ul {
+            margin-bottom: .8em;
+            margin-left: 2em
+        }
+
+        .typo-ol ul,
+        .typo-ul ul,
+        .typo li ul {
+            list-style: circle
+        }
+
+        .typo-table td,
+        .typo-table th,
+        .typo table caption,
+        .typo table td,
+        .typo table th {
+            border: 1px solid #ddd;
+            padding: .5em 1em;
+            color: #666
+        }
+
+        .typo-table th,
+        .typo table th {
+            background: #fbfbfb
+        }
+
+        .typo-table thead th,
+        .typo table thead th {
+            background: hsla(0, 0%, 95%, .7)
+        }
+
+        .typo table caption {
+            border-bottom: none
+        }
+
+        .typo-input,
+        .typo-textarea {
+            -webkit-appearance: none;
+            border-radius: 0
+        }
+
+        .typo-em,
+        .typo em,
+        caption,
+        legend {
+            color: #000;
+            font-weight: inherit
+        }
+
+        .typo-em {
+            position: relative
+        }
+
+        .typo-em:after {
+            position: absolute;
+            top: .65em;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            content: "\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB"
+        }
+
+        .typo img {
+            max-width: 100%
+        }
+
+        .common-content {
+            font-weight: 400;
+            color: #353535;
+            line-height: 1.75rem;
+            white-space: normal;
+            word-break: normal;
+            font-size: 1rem
+        }
+
+        .common-content img {
+            display: block;
+            max-width: 100%;
+            background-color: #eee
+        }
+
+        .common-content audio,
+        .common-content video {
+            width: 100%;
+            background-color: #eee
+        }
+
+        .common-content center,
+        .common-content font {
+            margin-top: 1rem;
+            display: inline-block
+        }
+
+        .common-content center {
+            width: 100%
+        }
+
+        .common-content pre {
+            margin-top: 1rem;
+            padding-left: 0;
+            padding-right: 0;
+            position: relative;
+            overflow: hidden
+        }
+
+        .common-content pre code {
+            font-size: .8rem;
+            font-family: Consolas, Liberation Mono, Menlo, monospace, Courier;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            overflow-x: auto
+        }
+
+        .common-content hr {
+            border: none;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-top: 1px solid #f5f5f5;
+            height: 1px;
+            background: none
+        }
+
+        .common-content b,
+        .common-content h1,
+        .common-content h2,
+        .common-content h3,
+        .common-content h4,
+        .common-content h5,
+        .common-content strong {
+            font-weight: 700
+        }
+
+        .common-content h1,
+        .common-content h2 {
+            font-size: 1.125rem;
+            margin-bottom: .45rem
+        }
+
+        .common-content h3,
+        .common-content h4,
+        .common-content h5 {
+            font-size: 1rem;
+            margin-bottom: .45rem
+        }
+
+        .common-content p {
+            font-weight: 400;
+            color: #353535;
+            margin-top: .15rem
+        }
+
+        .common-content .orange {
+            color: #ff5a05
+        }
+
+        .common-content .reference {
+            font-size: 1rem;
+            color: #888
+        }
+
+        .custom-rich-content h1 {
+            margin-top: 0;
+            font-weight: 400;
+            font-size: 15.25px;
+            border-bottom: 1px solid #eee;
+            line-height: 2.8
+        }
+
+        .custom-rich-content li,
+        .custom-rich-content p {
+            font-size: 14px;
+            color: #888;
+            line-height: 1.6
+        }
+
+        table.hljs-ln {
+            margin-bottom: 0;
+            border-spacing: 0;
+            border-collapse: collapse
+        }
+
+        table.hljs-ln,
+        table.hljs-ln tbody,
+        table.hljs-ln td,
+        table.hljs-ln tr {
+            box-sizing: border-box
+        }
+
+        table.hljs-ln td {
+            padding: 0;
+            border: 0
+        }
+
+        table.hljs-ln td.hljs-ln-numbers {
+            min-width: 15px;
+            color: rgba(27, 31, 35, .3);
+            text-align: right;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none
+        }
+
+        table.hljs-ln td.hljs-ln-code,
+        table.hljs-ln td.hljs-ln-numbers {
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
+            font-size: 12px;
+            line-height: 20px;
+            vertical-align: top
+        }
+
+        table.hljs-ln td.hljs-ln-code {
+            position: relative;
+            padding-right: 10px;
+            padding-left: 10px;
+            overflow: visible;
+            color: #24292e;
+            word-wrap: normal;
+            white-space: pre
+        }
+
+        video::-webkit-media-controls {
+            overflow: hidden !important
+        }
+
+        video::-webkit-media-controls-enclosure {
+            width: calc(100% + 32px);
+            margin-left: auto
+        }
+
+        ._29HP61GA_0 {
+            max-width:800px;
+            margin:0 auto;
+            margin-bottom: 20px;
+            font-weight: 400;
+            color: #353535;
+            line-height: 1.76;
+            white-space: normal;
+            word-break: normal;
+            font-size: 17px;
+            -webkit-transition: background-color .3s ease;
+            transition: background-color .3s ease
+        }
+
+        ._29HP61GA_0 .MathJax_Display {
+            overflow: auto
+        }
+
+        ._29HP61GA_0 .poster {
+            position: fixed;
+            left: -10000px;
+            top: -10000px;
+            overflow: hidden;
+            padding: 1rem;
+            background: #ececec
+        }
+
+        ._29HP61GA_0 .richcontent-pre-copy {
+            font-size: 13px;
+            color: #888;
+            position: absolute;
+            right: 1em;
+            top: .5em;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none
+        }
+
+        ._29HP61GA_0 .richcontent-pre-copy .iconfont {
+            font-size: 12px;
+            margin-right: .2em
+        }
+
+        ._29HP61GA_0 a {
+            color: #fa8919;
+            border-bottom: 1px solid #fa8919
+        }
+
+        ._29HP61GA_0 img {
+            display: block;
+            max-width: 100%;
+            position: relative;
+            left: 50%;
+            -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+            background-color: #eee;
+            vertical-align: top;
+            border-radius: 0
+        }
+
+        ._29HP61GA_0 audio,
+        ._29HP61GA_0 video {
+            width: 100%;
+            background-color: #eee
+        }
+
+        ._29HP61GA_0 pre {
+            margin-top: 16px;
+            padding: 34px 0 0;
+            margin-bottom: 30px;
+            position: relative;
+            border-radius: 6px;
+            background: rgba(246, 247, 251, .749);
+            border: 0
+        }
+
+        ._29HP61GA_0 pre code {
+            font-size: 12px;
+            font-family: Consolas, Liberation Mono, Menlo, monospace, Courier;
+            display: block;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            margin-left: 16px;
+            margin-right: 16px;
+            overflow-x: scroll
+        }
+
+        ._29HP61GA_0 pre code:after {
+            content: "";
+            height: 30px;
+            width: 100%;
+            display: block
+        }
+
+        ._29HP61GA_0 hr {
+            border: none;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-top: 1px solid #f5f5f5;
+            height: 1px;
+            background: none
+        }
+
+        ._29HP61GA_0 h1,
+        ._29HP61GA_0 h2,
+        ._29HP61GA_0 h3,
+        ._29HP61GA_0 h4,
+        ._29HP61GA_0 h5 {
+            margin-bottom: 20px;
+            margin-top: 0;
+            font-weight: 700
+        }
+
+        ._29HP61GA_0 b,
+        ._29HP61GA_0 strong {
+            font-weight: 700
+        }
+
+        ._29HP61GA_0 h1 {
+            font-size: 21px
+        }
+
+        ._29HP61GA_0 h2 {
+            font-size: 20px
+        }
+
+        ._29HP61GA_0 h3 {
+            font-size: 19px
+        }
+
+        ._29HP61GA_0 h4 {
+            font-size: 18px
+        }
+
+        ._29HP61GA_0 h5 {
+            font-size: 17px
+        }
+
+        ._29HP61GA_0 center,
+        ._29HP61GA_0 p {
+            font-weight: 400;
+            color: #353535;
+            margin-top: 0;
+            margin-bottom: 30px;
+            word-break: break-word
+        }
+
+        ._29HP61GA_0 center {
+            text-align: center
+        }
+
+        ._29HP61GA_0 blockquote {
+            margin-top: 0;
+            margin-bottom: 34px;
+            border-left: 3px solid #e8e8e8;
+            padding-left: 17px;
+            color: #353535
+        }
+
+        ._29HP61GA_0 blockquote p {
+            margin-top: 0;
+            margin-bottom: 0
+        }
+
+        ._29HP61GA_0 ol,
+        ._29HP61GA_0 ul {
+            margin-bottom: 30px
+        }
+
+        ._29HP61GA_0 ol p,
+        ._29HP61GA_0 ul p {
+            margin-top: 0;
+            margin-bottom: 0
+        }
+
+        ._29HP61GA_0 ol {
+            list-style: decimal;
+            margin-left: 20px
+        }
+
+        ._29HP61GA_0 ul li {
+            padding-left: 17px;
+            position: relative;
+            margin-bottom: 10px
+        }
+
+        ._29HP61GA_0 ul li:after {
+            content: "";
+            height: 6px;
+            width: 6px;
+            border-radius: 50%;
+            background: #353535;
+            position: absolute;
+            top: 10px;
+            left: 0
+        }
+
+        ._29HP61GA_0 .orange {
+            color: #fa8919
+        }
+
+        ._29HP61GA_0 .reference {
+            color: #888
+        }
+
+        ._29HP61GA_0 .m-right {
+            text-align: right
+        }
+
+        ._29HP61GA_0 .m-center {
+            text-align: center;
+            display: block
+        }
+
+        ._29HP61GA_0 .m-gray {
+            color: #888
+        }
+
+        ._29HP61GA_0 .m-small {
+            font-size: 15px
+        }
+
+        ._29HP61GA_0 table.hljs-ln {
+            margin-bottom: 0;
+            border-spacing: 0;
+            border-collapse: collapse
+        }
+
+        ._29HP61GA_0 table.hljs-ln,
+        ._29HP61GA_0 table.hljs-ln tbody,
+        ._29HP61GA_0 table.hljs-ln td,
+        ._29HP61GA_0 table.hljs-ln tr {
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box
+        }
+
+        ._29HP61GA_0 table.hljs-ln td {
+            padding: 0;
+            border: 0
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-numbers {
+            min-width: 15px;
+            font-size: 12px;
+            color: rgba(27, 31, 35, .3);
+            text-align: right;
+            white-space: nowrap;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-code,
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-numbers {
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
+            line-height: 20px;
+            vertical-align: top
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-code {
+            position: relative;
+            padding-right: 10px;
+            padding-left: 10px;
+            overflow: visible;
+            font-size: 13px;
+            color: #666;
+            word-wrap: normal;
+            white-space: pre
+        }
+
+    </style>
+</head>
+<body>
+<div class="_29HP61GA_0">
+<h1>10-设置工作模式与环境（上）：建立计算机</h1>
+<p>你好，我是LMOS。</p><p>经过前面那么多课程的准备，现在我们距离把我们自己操作系统跑起来，已经是一步之遥了。现在，你是不是很兴奋，很激动？有这些情绪说明你是喜欢这门课程的。</p><p>接下来的三节课，我们会一起完成一个壮举，从GRUB老大哥手中接过权柄，让计算机回归到我们的革命路线上来，为我们之后的开发自己的操作系统做好准备。</p><p>具体我是这样来安排的，今天这节课，我们先来搭好操作系统的测试环境。第二节课，我们一起实现一个初始化环境的组件——二级引导器，让它真正继承GRUB权力。第三节课，我们正式攻下初始化的第一个山头，对硬件抽象层进行初始化。</p><p>好，让我们正式开始今天的学习。首先我们来解决内核文件封装的问题，然后动手一步步建好虚拟机和生产虚拟硬盘。课程配套代码你可以在<a href="https://gitee.com/lmos/cosmos/tree/master/lesson10~11">这里</a>下载。</p><h2>从内核映像格式说起</h2><p>我们都知道，一个内核工程肯定有多个文件组成，为了不让GRUB老哥加载多个文件，因疲劳过度而产生问题，我们决定让GRUB只加载一个文件。</p><p>但是要把多个文件变成一个文件就需要封装，即把多个文件组装在一起形成一个文件。这个文件我们称为<strong>内核映像文件</strong>，其中包含二级引导器的模块，内核模块，图片和字库文件。为了这映像文件能被GRUB加载，并让它自身能够解析其中的内容，我们就要定义好具体的格式。如下图所示。</p><!-- [[[read_end]]] --><p><img src="https://static001.geekbang.org/resource/image/e4/14/e4000be6a176d1fd09b99bf6df02f914.jpg" alt="" title="内核映像文件格式"></p><p>上图中的GRUB头有4KB大小，GRUB正是通过这一小段代码，来识别映像文件的。另外，根据映像文件头描述符和文件头描述符里的信息，这一小段代码还可以解析映像文件中的其它文件。</p><p>映像文件头描述符和文件描述符是两个C语言结构体，如下所示。</p><pre><code>//映像文件头描述符
+typedef struct s_mlosrddsc
+{
+    u64_t mdc_mgic; //映像文件标识
+    u64_t mdc_sfsum;//未使用
+    u64_t mdc_sfsoff;//未使用
+    u64_t mdc_sfeoff;//未使用
+    u64_t mdc_sfrlsz;//未使用
+    u64_t mdc_ldrbk_s;//映像文件中二级引导器的开始偏移
+    u64_t mdc_ldrbk_e;//映像文件中二级引导器的结束偏移
+    u64_t mdc_ldrbk_rsz;//映像文件中二级引导器的实际大小
+    u64_t mdc_ldrbk_sum;//映像文件中二级引导器的校验和
+    u64_t mdc_fhdbk_s;//映像文件中文件头描述的开始偏移
+    u64_t mdc_fhdbk_e;//映像文件中文件头描述的结束偏移
+    u64_t mdc_fhdbk_rsz;//映像文件中文件头描述的实际大小
+    u64_t mdc_fhdbk_sum;//映像文件中文件头描述的校验和
+    u64_t mdc_filbk_s;//映像文件中文件数据的开始偏移
+    u64_t mdc_filbk_e;//映像文件中文件数据的结束偏移
+    u64_t mdc_filbk_rsz;//映像文件中文件数据的实际大小
+    u64_t mdc_filbk_sum;//映像文件中文件数据的校验和
+    u64_t mdc_ldrcodenr;//映像文件中二级引导器的文件头描述符的索引号
+    u64_t mdc_fhdnr;//映像文件中文件头描述符有多少个
+    u64_t mdc_filnr;//映像文件中文件头有多少个
+    u64_t mdc_endgic;//映像文件结束标识
+    u64_t mdc_rv;//映像文件版本
+}mlosrddsc_t;
+
+#define FHDSC_NMAX 192 //文件名长度
+//文件头描述符
+typedef struct s_fhdsc
+{
+    u64_t fhd_type;//文件类型
+    u64_t fhd_subtype;//文件子类型
+    u64_t fhd_stuts;//文件状态
+    u64_t fhd_id;//文件id
+    u64_t fhd_intsfsoff;//文件在映像文件位置开始偏移
+    u64_t fhd_intsfend;//文件在映像文件的结束偏移
+    u64_t fhd_frealsz;//文件实际大小
+    u64_t fhd_fsum;//文件校验和
+    char   fhd_name[FHDSC_NMAX];//文件名
+}fhdsc_t;
+</code></pre><p>有了映像文件格式，我们还要有个打包映像的工具，我给你提供了一个Linux命令行下的工具，你只要明白使用方法就可以，如下所示。</p><pre><code>lmoskrlimg -m k -lhf GRUB头文件 -o 映像文件 -f 输入的文件列表
+-m 表示模式 只能是k内核模式
+-lhf 表示后面跟上GRUB头文件
+-o 表示输出的映像文件名 
+-f 表示输入文件列表
+例如：lmoskrlimg -m k -lhf grubhead.bin -o kernel.img -f file1.bin file2.bin file3.bin file4.bin 
+</code></pre><h2>准备虚拟机</h2><p>打包好了映像文件，我们还有很重要的一步配置——准备虚拟机。这里你不妨先想一想，开发应用跟开发操作系统有什么不同呢？</p><p>在你开发应用程序时，可以在IDE中随时编译运行应用程序，然后观察结果状态是否正确，中间可能还要百度一下查找相关资料，不要笑，这是大多数人的开发日常。但是你开发操作系统时，不可能写5行代码之后就安装在计算机上，重启计算机去观察运行结果，这非常繁琐，也很浪费时间。</p><p>好在我们有虚拟机这个好帮手。虚拟机用软件的方式实现了真实计算机的全部功能特性，它在我们所使用的Linux下，其实就是个应用程序。</p><p>使用虚拟机软件我们就可以在现有的Linux系统之上开发、编译、运行我们的操作系统了，省时且方便。节约的时间我们可以喝茶、听听音乐、享受美好生活。</p><h3>安装虚拟机</h3><p>这里我们一致约定<strong>使用甲骨文公司的</strong>VirtualBox<strong>虚拟机</strong>。经过测试，我发现VirtualBox虚拟机有很多优点，它的功能相对完善、性能强、BUG少，而且比较稳定。</p><p>在现代Linux系统上安装VirtualBox虚拟机是非常简单的，你只要在Linux发行版中找到其应用商店，在其中搜索VirtualBox就行了。我们作为专业人士一条命令可以解决的事情，为什么要用鼠标点来点去呢，多浪费时间。</p><p>所以，你只要在终端中输入如下命令就行了，我假定你安装了Ubuntu系的Linux发行版，这里Ubuntu的版本不做规定。</p><pre><code>sudo apt-get install virtualbox-6.1
+</code></pre><p>运行Virtualbox后，如果出现如下界面，就说明安装VirtualBox成功了。<br>
+<img src="https://static001.geekbang.org/resource/image/8f/a9/8f8f2c86722cf19e8301c6c72426f9a9.jpg" alt="" title="安装VirtualBox"></p><h3>建立虚拟电脑</h3><p>前面我们只是安好了虚拟机管理软件，我们还要新建虚拟机才可以。点击上图中的新建，然后选择专家模式，就可以进入专家模式配置我们的电脑了。</p><p>尽管它是虚拟的，我们还是可以选择CPU类型、内存大小、硬盘大小、网络等配置，为了一致性，请你按照如下截图来配置。</p><p><img src="https://static001.geekbang.org/resource/image/f1/e3/f1ed52ae172ea8bc1710a3ef9296bbe3.jpg" alt="" title="新建虚拟机"></p><p><img src="https://static001.geekbang.org/resource/image/b0/b1/b05365a0a6fb4477042a43326e43f5b1.jpg" alt="" title="新建虚拟机"></p><p>可以看到，我们选择了64位的架构，1024MB内存，但是不要添加硬盘，后面自有妙用。显卡是VBoxVGA，还有硬件加速，这会让虚拟机调用我们机器上真实的CPU来运行我们的操作系统。</p><h2>手工生产硬盘</h2><p>上面的虚拟机中还没有硬盘，没有硬盘虚拟机就没地方加载数据，我们当然不是要买一块硬盘挂上去，而是要去手工生产一块硬盘。你马上就会发现，从零开始生产一块虚拟硬盘，这比从零开始写一个操作系统简单得多。</p><p>至于为什么手工生产硬盘，我先卖个关子，你看完这部分内容就能找到答案。</p><p>其实大多数虚拟机都是用文件来模拟硬盘的，即主机系统（HOST OS 即你使用的物理机系统 ）下特定格式的文件，虚拟机中操作系统的数据只是写入了这个文件中。</p><h3>生产虚拟硬盘</h3><p>其实虚拟机只是用特定格式的文件来模拟硬盘，所以生产虚拟硬盘就变成了生成对应格式的文件，这就容易多了。我们要建立100MB的硬盘，这意味着要生成100MB的大文件。</p><p>下面我们用Linux下的<strong>dd命令</strong>（用指定大小的块拷贝一个文件，并在拷贝的同时进行指定的转换）生成100MB的纯二进制的文件（就是1～100M字节的文件里面填充为0 ），如下所示。</p><pre><code>dd bs=512 if=/dev/zero of=hd.img count=204800
+
+;bs:表示块大小，这里是512字节
+;if：表示输入文件，/dev/zero就是Linux下专门返回0数据的设备文件，读取它就返回0
+;of：表示输出文件，即我们的硬盘文件。
+;count：表示输出多少块
+</code></pre><p>执行以上命令就可以生成100MB的文件。文件数据为全0。由于我们不用转换数据，就是需要全0的文件，所以dd命令只需要这几个参数就行。</p><h3>格式化虚拟硬盘</h3><p>虚拟硬盘也需要格式化才能使用，所谓格式化就是在硬盘上建立文件系统。只有建立了文件系统，现有的成熟操作系统才能在其中存放数据。</p><p>可是，问题来了。虚拟硬盘毕竟是个文件，如何让Linux在一个文件上建立文件系统呢？这个问题我们要分成三步来解决。</p><p>第一步，把虚拟硬盘文件变成Linux下的回环设备，让Linux以为这是个设备。其实在Linux下文件可以是设备，设备可以是文件。下面我们用losetup命令，将hd.img变成Linux的回环设备，代码如下。</p><pre><code>sudo losetup /dev/loop0 hd.img
+</code></pre><p>第二步，将losetup命令用于设置回环设备。回环设备可以把文件虚拟成Linux块设备，用来模拟整个文件系统，让用户可以将其看作硬盘、光驱或软驱等设备，并且可用mount命令挂载当作目录来使用。</p><p>我们可以用Linux下的mkfs.ext4命令格式化这个/dev/loop0回环块设备，在里面建立EXT4文件系统。</p><pre><code>sudo mkfs.ext4 -q /dev/loop0  
+</code></pre><p>第三步，我们用Linux下的mount命令，将hd.img文件当作块设备，把它挂载到事先建立的hdisk目录下，并在其中建立一个boot，这也是后面安装GRUB需要的。如果能建立成功，就说明前面的工作都正确完成了。</p><p>说到这里，也许你已经想到了我们要手工生成硬盘的原因。<strong>这是因为mount命令只能识别在纯二进制文件上建立的文件系统，如果使用虚拟机自己生成的硬盘文件，mount就无法识别我们的文件系统了。</strong></p><pre><code>sudo mount -o loop ./hd.img ./hdisk/ ;挂载硬盘文件
+sudo mkdir ./hdisk/boot/ ;建立boot目录
+</code></pre><p>进行到这里，我们会发现hdisk目录下多了一个boot目录，这说明我们挂载成功了。</p><h3>安装GRUB</h3><p>正常安装系统的情况下，Linux会把GRUB安装在我们的物理硬盘上，可是我们现在要把GRUB安装在我们的虚拟硬盘上，而且我们的操作系统还没有安装程序。所以，我们得利用一下手上Linux（HOST OS），通过GRUB的安装程序，把GRUB安装到指定的设备上（虚拟硬盘）。</p><p>想要安装GRUB也不难，具体分为两步，如下所示。</p><pre><code>第一步挂载虚拟硬盘文件为loop0回环设备
+sudo losetup /dev/loop0 hd.img
+sudo mount -o loop ./hd.img ./hdisk/ ;挂载硬盘文件
+第二步安装GRUB
+sudo grub-install --boot-directory=./hdisk/boot/ --force --allow-floppy /dev/loop0
+；--boot-directory 指向先前我们在虚拟硬盘中建立的boot目录。
+；--force --allow-floppy ：指向我们的虚拟硬盘设备文件/dev/loop0
+</code></pre><p>可以看到，现在/hdisk/boot/目录下多了一个grub目录，表示我们的GRUB安装成功。请注意，这里还要在/hdisk/boot/grub/目录下建立一个<strong>grub.cfg文本文件</strong>，GRUB正是通过这个文件内容，查找到我们的操作系统映像文件的。</p><p>我们需要在这个文件里写入如下内容。</p><pre><code>menuentry 'HelloOS' {
+insmod part_msdos
+insmod ext2
+set root='hd0,msdos1' #我们的硬盘只有一个分区所以是'hd0,msdos1'
+multiboot2 /boot/HelloOS.eki #加载boot目录下的HelloOS.eki文件
+boot #引导启动
+}
+set timeout_style=menu
+if [ &quot;${timeout}&quot; = 0 ]; then
+  set timeout=10 #等待10秒钟自动启动
+fi
+</code></pre><h3>转换虚拟硬盘格式</h3><p>你可能会好奇，我们前面好不容易生产了mount命令能识别的虚拟硬盘，这里为什么又要转换虚拟硬盘的格式呢？</p><p>这是因为这个纯二进制格式只能被我们使用的Linux系统识别，但不能被虚拟机本身识别，但是我们最终目的却是让这个虚拟机加载这个虚拟硬盘，从而启动其中的由我们开发的操作系统。</p><p>好在虚拟机提供了专用的转换格式的工具，我们只要输入一行命令即可。</p><pre><code>VBoxManage convertfromraw ./hd.img --format VDI ./hd.vdi
+;convertfromraw 指向原始格式文件
+；--format VDI  表示转换成虚拟需要的VDI格式
+</code></pre><h3>安装虚拟硬盘</h3><p>好了，到这里我们已经生成了VDI格式的虚拟硬盘，这正是我们虚拟机所需要的。然而虚拟硬盘必须要安装虚拟机才可以运行，也就是这个hd.vdi文件要和虚拟机软件联系起来。</p><p>因为我们之前在建立虚拟机时并没有配置硬盘相关的信息，所以这里需要我们进行手工配置。</p><p>配置虚拟硬盘分两步：第一步，配置硬盘控制器，我们使用SATA的硬盘，其控制器是intelAHCI；第二步，挂载虚拟硬盘文件。</p><p>具体操作如下所示。</p><pre><code>#第一步 SATA的硬盘其控制器是intelAHCI
+VBoxManage storagectl HelloOS --name &quot;SATA&quot; --add sata --controller IntelAhci --portcount 1
+#第二步
+VBoxManage closemedium disk ./hd.vdi #删除虚拟硬盘UUID并重新分配
+#将虚拟硬盘挂到虚拟机的硬盘控制器
+VBoxManage storageattach HelloOS --storagectl &quot;SATA&quot; --port 1 --device 0 --type hdd --medium ./hd.vdi
+</code></pre><p>因为VirtualBox虚拟机用UUID管理硬盘，所以每次挂载硬盘时，都需要删除虚拟硬盘的UUID并重新分配。</p><h3>最成功的失败</h3><p>现在硬盘也安装好了，下面终于可以启动我们的虚拟电脑了，我们依然通过命令启动，在Linux终端中输入如下命令就可以了。</p><pre><code>VBoxManage startvm HelloOS #启动虚拟机
+</code></pre><p>输入以上命令就会出现以下界面，出现GRUB引导菜单。</p><p><img src="https://static001.geekbang.org/resource/image/f7/8d/f7a091c67a53582255117f3790904a8d.jpg" alt="" title="虚拟机启动"></p><p>直接按下回车键，就能选择我们的HelloOS，GRUB就会加载我们的HelloOS，但是会出现如下错误。</p><p><img src="https://static001.geekbang.org/resource/image/80/ee/809e93a2e3bdce9f5d3e0ac7d699feee.jpg" alt="" title="虚拟机GRUB未找到文件"></p><p>上面的错误显示，GRUB没有找到HelloOS.eki文件，这是因为我们从来没有向虚拟硬盘中放入HelloOS.eki文件，所以才会失败。</p><p><strong>但这是我们最成功的失败，因为我们配置好了虚拟机，手动建造了硬盘，并在其上安装了GRUB，到这里我们运行测试环境已经准备好了。</strong></p><p>其实你不必太过担心，等我们完成了二级引导器的时候，这个问题会迎刃而解。</p><h2>重点回顾</h2><p>希望今天这节课给你带来成就感，虽然我们才走出了万里长征的第一步。为了这一步我们准备了很多。但是我们始终没忘记这一课程的目的，即我们要从GRUB老大哥手里接过权柄，控制计算机王国，为此，我们完成了后面这三个工作。</p><ol>
+<li>我们了解了内核映像格式，以便我们对编译产生的内核程序文件进行封装打包。</li>
+<li>为了方便测试我们的操作系统，我们了解并安装了虚拟机。</li>
+<li>手动建立了虚拟硬盘，对其格式化，在其中手动安装了GRUB引导器，并且启动了虚拟电脑。</li>
+</ol><p>虽然我们启动虚拟电脑失败了，但是对我们而言却是巨大的成功，因为它标志着我们测试运行内核的环境已经成功建立，下一课我们将继续实现二级引导器。</p><h2>思考题</h2><p>请问，我们为什么要把虚拟硬盘格式化成ext4文件系统格式呢？</p><p>欢迎你在留言区跟我交流探讨，如果你身边有对写操作系统感兴趣的朋友，也欢迎把这节课分享给他，一起学习。</p><p>好，我是LMOS，我们下节课见！</p><h2>精选留言：</h2>
+        <ul>
+        
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            第九天魔王  2021-05-31 13:32:39
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            已完成实验，有几个心得分享一下。<br>1，如果主机就是Linux比如Ubuntu，则完全按照东哥的教程做即可，即Linux主机安装虚拟机启动HelloOS。<br>2，如果主机是Windows，启动虚拟机运行Ubuntu，很多童鞋担心虚拟机Ubuntu里再运行虚拟机启动HelloOS，这样就会套娃。其实可以避免套娃的。在你的虚拟机，也就是Ubuntu环境下，完成hd.img的创建，文件系统的格式化，grub的安装后，生成最终的hd.img文件。然后把hd.img文件通过命令变成vdi文件即可。然后在你的WIN主机环境下，新建一个虚拟机，加载vdi即可。也就是说此时HelloOS和Ubuntu都是你WIN环境下并列的两个虚拟机，这样就可以避免套娃了。<br>3，如果虚拟机使用的不是VirtualBox， 面是vmware，在生成hd.img后，可以使用starwindconverter工具（网上下载，WIN下运行），这个工具可以把img转换为各种格式，比如vmware的vmdk文件。然后vmware创建一个新的虚拟机，硬盘选择这个vmdk文件，就可以加载HelloOS了。<br>4，如果HelloOS加载成功，但是提示&#39;hd0,msdos1&#39;错误，则重新制作镜像，并且修改grub.cfg里的这行为&#39;hd0,msdos1&#39;为&#39;hd0&#39;即可。 [19赞]
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">编辑回复2021-05-31 13:55:14</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">6666。十分感谢你的分享，已置顶供后面同学参考。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            springXu  2021-05-31 03:26:57
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            这节课是环境搭建的操作步骤，还没开始真正的动手写代码的要求。<br>这些操作首先生成内核文件kernel.img文件，这个文件应该是启动的文件。猜测把这个改成HelloOS.eki文件放到grub配置的目录下，不会出现not found的提示。至于显示什么操作就知道了。<br>二级引导器应该是initldrimh.bin文件的内容。 这部分内容估计是下节课要讲节的内容吧。 三个文件，一个汇编文件用于生成grub格式的头文件，两个.c的文件。 周三继续听下文播讲。<br>为什么用ext4是为了grub读取的支持？又或者cosmos系统支持ext4的文件系统？ [5赞]
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2021-05-31 21:59:57</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">用文件系统 是为了linux可以像其中写入文件（我们的内核）</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            老王  2021-06-01 12:21:51
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            在整个操作中<br>安装GRUB这一步：<br>sudo grub-install --boot-directory=.&#47;hdisk&#47;boot&#47; --force --allow-floppy &#47;dev&#47;loop0<br>在ubutnu16.04下会报告一下问题<br>Installing for i386-pc platform.<br>grub-install: warning: File system `ext2&#39; doesn&#39;t support embedding.<br>grub-install：错误： 无法嵌入，但在跨盘安装时是必须的.<br>我尝试修复也不成功，后面换ubutnu18.04，一次成功<br>但是如果创建回环设备这一步<br>sudo losetup &#47;dev&#47;loop0 hd.img<br>出现&quot;losetup: hd.img：设置回环设备失败: 设备或资源忙&quot;<br>那么就使用 ls &#47;dev&#47;loop*  查看下<br>brw-rw---- 1 root disk  7,   0 6月   1 12:13 &#47;dev&#47;loop0<br>brw-rw---- 1 root disk  7,   1 6月   1 12:13 &#47;dev&#47;loop1<br>brw-rw---- 1 root disk  7,   2 6月   1 12:13 &#47;dev&#47;loop2<br>brw-rw---- 1 root disk  7,   3 6月   1 12:13 &#47;dev&#47;loop3<br>brw-rw---- 1 root disk  7,   4 6月   1 12:13 &#47;dev&#47;loop4<br>brw-rw---- 1 root disk  7,   5 6月   1 12:13 &#47;dev&#47;loop5<br>brw-rw---- 1 root disk  7,   6 6月   1 12:13 &#47;dev&#47;loop6<br>brw-rw---- 1 root disk  7,   7 6月   1 12:13 &#47;dev&#47;loop7<br>brw-rw---- 1 root disk  7,   8 6月   1 12:13 &#47;dev&#47;loop8<br>crw-rw---- 1 root disk 10, 237 6月   1 12:13 &#47;dev&#47;loop-control<br>那么说明&#47;dev&#47;loop9是空的,可以使用<br>sudo losetup &#47;dev&#47;loop9 hd.img可以创建成功<br>其他操作为了防止不套娃可以参&quot;第几天魔王&quot;的操作 [1赞]
+        </div>
+        
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            pedro  2021-05-31 07:47:52
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            一大早起来第一件事就是看专栏！<br>今天专栏实操性是很强的，容易上手，产生成就感。<br>我昨天就clone代码跑起来了，对于virtualbox大家如果觉得命令行难用，可以直接打开界面点击按钮新建虚拟机，对于追求geek的人，命令行还是得来一次。<br>思考题：<br>通过dd产生的文件为什么要格式化为文件系统呢，文中已经提到了，我们需要向虚拟硬盘中挂载boot目录和grub，而这种mount操作是建立在文件系统的基础上的，而块设备是不支持的。 [9赞]
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2021-05-31 21:58:16</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">铁子 回答的相当正确</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            neohope  2021-06-01 12:50:41
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            【更新】对于使用Windows、MacOS的同学，或不熟悉命令行的同学可以这样操作【不需要套娃，也不用做硬盘格式转换】：<br>1、先安装一个Linux虚拟机A，比如Ubuntu18或Ubuntu20<br>2、关闭虚拟机，在这个虚拟机上，用向导添加一个新硬盘hd.vdi<br>3、启动虚拟机A<br>4、创建新硬盘挂载目录<br>cd ~<br>mkdir hdisk<br>5、挂载新硬盘，创建ext4文件系统【当前应该只有两块硬盘，所以操作sdb，根据你实际情况调整】<br>sudo mkfs.ext4 &#47;dev&#47;sdb<br>sudo mount &#47;dev&#47;sdb hdisk<br>6、创建boot目录<br>sudo mkdir hdisk&#47;boot<br>7、安装grub到新硬盘<br>sudo grub-install --boot-directory=.&#47;hdisk&#47;boot&#47; --force --allow-floppy &#47;dev&#47;sdb<br>8、拷贝HelloOS.eki到hdisk&#47;boot目录<br>9、创建grub.cfg，用你喜欢的编辑器就好【其中root可以只写&#39;hd0&#39;】<br>sudo vi hdisk&#47;boot&#47;grub&#47;grub.cfg<br>10、关闭虚拟机A<br>11、创建虚拟机B，选择类型“其他Linux”，硬盘不要新建，直接选择hd.vdi<br>12、开启虚拟机B，就可以看到Grub界面了<br><br>以后要发布内容，就关闭虚拟机B，开启虚拟机A进行操作；<br>要看效果，就关闭虚拟机A，开启虚拟机B；<br>硬盘以后也不需要重复创建，只要保证A、B不同时开启就好了； [8赞]
+        </div>
+        
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            尼欧  2021-05-31 11:48:19
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            打卡 [2赞]
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">编辑回复2021-05-31 11:50:07</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">打卡成功，学习愉快！</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            lunar  2021-06-02 12:20:01
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            很开心，我已经成功的跟不上了 [2赞]
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">编辑回复2021-06-02 12:21:08</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">慢慢来，别灰心。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            Json  2021-05-31 09:26:20
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            同学们，宿主机是windows咋办？不想整套娃。。。 [1赞]
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">编辑回复2021-05-31 14:04:51</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">可以参考一下第九天魔王同学的分享，可以不套娃。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            Hezhen  2021-06-03 23:34:06
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            我按照步骤，最后启动HelloOS进入了  grub&gt;界面，和文档中不一样，请问这怎么弄啊 
+        </div>
+        
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            Freddy  2021-06-03 11:25:48
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            虚拟硬盘安装grub时报错：<br>node@node-VirtualBox:~$ sudo grub-install --boot-directory=.&#47;hdisk&#47;boot&#47; --force --allow-floppy &#47;dev&#47;loop0<br>Installing for i386-pc platform.<br>grub-install: warning: File system `ext2&#39; doesn&#39;t support embedding.<br>grub-install: error: embedding is not possible, but this is required for cross-disk install.<br>咋个解决？ 
+        </div>
+        
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            Victor  2021-06-01 10:00:31
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            我在ubuntu 16.04上做实验，安装GRUB时报错：<br># grub-install --boot-directory=.&#47;hdisk&#47;boot&#47; --force --allow-floppy &#47;dev&#47;loop0<br>Installing for i386-pc platform.<br>grub-install: warning: File system `ext2&#39; doesn&#39;t support embedding.<br>grub-install: error: embedding is not possible, but this is required for cross-disk install.<br><br>按照步骤后面在VirtualBox 5.1.38里启动HelloOS报错，无法启动：<br>FATAL: No bootable medium found! System halted.<br> 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">编辑回复2021-06-01 18:29:54</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">参考一下置顶几条实验记录，看看是不是版本问题或者loop资源问题。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            Victor  2021-06-01 08:18:58
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            我启动后显示：FATAL: No bootable medium found! System halted. <br>不成功啊，我的实验环境是：Ubuntu 16.04 x64+ VirtualBox 5.1.38。 
+        </div>
+        
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            LY.  2021-05-31 22:05:44
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            &#47;dev&#47;loop0被snap用了 我改成了&#47;dev&#47;loop10 错误怎么解决啊?<br>lhf@Ubuntu:~&#47;code&#47;c&#47;cosmos&#47;lesson10~11&#47;HelloOS$ sudo grub-install --boot-directory=.&#47;hdisk&#47;boot&#47; --force --allow-floppy &#47;dev&#47;loop10<br>正在为 x86_64-efi 平台进行安装。<br>grub-install：错误： 无法找到 EFI 目录. 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2021-05-31 23:17:45</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">不能使用 UEFI的GRUB</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            嗣树  2021-05-31 13:45:22
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            回答下问题，格式化成 ext4 基于两个需求：<br>1. 需要在 Linux 环境中制作镜像，我们的操作都基于文件系统，而不是裸盘。<br>2. grub 中要能识别该文件系统<br>满足这两点又最常用的就是 ext4。其实对于 bootloader 来说 ext2 是支持最广的，老点的基本 ext2<br> 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2021-05-31 21:55:35</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">grub的ext2模块也可以读取ext4格式</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            zhanyd  2021-05-31 13:12:00
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            如果是windows是话，要在虚拟机里再装虚拟机？ 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">编辑回复2021-05-31 16:03:58</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">小编回应，Windows可以不“套娃”，你参考下置顶同学的分享。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            MatyTan  2021-05-31 10:49:58
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            宿主机是mac。。。 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2021-05-31 21:56:23</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">你好 可以尝试一下虚拟机</div>
+</div>
+            
+    </div>
+</li>
+            </ul>
+</div>
+</body>
+</html>

@@ -1,0 +1,1129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>09-易用性改进II：字面量、静态断言和成员函数说明符</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <style>
+        html {
+            color: #333;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            text-rendering: optimizelegibility;
+            font-family: Helvetica Neue, PingFang SC, Verdana, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif
+        }
+
+        html.borderbox *,
+        html.borderbox :after,
+        html.borderbox :before {
+            box-sizing: border-box
+        }
+
+        article,
+        aside,
+        blockquote,
+        body,
+        button,
+        code,
+        dd,
+        details,
+        dl,
+        dt,
+        fieldset,
+        figcaption,
+        figure,
+        footer,
+        form,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        header,
+        hr,
+        input,
+        legend,
+        li,
+        menu,
+        nav,
+        ol,
+        p,
+        pre,
+        section,
+        td,
+        textarea,
+        th,
+        ul {
+            margin: 0;
+            padding: 0
+        }
+
+        article,
+        aside,
+        details,
+        figcaption,
+        figure,
+        footer,
+        header,
+        menu,
+        nav,
+        section {
+            display: block
+        }
+
+        audio,
+        canvas,
+        video {
+            display: inline-block
+        }
+
+        body,
+        button,
+        input,
+        select,
+        textarea {
+            font: 300 1em/1.8 PingFang SC, Lantinghei SC, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, Helvetica, sans-serif
+        }
+
+        button::-moz-focus-inner,
+        input::-moz-focus-inner {
+            padding: 0;
+            border: 0
+        }
+
+        table {
+            border-collapse: collapse;
+            border-spacing: 0
+        }
+
+        fieldset,
+        img {
+            border: 0
+        }
+
+        blockquote {
+            position: relative;
+            color: #999;
+            font-weight: 400;
+            border-left: 1px solid #1abc9c;
+            padding-left: 1em;
+            margin: 1em 3em 1em 2em
+        }
+
+        @media only screen and (max-width: 640px) {
+            blockquote {
+                margin: 1em 0
+            }
+        }
+
+        abbr,
+        acronym {
+            border-bottom: 1px dotted;
+            font-variant: normal
+        }
+
+        abbr {
+            cursor: help
+        }
+
+        del {
+            text-decoration: line-through
+        }
+
+        address,
+        caption,
+        cite,
+        code,
+        dfn,
+        em,
+        th,
+        var {
+            font-style: normal;
+            font-weight: 400
+        }
+
+        ol,
+        ul {
+            list-style: none
+        }
+
+        caption,
+        th {
+            text-align: left
+        }
+
+        q:after,
+        q:before {
+            content: ""
+        }
+
+        sub,
+        sup {
+            font-size: 75%;
+            line-height: 0;
+            position: relative
+        }
+
+        :root sub,
+        :root sup {
+            vertical-align: baseline
+        }
+
+        sup {
+            top: -.5em
+        }
+
+        sub {
+            bottom: -.25em
+        }
+
+        a {
+            color: #1abc9c
+        }
+
+        a:hover {
+            text-decoration: underline
+        }
+
+        .typo a {
+            border-bottom: 1px solid #1abc9c
+        }
+
+        .typo a:hover {
+            border-bottom-color: #555;
+            color: #555
+        }
+
+        .typo a:hover,
+        a,
+        ins {
+            text-decoration: none
+        }
+
+        .typo-u,
+        u {
+            text-decoration: underline
+        }
+
+        mark {
+            background: #fffdd1;
+            border-bottom: 1px solid #ffedce;
+            padding: 2px;
+            margin: 0 5px
+        }
+
+        code,
+        pre,
+        pre tt {
+            font-family: Courier, Courier New, monospace
+        }
+
+        pre {
+            background: hsla(0, 0%, 97%, .7);
+            border: 1px solid #ddd;
+            padding: 1em 1.5em;
+            display: block;
+            -webkit-overflow-scrolling: touch
+        }
+
+        hr {
+            border: none;
+            border-bottom: 1px solid #cfcfcf;
+            margin-bottom: .8em;
+            height: 10px
+        }
+
+        .typo-small,
+        figcaption,
+        small {
+            font-size: .9em;
+            color: #888
+        }
+
+        b,
+        strong {
+            font-weight: 700;
+            color: #000
+        }
+
+        [draggable] {
+            cursor: move
+        }
+
+        .clearfix:after,
+        .clearfix:before {
+            content: "";
+            display: table
+        }
+
+        .clearfix:after {
+            clear: both
+        }
+
+        .clearfix {
+            zoom: 1
+        }
+
+        .textwrap,
+        .textwrap td,
+        .textwrap th {
+            word-wrap: break-word;
+            word-break: break-all
+        }
+
+        .textwrap-table {
+            table-layout: fixed
+        }
+
+        .serif {
+            font-family: Palatino, Optima, Georgia, serif
+        }
+
+        .typo-dl,
+        .typo-form,
+        .typo-hr,
+        .typo-ol,
+        .typo-p,
+        .typo-pre,
+        .typo-table,
+        .typo-ul,
+        .typo dl,
+        .typo form,
+        .typo hr,
+        .typo ol,
+        .typo p,
+        .typo pre,
+        .typo table,
+        .typo ul,
+        blockquote {
+            margin-bottom: 1rem
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: PingFang SC, Helvetica Neue, Verdana, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif;
+            color: #000;
+            line-height: 1.35
+        }
+
+        .typo-h1,
+        .typo-h2,
+        .typo-h3,
+        .typo-h4,
+        .typo-h5,
+        .typo-h6,
+        .typo h1,
+        .typo h2,
+        .typo h3,
+        .typo h4,
+        .typo h5,
+        .typo h6 {
+            margin-top: 1.2em;
+            margin-bottom: .6em;
+            line-height: 1.35
+        }
+
+        .typo-h1,
+        .typo h1 {
+            font-size: 2em
+        }
+
+        .typo-h2,
+        .typo h2 {
+            font-size: 1.8em
+        }
+
+        .typo-h3,
+        .typo h3 {
+            font-size: 1.6em
+        }
+
+        .typo-h4,
+        .typo h4 {
+            font-size: 1.4em
+        }
+
+        .typo-h5,
+        .typo-h6,
+        .typo h5,
+        .typo h6 {
+            font-size: 1.2em
+        }
+
+        .typo-ul,
+        .typo ul {
+            margin-left: 1.3em;
+            list-style: disc
+        }
+
+        .typo-ol,
+        .typo ol {
+            list-style: decimal;
+            margin-left: 1.9em
+        }
+
+        .typo-ol ol,
+        .typo-ol ul,
+        .typo-ul ol,
+        .typo-ul ul,
+        .typo li ol,
+        .typo li ul {
+            margin-bottom: .8em;
+            margin-left: 2em
+        }
+
+        .typo-ol ul,
+        .typo-ul ul,
+        .typo li ul {
+            list-style: circle
+        }
+
+        .typo-table td,
+        .typo-table th,
+        .typo table caption,
+        .typo table td,
+        .typo table th {
+            border: 1px solid #ddd;
+            padding: .5em 1em;
+            color: #666
+        }
+
+        .typo-table th,
+        .typo table th {
+            background: #fbfbfb
+        }
+
+        .typo-table thead th,
+        .typo table thead th {
+            background: hsla(0, 0%, 95%, .7)
+        }
+
+        .typo table caption {
+            border-bottom: none
+        }
+
+        .typo-input,
+        .typo-textarea {
+            -webkit-appearance: none;
+            border-radius: 0
+        }
+
+        .typo-em,
+        .typo em,
+        caption,
+        legend {
+            color: #000;
+            font-weight: inherit
+        }
+
+        .typo-em {
+            position: relative
+        }
+
+        .typo-em:after {
+            position: absolute;
+            top: .65em;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            content: "\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB"
+        }
+
+        .typo img {
+            max-width: 100%
+        }
+
+        .common-content {
+            font-weight: 400;
+            color: #353535;
+            line-height: 1.75rem;
+            white-space: normal;
+            word-break: normal;
+            font-size: 1rem
+        }
+
+        .common-content img {
+            display: block;
+            max-width: 100%;
+            background-color: #eee
+        }
+
+        .common-content audio,
+        .common-content video {
+            width: 100%;
+            background-color: #eee
+        }
+
+        .common-content center,
+        .common-content font {
+            margin-top: 1rem;
+            display: inline-block
+        }
+
+        .common-content center {
+            width: 100%
+        }
+
+        .common-content pre {
+            margin-top: 1rem;
+            padding-left: 0;
+            padding-right: 0;
+            position: relative;
+            overflow: hidden
+        }
+
+        .common-content pre code {
+            font-size: .8rem;
+            font-family: Consolas, Liberation Mono, Menlo, monospace, Courier;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            overflow-x: auto
+        }
+
+        .common-content hr {
+            border: none;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-top: 1px solid #f5f5f5;
+            height: 1px;
+            background: none
+        }
+
+        .common-content b,
+        .common-content h1,
+        .common-content h2,
+        .common-content h3,
+        .common-content h4,
+        .common-content h5,
+        .common-content strong {
+            font-weight: 700
+        }
+
+        .common-content h1,
+        .common-content h2 {
+            font-size: 1.125rem;
+            margin-bottom: .45rem
+        }
+
+        .common-content h3,
+        .common-content h4,
+        .common-content h5 {
+            font-size: 1rem;
+            margin-bottom: .45rem
+        }
+
+        .common-content p {
+            font-weight: 400;
+            color: #353535;
+            margin-top: .15rem
+        }
+
+        .common-content .orange {
+            color: #ff5a05
+        }
+
+        .common-content .reference {
+            font-size: 1rem;
+            color: #888
+        }
+
+        .custom-rich-content h1 {
+            margin-top: 0;
+            font-weight: 400;
+            font-size: 15.25px;
+            border-bottom: 1px solid #eee;
+            line-height: 2.8
+        }
+
+        .custom-rich-content li,
+        .custom-rich-content p {
+            font-size: 14px;
+            color: #888;
+            line-height: 1.6
+        }
+
+        table.hljs-ln {
+            margin-bottom: 0;
+            border-spacing: 0;
+            border-collapse: collapse
+        }
+
+        table.hljs-ln,
+        table.hljs-ln tbody,
+        table.hljs-ln td,
+        table.hljs-ln tr {
+            box-sizing: border-box
+        }
+
+        table.hljs-ln td {
+            padding: 0;
+            border: 0
+        }
+
+        table.hljs-ln td.hljs-ln-numbers {
+            min-width: 15px;
+            color: rgba(27, 31, 35, .3);
+            text-align: right;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none
+        }
+
+        table.hljs-ln td.hljs-ln-code,
+        table.hljs-ln td.hljs-ln-numbers {
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
+            font-size: 12px;
+            line-height: 20px;
+            vertical-align: top
+        }
+
+        table.hljs-ln td.hljs-ln-code {
+            position: relative;
+            padding-right: 10px;
+            padding-left: 10px;
+            overflow: visible;
+            color: #24292e;
+            word-wrap: normal;
+            white-space: pre
+        }
+
+        video::-webkit-media-controls {
+            overflow: hidden !important
+        }
+
+        video::-webkit-media-controls-enclosure {
+            width: calc(100% + 32px);
+            margin-left: auto
+        }
+
+        ._29HP61GA_0 {
+            max-width:800px;
+            margin:0 auto;
+            margin-bottom: 20px;
+            font-weight: 400;
+            color: #353535;
+            line-height: 1.76;
+            white-space: normal;
+            word-break: normal;
+            font-size: 17px;
+            -webkit-transition: background-color .3s ease;
+            transition: background-color .3s ease
+        }
+
+        ._29HP61GA_0 .MathJax_Display {
+            overflow: auto
+        }
+
+        ._29HP61GA_0 .poster {
+            position: fixed;
+            left: -10000px;
+            top: -10000px;
+            overflow: hidden;
+            padding: 1rem;
+            background: #ececec
+        }
+
+        ._29HP61GA_0 .richcontent-pre-copy {
+            font-size: 13px;
+            color: #888;
+            position: absolute;
+            right: 1em;
+            top: .5em;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none
+        }
+
+        ._29HP61GA_0 .richcontent-pre-copy .iconfont {
+            font-size: 12px;
+            margin-right: .2em
+        }
+
+        ._29HP61GA_0 a {
+            color: #fa8919;
+            border-bottom: 1px solid #fa8919
+        }
+
+        ._29HP61GA_0 img {
+            display: block;
+            max-width: 100%;
+            position: relative;
+            left: 50%;
+            -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+            background-color: #eee;
+            vertical-align: top;
+            border-radius: 0
+        }
+
+        ._29HP61GA_0 audio,
+        ._29HP61GA_0 video {
+            width: 100%;
+            background-color: #eee
+        }
+
+        ._29HP61GA_0 pre {
+            margin-top: 16px;
+            padding: 34px 0 0;
+            margin-bottom: 30px;
+            position: relative;
+            border-radius: 6px;
+            background: rgba(246, 247, 251, .749);
+            border: 0
+        }
+
+        ._29HP61GA_0 pre code {
+            font-size: 12px;
+            font-family: Consolas, Liberation Mono, Menlo, monospace, Courier;
+            display: block;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            margin-left: 16px;
+            margin-right: 16px;
+            overflow-x: scroll
+        }
+
+        ._29HP61GA_0 pre code:after {
+            content: "";
+            height: 30px;
+            width: 100%;
+            display: block
+        }
+
+        ._29HP61GA_0 hr {
+            border: none;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-top: 1px solid #f5f5f5;
+            height: 1px;
+            background: none
+        }
+
+        ._29HP61GA_0 h1,
+        ._29HP61GA_0 h2,
+        ._29HP61GA_0 h3,
+        ._29HP61GA_0 h4,
+        ._29HP61GA_0 h5 {
+            margin-bottom: 20px;
+            margin-top: 0;
+            font-weight: 700
+        }
+
+        ._29HP61GA_0 b,
+        ._29HP61GA_0 strong {
+            font-weight: 700
+        }
+
+        ._29HP61GA_0 h1 {
+            font-size: 21px
+        }
+
+        ._29HP61GA_0 h2 {
+            font-size: 20px
+        }
+
+        ._29HP61GA_0 h3 {
+            font-size: 19px
+        }
+
+        ._29HP61GA_0 h4 {
+            font-size: 18px
+        }
+
+        ._29HP61GA_0 h5 {
+            font-size: 17px
+        }
+
+        ._29HP61GA_0 center,
+        ._29HP61GA_0 p {
+            font-weight: 400;
+            color: #353535;
+            margin-top: 0;
+            margin-bottom: 30px;
+            word-break: break-word
+        }
+
+        ._29HP61GA_0 center {
+            text-align: center
+        }
+
+        ._29HP61GA_0 blockquote {
+            margin-top: 0;
+            margin-bottom: 34px;
+            border-left: 3px solid #e8e8e8;
+            padding-left: 17px;
+            color: #353535
+        }
+
+        ._29HP61GA_0 blockquote p {
+            margin-top: 0;
+            margin-bottom: 0
+        }
+
+        ._29HP61GA_0 ol,
+        ._29HP61GA_0 ul {
+            margin-bottom: 30px
+        }
+
+        ._29HP61GA_0 ol p,
+        ._29HP61GA_0 ul p {
+            margin-top: 0;
+            margin-bottom: 0
+        }
+
+        ._29HP61GA_0 ol {
+            list-style: decimal;
+            margin-left: 20px
+        }
+
+        ._29HP61GA_0 ul li {
+            padding-left: 17px;
+            position: relative;
+            margin-bottom: 10px
+        }
+
+        ._29HP61GA_0 ul li:after {
+            content: "";
+            height: 6px;
+            width: 6px;
+            border-radius: 50%;
+            background: #353535;
+            position: absolute;
+            top: 10px;
+            left: 0
+        }
+
+        ._29HP61GA_0 .orange {
+            color: #fa8919
+        }
+
+        ._29HP61GA_0 .reference {
+            color: #888
+        }
+
+        ._29HP61GA_0 .m-right {
+            text-align: right
+        }
+
+        ._29HP61GA_0 .m-center {
+            text-align: center;
+            display: block
+        }
+
+        ._29HP61GA_0 .m-gray {
+            color: #888
+        }
+
+        ._29HP61GA_0 .m-small {
+            font-size: 15px
+        }
+
+        ._29HP61GA_0 table.hljs-ln {
+            margin-bottom: 0;
+            border-spacing: 0;
+            border-collapse: collapse
+        }
+
+        ._29HP61GA_0 table.hljs-ln,
+        ._29HP61GA_0 table.hljs-ln tbody,
+        ._29HP61GA_0 table.hljs-ln td,
+        ._29HP61GA_0 table.hljs-ln tr {
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box
+        }
+
+        ._29HP61GA_0 table.hljs-ln td {
+            padding: 0;
+            border: 0
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-numbers {
+            min-width: 15px;
+            font-size: 12px;
+            color: rgba(27, 31, 35, .3);
+            text-align: right;
+            white-space: nowrap;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-code,
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-numbers {
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
+            line-height: 20px;
+            vertical-align: top
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-code {
+            position: relative;
+            padding-right: 10px;
+            padding-left: 10px;
+            overflow: visible;
+            font-size: 13px;
+            color: #666;
+            word-wrap: normal;
+            white-space: pre
+        }
+
+    </style>
+</head>
+<body>
+<div class="_29HP61GA_0">
+<h1>09-易用性改进II：字面量、静态断言和成员函数说明符</h1>
+<p>你好，我是吴咏炜。</p><p>本讲我们继续易用性的话题，看看现代 C++ 带来的其他易用性改进。</p><h2>自定义字面量</h2><p>字面量（literal）是指在源代码中写出的固定常量，它们在 C++98 里只能是原生类型，如：</p><ul>
+<li><code>"hello"</code>，字符串字面量，类型是 <code>const char[6]</code></li>
+<li><code>1</code>，整数字面量，类型是 <code>int</code></li>
+<li><code>0.0</code>，浮点数字面量，类型是 <code>double</code></li>
+<li><code>3.14f</code>，浮点数字面量，类型是 <code>float</code></li>
+<li><code>123456789ul</code>，无符号长整数字面量，类型是 <code>unsigned long</code></li>
+</ul><p>C++11 引入了自定义字面量，可以使用 <code>operator"" 后缀</code> 来将用户提供的字面量转换成实际的类型。C++14 则在标准库中加入了不少标准字面量。下面这个程序展示了它们的用法：</p><pre><code class="language-c++">#include &lt;chrono&gt;
+#include &lt;complex&gt;
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;thread&gt;
+
+using namespace std;
+
+int main()
+{
+  cout &lt;&lt; "i * i = " &lt;&lt; 1i * 1i
+       &lt;&lt; endl;
+  cout &lt;&lt; "Waiting for 500ms"
+       &lt;&lt; endl;
+  this_thread::sleep_for(500ms);
+  cout &lt;&lt; "Hello world"s.substr(0, 5)
+       &lt;&lt; endl;
+}
+</code></pre><!-- [[[read_end]]] --><p>输出是：</p><blockquote>
+<p><code>i * i = (-1,0)</code><br>
+<code>Waiting for 500ms</code><br>
+<code>Hello</code></p>
+</blockquote><p>上面这个例子展示了 C++ 标准里提供的帮助生成虚数、时间和 <code>basic_string</code> 字面量的后缀。一个需要注意的地方是，我在上面使用了 <code>using namespace std</code>，这会同时引入 <code>std</code> 名空间和里面的内联名空间（inline namespace），包括了上面的字面量运算符所在的三个名空间：</p><ul>
+<li><code>std::literals::complex_literals</code></li>
+<li><code>std::literals::chrono_literals</code></li>
+<li><code>std::literals::string_literals</code></li>
+</ul><p>在产品项目中，一般不会（也不应该）全局使用 <code>using namespace std</code>（不过，为节约篇幅起见，专栏里的很多例子，特别是不完整的例子，还是默认使用了 <code>using namespace std</code>）。这种情况下，应当在使用到这些字面量的作用域里导入需要的名空间，以免发生冲突。在类似上面的例子里，就是在函数体的开头写：</p><pre><code class="language-c++">using namespace std::literals::
+  chrono_literals;
+</code></pre><p>等等。</p><p>要在自己的类里支持字面量也相当容易，唯一的限制是非标准的字面量后缀必须以下划线 <code>_</code> 打头。比如，假如我们有下面的长度类：</p><pre><code class="language-c++">struct length {
+  double value;
+  enum unit {
+    metre,
+    kilometre,
+    millimetre,
+    centimetre,
+    inch,
+    foot,
+    yard,
+    mile,
+  };
+  static constexpr double factors[] =
+    {1.0,    1000.0,  1e-3,
+     1e-2,   0.0254,  0.3048,
+     0.9144, 1609.344};
+  explicit length(double v,
+                  unit u = metre)
+  {
+    value = v * factors[u];
+  }
+};
+
+length operator+(length lhs,
+                 length rhs)
+{
+  return length(lhs.value +
+                rhs.value);
+}
+
+// 可能有其他运算符
+</code></pre><p>我们可以手写 <code>length(1.0, length::metre)</code> 这样的表达式，但估计大部分开发人员都不愿意这么做吧。反过来，如果我们让开发人员这么写，大家应该还是基本乐意的：</p><pre><code class="language-c++">1.0_m + 10.0_cm
+</code></pre><p>要允许上面这个表达式，我们只需要提供下面的运算符即可：</p><pre><code class="language-c++">length operator"" _m(long double v)
+{
+  return length(v, length::metre);
+}
+
+length operator"" _cm(long double v)
+{
+  return length(v, length::centimetre);
+}
+</code></pre><p>如果美国国家航空航天局采用了类似的系统的话，火星气候探测者号的事故也许就不会发生了 <span class="orange">[1]</span>。当然，历史无法重来，而且 C++ 引入这样的语法已经是在事故发生之后十多年了……</p><p>关于自定义字面量的进一步技术细节，请参阅参考资料 <span class="orange">[2]</span>。</p><h2>二进制字面量</h2><p>你一定知道 C++ 里有 <code>0x</code> 前缀，可以让开发人员直接写出像 <code>0xFF</code> 这样的十六进制字面量。另外一个目前使用得稍少的前缀就是 <code>0</code> 后面直接跟 0–7 的数字，表示八进制的字面量，在跟文件系统打交道的时候还会经常用到：有经验的 Unix 程序员可能会觉得 <code>chmod(path, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)</code> 并不比 <code>chmod(path, 0644)</code> 更为直观。从 C++14 开始，我们对于二进制也有了直接的字面量：</p><pre><code class="language-c++">unsigned mask = 0b111000000;
+</code></pre><p>这在需要比特级操作等场合还是非常有用的。</p><p>不过，遗憾的是， I/O streams 里只有 <code>dec</code>、<code>hex</code>、<code>oct</code> 三个操纵器（manipulator），而没有 <code>bin</code>，因而输出一个二进制数不能像十进制、十六进制、八进制那么直接。一个间接方式是使用 <code>bitset</code>，但调用者需要手工指定二进制位数：</p><pre><code class="language-c++">#include &lt;bitset&gt;
+cout &lt;&lt; bitset&lt;9&gt;(mask) &lt;&lt; endl;
+</code></pre><blockquote>
+<p><code>111000000</code></p>
+</blockquote><h2>数字分隔符</h2><p>数字长了之后，看清位数就变得麻烦了。有了二进制字面量，这个问题变得分外明显。C++14 开始，允许在数字型字面量中任意添加 <code>'</code> 来使其更可读。具体怎么添加，完全由程序员根据实际情况进行约定。某些常见的情况可能会是：</p><ul>
+<li>十进制数字使用三位的分隔，对应英文习惯的 thousand、million 等单位。</li>
+<li>十进制数字使用四位的分隔，对应中文习惯的万、亿等单位。</li>
+<li>十六进制数字使用两位或四位的分隔，对应字节或双字节。</li>
+<li>二进制数字使用三位的分隔，对应文件系统的权限分组。</li>
+<li>等等。</li>
+</ul><p>一些实际例子如下：</p><pre><code class="language-c++">unsigned mask = 0b111'000'000;
+long r_earth_equatorial = 6'378'137;
+double pi = 3.14159'26535'89793;
+const unsigned magic = 0x44'42'47'4E;
+</code></pre><h2>静态断言</h2><p>C++98 的 <code>assert</code> 允许在运行时检查一个函数的前置条件是否成立。没有一种方法允许开发人员在编译的时候检查假设是否成立。比如，如果模板有个参数 <code>alignment</code>，表示对齐，那我们最好在编译时就检查 <code>alignment</code> 是不是二的整数次幂。之前人们用了一些模板技巧来达到这个目的，但输出的信息并不那么友善。比如，我之前使用的方法，会产生类似下面这样的输出：</p><p><img src="https://static001.geekbang.org/resource/image/59/a5/59fa97e766d6c363ae23546e211774a5.png" alt=""></p><p>能起作用，但不够直观。C++11 直接从语言层面提供了静态断言机制，不仅能输出更好的信息，而且适用性也更好，可以直接放在类的定义中，而不像之前用的特殊技巧只能放在函数体里。对于类似上面的情况，现在的输出是：</p><p><img src="https://static001.geekbang.org/resource/image/37/48/37c7f1703b6c2d09137ccf3a5065be48.png" alt=""></p><p>静态断言语法上非常简单，就是：</p><pre><code class="language-c++">static_assert(编译期条件表达式,
+              可选输出信息);
+</code></pre><p>产生上面的示例错误信息的代码是：</p><pre><code class="language-c++">static_assert((alignment &amp; (alignment - 1)) == 0,
+  "Alignment must be power of two");
+</code></pre><h2>default 和 delete 成员函数</h2><p>在类的定义时，C++ 有一些规则决定是否生成默认的特殊成员函数。这些特殊成员函数可能包括：</p><ul>
+<li>默认构造函数</li>
+<li>析构函数</li>
+<li>拷贝构造函数</li>
+<li>拷贝赋值函数</li>
+<li>移动构造函数</li>
+<li>移动赋值函数</li>
+</ul><p>生成这些特殊成员函数（或不生成）的规则比较复杂，感兴趣的话你可以查看参考资料 <span class="orange">[3]</span>。每个特殊成员函数有几种不同的状态：</p><ul>
+<li>隐式声明还是用户声明</li>
+<li>默认提供还是用户提供</li>
+<li>正常状态还是删除状态</li>
+</ul><p>这三个状态是可组合的，虽然不是所有的组合都有效。隐式声明的必然是默认提供的；默认提供的才可能被删除；用户提供的也必然是用户声明的。</p><p>如果成员和父类没有特殊原因导致对象不可拷贝或移动，在用户不声明这些成员函数的情况下，编译器会自动产生这些成员函数，即隐式声明、默认提供、正常状态。有特殊成员、用户声明的话，情况就非常复杂了：</p><ul>
+<li>没有初始化的非静态 const 数据成员和引用类型数据成员会导致默认提供的默认构造函数被删除。</li>
+<li>非静态的 const 数据成员和引用类型数据成员会导致默认提供的拷贝构造函数、拷贝赋值函数、移动构造函数和移动赋值函数被删除。</li>
+<li>用户如果没有自己提供一个拷贝构造函数（必须形如 <code>Obj(Obj&amp;)</code> 或 <code>Obj(const Obj&amp;)</code>；不是模板），编译器会隐式声明一个。</li>
+<li>用户如果没有自己提供一个拷贝赋值函数（必须形如 <code>Obj&amp; operator=(Obj&amp;)</code> 或 <code>Obj&amp; operator=(const Obj&amp;)</code>；不是模板），编译器会隐式声明一个。</li>
+<li>用户如果自己声明了一个移动构造函数或移动赋值函数，则默认提供的拷贝构造函数和拷贝赋值函数被删除。</li>
+<li>用户如果没有自己声明拷贝构造函数、拷贝赋值函数、移动赋值函数和析构函数，编译器会隐式声明一个移动构造函数。</li>
+<li>用户如果没有自己声明拷贝构造函数、拷贝赋值函数、移动构造函数和析构函数，编译器会隐式声明一个移动赋值函数。</li>
+<li>……</li>
+</ul><p>我不鼓励你去死记硬背这些规则，而是希望你在项目和测试中体会其缘由。我认为这些规则还相当合理，虽然有略偏保守之嫌。尤其是关于移动构造和赋值：只要用户声明了另外的特殊成员函数中的任何一个，编译器就不默认提供了。不过嘛，缺省慢点总比缺省不安全要好……</p><p>我们这儿主要要说的是，我们可以改变缺省行为，在编译器能默认提供特殊成员函数时将其删除，或在编译器不默认提供特殊成员函数时明确声明其需要默认提供（不过，要注意，即使用户要求默认提供，编译器也可能根据其他规则将特殊成员函数标为删除）。</p><p>还是举例子来说明一下。对于下面这样的类，编译器看到有用户提供的构造函数，就会不默认提供默认构造函数：</p><pre><code class="language-c++">template &lt;typename T&gt;
+class my_array {
+public:
+  my_array(size_t size);
+  …
+private:
+  T*     data_{nullptr};
+  size_t size_{0};
+};
+</code></pre><p>在没有默认初始化时，我们如果需要默认构造函数，就需要手工写一个，如：</p><pre><code class="language-c++">  my_array()
+    : data_(nullptr)
+    , size_(0) {}
+</code></pre><p>可有了默认初始化之后，这个构造函数显然就不必要了，所以我们现在可以写：</p><pre><code class="language-c++">  my_array() = default;
+</code></pre><p>再来一个反向的例子。我们 <a href="https://time.geekbang.org/column/article/169225">[第 1 讲]</a> 里的 <code>shape_wrapper</code>，它的复制行为是不安全的。我们可以像 <a href="https://time.geekbang.org/column/article/169263">[第 2 讲]</a> 里一样去改进它，但如果正常情况不需要复制行为、只是想防止其他开发人员误操作时，我们可以简单地在类的定义中加入：</p><pre><code class="language-c++">class shape_wrapper {
+  …
+  shape_wrapper(
+    const shape_wrapper&amp;) = delete;
+  shape_wrapper&amp; operator=(
+    const shape_wrapper&amp;) = delete;
+  …
+};
+</code></pre><p>在 C++11 之前，我们可能会用在 <code>private</code> 段里声明这些成员函数的方法，来达到相似的目的。但目前这个语法效果更好，可以产生更明确的错误信息。另外，你可以注意一下，用户声明成删除也是一种声明，因此编译器不会提供默认版本的移动构造和移动赋值函数。</p><h2>override 和 final 说明符</h2><p><code>override</code> 和 <code>final</code> 是两个 C++11 引入的新说明符。它们不是关键词，仅在出现在函数声明尾部时起作用，不影响我们使用这两个词作变量名等其他用途。这两个说明符可以单个或组合使用，都是加在类成员函数声明的尾部。</p><p><code>override</code> 显式声明了成员函数是一个虚函数且覆盖了基类中的该函数。如果有 <code>override</code> 声明的函数不是虚函数，或基类中不存在这个虚函数，编译器会报告错误。这个说明符的主要作用有两个：</p><ul>
+<li>给开发人员更明确的提示，这个函数覆写了基类的成员函数；</li>
+<li>让编译器进行额外的检查，防止程序员由于拼写错误或代码改动没有让基类和派生类中的成员函数名称完全一致。</li>
+</ul><p><code>final</code> 则声明了成员函数是一个虚函数，且该虚函数不可在派生类中被覆盖。如果有一点没有得到满足的话，编译器就会报错。</p><p><code>final</code> 还有一个作用是标志某个类或结构不可被派生。同样，这时应将其放在被定义的类或结构名后面。</p><p>用法示意如下：</p><pre><code class="language-c++">class A {
+public:
+  virtual void foo();
+  virtual void bar();
+  void foobar();
+};
+
+class B : public A {
+public:
+  void foo() override; // OK
+  void bar() override final; // OK
+  //void foobar() override;
+  // 非虚函数不能 override
+};
+
+class C final : public B {
+public:
+  void foo() override; // OK
+  //void bar() override;
+  // final 函数不可 override
+};
+
+class D : public C {
+  // 错误：final 类不可派生
+  …
+};
+</code></pre><h2>内容小结</h2><p>今天我们介绍了现代 C++ 引入的另外几个易用性改进：自定义字面量，二进制字面量，数字分隔符，静态断言，default 和 delete 成员函数，及 override 和 final。同上一讲介绍的易用性改进一样，这些新功能可以改进代码的可读性，同时也不会带来额外的开销。在任何有条件使用满足新 C++ 标准的编译器的项目中，都应该考虑使用这些新特性。</p><h2>课后思考</h2><p>你最喜欢的 C++ 易用性改进是什么？为什么？</p><p>欢迎留言和我分享你的看法！</p><h2><span class="reference">参考资料</span></h2><p><span class="reference">[1] Wikipedia, “<em>Mars Climate Orbiter</em>”. <a href="https://en.wikipedia.org/wiki/Mars_Climate_Orbiter">https://en.wikipedia.org/wiki/Mars_Climate_Orbiter</a> </span></p><p><span class="reference">[1a] 维基百科, “火星气候探测者号”. <a href="https://zh.wikipedia.org/zh-cn/%E7%81%AB%E6%98%9F%E6%B0%A3%E5%80%99%E6%8E%A2%E6%B8%AC%E8%80%85%E8%99%9F">https://zh.wikipedia.org/zh-cn/火星氣候探測者號</a> </span></p><p><span class="reference">[2] cppreference.com, “User-defined literals”. <a href="https://en.cppreference.com/w/cpp/language/user_literal">https://en.cppreference.com/w/cpp/language/user_literal</a> </span></p><p><span class="reference">[2a] cppreference.com, “用户定义字面量”. <a href="https://zh.cppreference.com/w/cpp/language/user_literal">https://zh.cppreference.com/w/cpp/language/user_literal</a> </span></p><p><span class="reference">[3] cppreference.com, “Non-static member functions”, section “Special member functions”. <a href="https://en.cppreference.com/w/cpp/language/member_functions">https://en.cppreference.com/w/cpp/language/member_functions</a> </span></p><p><span class="reference">[3a] cppreference.com, “非静态成员函数”, “特殊成员函数”部分. <a href="https://zh.cppreference.com/w/cpp/language/member_functions">https://zh.cppreference.com/w/cpp/language/member_functions</a> </span></p><h2>精选留言：</h2>
+        <ul>
+        
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            hello world  2019-12-16 18:27:02
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            平时自己主要用到的就是auto和default和delete override，方便且避免出错 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-12-16 20:50:07</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">其他的也要考虑用起来啊。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            小一日一  2019-12-16 11:48:05
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            我最喜欢的C++易用性改进及理由：<br>auto： 少打字<br>scope for：少打字<br>类成员默认补始化语法：少打字<br>default 和 delete 成员函数：简化对类行为的控制难度<br>自定义字面量：代码看起来舒服。 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-12-16 13:34:03</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">都用上了吗？很好啊。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            墨梵  2019-12-16 09:21:20
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            auto 和 for loop range base的搭配 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-12-16 13:28:01</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">嗯，这个搭配很爽的。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            西钾钾  2019-12-16 08:17:41
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            auto 与 新的 for 遍历方法，因为实在是方便而且用的最多。其他的特性 ... 工作中貌似还没怎么用过😭 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-12-16 09:16:10</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">没成本的改进，能用就用起来吧。</div>
+</div>
+            
+    </div>
+</li>
+            </ul>
+</div>
+</body>
+</html>

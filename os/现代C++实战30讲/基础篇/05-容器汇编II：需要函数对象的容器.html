@@ -1,0 +1,1249 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>05-容器汇编II：需要函数对象的容器</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <style>
+        html {
+            color: #333;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            text-rendering: optimizelegibility;
+            font-family: Helvetica Neue, PingFang SC, Verdana, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif
+        }
+
+        html.borderbox *,
+        html.borderbox :after,
+        html.borderbox :before {
+            box-sizing: border-box
+        }
+
+        article,
+        aside,
+        blockquote,
+        body,
+        button,
+        code,
+        dd,
+        details,
+        dl,
+        dt,
+        fieldset,
+        figcaption,
+        figure,
+        footer,
+        form,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        header,
+        hr,
+        input,
+        legend,
+        li,
+        menu,
+        nav,
+        ol,
+        p,
+        pre,
+        section,
+        td,
+        textarea,
+        th,
+        ul {
+            margin: 0;
+            padding: 0
+        }
+
+        article,
+        aside,
+        details,
+        figcaption,
+        figure,
+        footer,
+        header,
+        menu,
+        nav,
+        section {
+            display: block
+        }
+
+        audio,
+        canvas,
+        video {
+            display: inline-block
+        }
+
+        body,
+        button,
+        input,
+        select,
+        textarea {
+            font: 300 1em/1.8 PingFang SC, Lantinghei SC, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, Helvetica, sans-serif
+        }
+
+        button::-moz-focus-inner,
+        input::-moz-focus-inner {
+            padding: 0;
+            border: 0
+        }
+
+        table {
+            border-collapse: collapse;
+            border-spacing: 0
+        }
+
+        fieldset,
+        img {
+            border: 0
+        }
+
+        blockquote {
+            position: relative;
+            color: #999;
+            font-weight: 400;
+            border-left: 1px solid #1abc9c;
+            padding-left: 1em;
+            margin: 1em 3em 1em 2em
+        }
+
+        @media only screen and (max-width: 640px) {
+            blockquote {
+                margin: 1em 0
+            }
+        }
+
+        abbr,
+        acronym {
+            border-bottom: 1px dotted;
+            font-variant: normal
+        }
+
+        abbr {
+            cursor: help
+        }
+
+        del {
+            text-decoration: line-through
+        }
+
+        address,
+        caption,
+        cite,
+        code,
+        dfn,
+        em,
+        th,
+        var {
+            font-style: normal;
+            font-weight: 400
+        }
+
+        ol,
+        ul {
+            list-style: none
+        }
+
+        caption,
+        th {
+            text-align: left
+        }
+
+        q:after,
+        q:before {
+            content: ""
+        }
+
+        sub,
+        sup {
+            font-size: 75%;
+            line-height: 0;
+            position: relative
+        }
+
+        :root sub,
+        :root sup {
+            vertical-align: baseline
+        }
+
+        sup {
+            top: -.5em
+        }
+
+        sub {
+            bottom: -.25em
+        }
+
+        a {
+            color: #1abc9c
+        }
+
+        a:hover {
+            text-decoration: underline
+        }
+
+        .typo a {
+            border-bottom: 1px solid #1abc9c
+        }
+
+        .typo a:hover {
+            border-bottom-color: #555;
+            color: #555
+        }
+
+        .typo a:hover,
+        a,
+        ins {
+            text-decoration: none
+        }
+
+        .typo-u,
+        u {
+            text-decoration: underline
+        }
+
+        mark {
+            background: #fffdd1;
+            border-bottom: 1px solid #ffedce;
+            padding: 2px;
+            margin: 0 5px
+        }
+
+        code,
+        pre,
+        pre tt {
+            font-family: Courier, Courier New, monospace
+        }
+
+        pre {
+            background: hsla(0, 0%, 97%, .7);
+            border: 1px solid #ddd;
+            padding: 1em 1.5em;
+            display: block;
+            -webkit-overflow-scrolling: touch
+        }
+
+        hr {
+            border: none;
+            border-bottom: 1px solid #cfcfcf;
+            margin-bottom: .8em;
+            height: 10px
+        }
+
+        .typo-small,
+        figcaption,
+        small {
+            font-size: .9em;
+            color: #888
+        }
+
+        b,
+        strong {
+            font-weight: 700;
+            color: #000
+        }
+
+        [draggable] {
+            cursor: move
+        }
+
+        .clearfix:after,
+        .clearfix:before {
+            content: "";
+            display: table
+        }
+
+        .clearfix:after {
+            clear: both
+        }
+
+        .clearfix {
+            zoom: 1
+        }
+
+        .textwrap,
+        .textwrap td,
+        .textwrap th {
+            word-wrap: break-word;
+            word-break: break-all
+        }
+
+        .textwrap-table {
+            table-layout: fixed
+        }
+
+        .serif {
+            font-family: Palatino, Optima, Georgia, serif
+        }
+
+        .typo-dl,
+        .typo-form,
+        .typo-hr,
+        .typo-ol,
+        .typo-p,
+        .typo-pre,
+        .typo-table,
+        .typo-ul,
+        .typo dl,
+        .typo form,
+        .typo hr,
+        .typo ol,
+        .typo p,
+        .typo pre,
+        .typo table,
+        .typo ul,
+        blockquote {
+            margin-bottom: 1rem
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: PingFang SC, Helvetica Neue, Verdana, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif;
+            color: #000;
+            line-height: 1.35
+        }
+
+        .typo-h1,
+        .typo-h2,
+        .typo-h3,
+        .typo-h4,
+        .typo-h5,
+        .typo-h6,
+        .typo h1,
+        .typo h2,
+        .typo h3,
+        .typo h4,
+        .typo h5,
+        .typo h6 {
+            margin-top: 1.2em;
+            margin-bottom: .6em;
+            line-height: 1.35
+        }
+
+        .typo-h1,
+        .typo h1 {
+            font-size: 2em
+        }
+
+        .typo-h2,
+        .typo h2 {
+            font-size: 1.8em
+        }
+
+        .typo-h3,
+        .typo h3 {
+            font-size: 1.6em
+        }
+
+        .typo-h4,
+        .typo h4 {
+            font-size: 1.4em
+        }
+
+        .typo-h5,
+        .typo-h6,
+        .typo h5,
+        .typo h6 {
+            font-size: 1.2em
+        }
+
+        .typo-ul,
+        .typo ul {
+            margin-left: 1.3em;
+            list-style: disc
+        }
+
+        .typo-ol,
+        .typo ol {
+            list-style: decimal;
+            margin-left: 1.9em
+        }
+
+        .typo-ol ol,
+        .typo-ol ul,
+        .typo-ul ol,
+        .typo-ul ul,
+        .typo li ol,
+        .typo li ul {
+            margin-bottom: .8em;
+            margin-left: 2em
+        }
+
+        .typo-ol ul,
+        .typo-ul ul,
+        .typo li ul {
+            list-style: circle
+        }
+
+        .typo-table td,
+        .typo-table th,
+        .typo table caption,
+        .typo table td,
+        .typo table th {
+            border: 1px solid #ddd;
+            padding: .5em 1em;
+            color: #666
+        }
+
+        .typo-table th,
+        .typo table th {
+            background: #fbfbfb
+        }
+
+        .typo-table thead th,
+        .typo table thead th {
+            background: hsla(0, 0%, 95%, .7)
+        }
+
+        .typo table caption {
+            border-bottom: none
+        }
+
+        .typo-input,
+        .typo-textarea {
+            -webkit-appearance: none;
+            border-radius: 0
+        }
+
+        .typo-em,
+        .typo em,
+        caption,
+        legend {
+            color: #000;
+            font-weight: inherit
+        }
+
+        .typo-em {
+            position: relative
+        }
+
+        .typo-em:after {
+            position: absolute;
+            top: .65em;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            content: "\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB"
+        }
+
+        .typo img {
+            max-width: 100%
+        }
+
+        .common-content {
+            font-weight: 400;
+            color: #353535;
+            line-height: 1.75rem;
+            white-space: normal;
+            word-break: normal;
+            font-size: 1rem
+        }
+
+        .common-content img {
+            display: block;
+            max-width: 100%;
+            background-color: #eee
+        }
+
+        .common-content audio,
+        .common-content video {
+            width: 100%;
+            background-color: #eee
+        }
+
+        .common-content center,
+        .common-content font {
+            margin-top: 1rem;
+            display: inline-block
+        }
+
+        .common-content center {
+            width: 100%
+        }
+
+        .common-content pre {
+            margin-top: 1rem;
+            padding-left: 0;
+            padding-right: 0;
+            position: relative;
+            overflow: hidden
+        }
+
+        .common-content pre code {
+            font-size: .8rem;
+            font-family: Consolas, Liberation Mono, Menlo, monospace, Courier;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            overflow-x: auto
+        }
+
+        .common-content hr {
+            border: none;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-top: 1px solid #f5f5f5;
+            height: 1px;
+            background: none
+        }
+
+        .common-content b,
+        .common-content h1,
+        .common-content h2,
+        .common-content h3,
+        .common-content h4,
+        .common-content h5,
+        .common-content strong {
+            font-weight: 700
+        }
+
+        .common-content h1,
+        .common-content h2 {
+            font-size: 1.125rem;
+            margin-bottom: .45rem
+        }
+
+        .common-content h3,
+        .common-content h4,
+        .common-content h5 {
+            font-size: 1rem;
+            margin-bottom: .45rem
+        }
+
+        .common-content p {
+            font-weight: 400;
+            color: #353535;
+            margin-top: .15rem
+        }
+
+        .common-content .orange {
+            color: #ff5a05
+        }
+
+        .common-content .reference {
+            font-size: 1rem;
+            color: #888
+        }
+
+        .custom-rich-content h1 {
+            margin-top: 0;
+            font-weight: 400;
+            font-size: 15.25px;
+            border-bottom: 1px solid #eee;
+            line-height: 2.8
+        }
+
+        .custom-rich-content li,
+        .custom-rich-content p {
+            font-size: 14px;
+            color: #888;
+            line-height: 1.6
+        }
+
+        table.hljs-ln {
+            margin-bottom: 0;
+            border-spacing: 0;
+            border-collapse: collapse
+        }
+
+        table.hljs-ln,
+        table.hljs-ln tbody,
+        table.hljs-ln td,
+        table.hljs-ln tr {
+            box-sizing: border-box
+        }
+
+        table.hljs-ln td {
+            padding: 0;
+            border: 0
+        }
+
+        table.hljs-ln td.hljs-ln-numbers {
+            min-width: 15px;
+            color: rgba(27, 31, 35, .3);
+            text-align: right;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none
+        }
+
+        table.hljs-ln td.hljs-ln-code,
+        table.hljs-ln td.hljs-ln-numbers {
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
+            font-size: 12px;
+            line-height: 20px;
+            vertical-align: top
+        }
+
+        table.hljs-ln td.hljs-ln-code {
+            position: relative;
+            padding-right: 10px;
+            padding-left: 10px;
+            overflow: visible;
+            color: #24292e;
+            word-wrap: normal;
+            white-space: pre
+        }
+
+        video::-webkit-media-controls {
+            overflow: hidden !important
+        }
+
+        video::-webkit-media-controls-enclosure {
+            width: calc(100% + 32px);
+            margin-left: auto
+        }
+
+        ._29HP61GA_0 {
+            max-width:800px;
+            margin:0 auto;
+            margin-bottom: 20px;
+            font-weight: 400;
+            color: #353535;
+            line-height: 1.76;
+            white-space: normal;
+            word-break: normal;
+            font-size: 17px;
+            -webkit-transition: background-color .3s ease;
+            transition: background-color .3s ease
+        }
+
+        ._29HP61GA_0 .MathJax_Display {
+            overflow: auto
+        }
+
+        ._29HP61GA_0 .poster {
+            position: fixed;
+            left: -10000px;
+            top: -10000px;
+            overflow: hidden;
+            padding: 1rem;
+            background: #ececec
+        }
+
+        ._29HP61GA_0 .richcontent-pre-copy {
+            font-size: 13px;
+            color: #888;
+            position: absolute;
+            right: 1em;
+            top: .5em;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none
+        }
+
+        ._29HP61GA_0 .richcontent-pre-copy .iconfont {
+            font-size: 12px;
+            margin-right: .2em
+        }
+
+        ._29HP61GA_0 a {
+            color: #fa8919;
+            border-bottom: 1px solid #fa8919
+        }
+
+        ._29HP61GA_0 img {
+            display: block;
+            max-width: 100%;
+            position: relative;
+            left: 50%;
+            -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+            background-color: #eee;
+            vertical-align: top;
+            border-radius: 0
+        }
+
+        ._29HP61GA_0 audio,
+        ._29HP61GA_0 video {
+            width: 100%;
+            background-color: #eee
+        }
+
+        ._29HP61GA_0 pre {
+            margin-top: 16px;
+            padding: 34px 0 0;
+            margin-bottom: 30px;
+            position: relative;
+            border-radius: 6px;
+            background: rgba(246, 247, 251, .749);
+            border: 0
+        }
+
+        ._29HP61GA_0 pre code {
+            font-size: 12px;
+            font-family: Consolas, Liberation Mono, Menlo, monospace, Courier;
+            display: block;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            margin-left: 16px;
+            margin-right: 16px;
+            overflow-x: scroll
+        }
+
+        ._29HP61GA_0 pre code:after {
+            content: "";
+            height: 30px;
+            width: 100%;
+            display: block
+        }
+
+        ._29HP61GA_0 hr {
+            border: none;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-top: 1px solid #f5f5f5;
+            height: 1px;
+            background: none
+        }
+
+        ._29HP61GA_0 h1,
+        ._29HP61GA_0 h2,
+        ._29HP61GA_0 h3,
+        ._29HP61GA_0 h4,
+        ._29HP61GA_0 h5 {
+            margin-bottom: 20px;
+            margin-top: 0;
+            font-weight: 700
+        }
+
+        ._29HP61GA_0 b,
+        ._29HP61GA_0 strong {
+            font-weight: 700
+        }
+
+        ._29HP61GA_0 h1 {
+            font-size: 21px
+        }
+
+        ._29HP61GA_0 h2 {
+            font-size: 20px
+        }
+
+        ._29HP61GA_0 h3 {
+            font-size: 19px
+        }
+
+        ._29HP61GA_0 h4 {
+            font-size: 18px
+        }
+
+        ._29HP61GA_0 h5 {
+            font-size: 17px
+        }
+
+        ._29HP61GA_0 center,
+        ._29HP61GA_0 p {
+            font-weight: 400;
+            color: #353535;
+            margin-top: 0;
+            margin-bottom: 30px;
+            word-break: break-word
+        }
+
+        ._29HP61GA_0 center {
+            text-align: center
+        }
+
+        ._29HP61GA_0 blockquote {
+            margin-top: 0;
+            margin-bottom: 34px;
+            border-left: 3px solid #e8e8e8;
+            padding-left: 17px;
+            color: #353535
+        }
+
+        ._29HP61GA_0 blockquote p {
+            margin-top: 0;
+            margin-bottom: 0
+        }
+
+        ._29HP61GA_0 ol,
+        ._29HP61GA_0 ul {
+            margin-bottom: 30px
+        }
+
+        ._29HP61GA_0 ol p,
+        ._29HP61GA_0 ul p {
+            margin-top: 0;
+            margin-bottom: 0
+        }
+
+        ._29HP61GA_0 ol {
+            list-style: decimal;
+            margin-left: 20px
+        }
+
+        ._29HP61GA_0 ul li {
+            padding-left: 17px;
+            position: relative;
+            margin-bottom: 10px
+        }
+
+        ._29HP61GA_0 ul li:after {
+            content: "";
+            height: 6px;
+            width: 6px;
+            border-radius: 50%;
+            background: #353535;
+            position: absolute;
+            top: 10px;
+            left: 0
+        }
+
+        ._29HP61GA_0 .orange {
+            color: #fa8919
+        }
+
+        ._29HP61GA_0 .reference {
+            color: #888
+        }
+
+        ._29HP61GA_0 .m-right {
+            text-align: right
+        }
+
+        ._29HP61GA_0 .m-center {
+            text-align: center;
+            display: block
+        }
+
+        ._29HP61GA_0 .m-gray {
+            color: #888
+        }
+
+        ._29HP61GA_0 .m-small {
+            font-size: 15px
+        }
+
+        ._29HP61GA_0 table.hljs-ln {
+            margin-bottom: 0;
+            border-spacing: 0;
+            border-collapse: collapse
+        }
+
+        ._29HP61GA_0 table.hljs-ln,
+        ._29HP61GA_0 table.hljs-ln tbody,
+        ._29HP61GA_0 table.hljs-ln td,
+        ._29HP61GA_0 table.hljs-ln tr {
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box
+        }
+
+        ._29HP61GA_0 table.hljs-ln td {
+            padding: 0;
+            border: 0
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-numbers {
+            min-width: 15px;
+            font-size: 12px;
+            color: rgba(27, 31, 35, .3);
+            text-align: right;
+            white-space: nowrap;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-code,
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-numbers {
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
+            line-height: 20px;
+            vertical-align: top
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-code {
+            position: relative;
+            padding-right: 10px;
+            padding-left: 10px;
+            overflow: visible;
+            font-size: 13px;
+            color: #666;
+            word-wrap: normal;
+            white-space: pre
+        }
+
+    </style>
+</head>
+<body>
+<div class="_29HP61GA_0">
+<h1>05-容器汇编II：需要函数对象的容器</h1>
+<p>你好，我是吴咏炜。</p><p>上一讲我们学习了 C++ 的序列容器和两个容器适配器，今天我们继续讲完剩下的标准容器（<span class="orange">[1]</span>）。</p><h2>函数对象及其特化</h2><p>在讲容器之前，我们需要首先来讨论一下两个重要的函数对象，<code>less</code> 和 <code>hash</code>。</p><p>我们先看一下 <code>less</code>，小于关系。在标准库里，通用的 <code>less</code> 大致是这样定义的：</p><pre><code class="language-c++">template &lt;class T&gt;
+struct less
+  : binary_function&lt;T, T, bool&gt; {
+  bool operator()(const T&amp; x,
+                  const T&amp; y) const
+  {
+    return x &lt; y;
+  }
+};
+</code></pre><p>也就是说，<code>less</code> 是一个函数对象，并且是个二元函数，执行对任意类型的值的比较，返回布尔类型。作为函数对象，它定义了函数调用运算符（<code>operator()</code>），并且缺省行为是对指定类型的对象进行 <code>&lt;</code> 的比较操作。</p><p>有点平淡无奇，是吧？原因是因为这个缺省实现在大部分情况下已经够用，我们不太需要去碰它。在需要大小比较的场合，C++ 通常默认会使用 <code>less</code>，包括我们今天会讲到的若干容器和排序算法 <code>sort</code>。如果我们需要产生相反的顺序的话，则可以使用 <code>greater</code>，大于关系。</p><p>计算哈希值的函数对象 <code>hash</code> 就不一样了。它的目的是把一个某种类型的值转换成一个无符号整数哈希值，类型为 <code>size_t</code>。它没有一个可用的默认实现。对于常用的类型，系统提供了需要的特化 <span class="orange">[2]</span>，类似于：</p><!-- [[[read_end]]] --><pre><code class="language-c++">template &lt;class T&gt; struct hash;
+
+template &lt;&gt;
+struct hash&lt;int&gt;
+  : public unary_function&lt;int, size_t&gt; {
+  size_t operator()(int v) const
+    noexcept
+  {
+    return static_cast&lt;size_t&gt;(v);
+  }
+};
+</code></pre><p>这当然是一个极其简单的例子。更复杂的类型，如指针或者 <code>string</code> 的特化，都会更复杂。要点是，对于每个类，类的作者都可以提供 <code>hash</code> 的特化，使得对于不同的对象值，函数调用运算符都能得到尽可能均匀分布的不同数值。</p><p>我们用下面这个例子来加深一下理解：</p><pre><code class="language-c++">#include &lt;algorithm&gt;   // std::sort
+#include &lt;functional&gt;  // std::less/greater/hash
+#include &lt;iostream&gt;    // std::cout/endl
+#include &lt;string&gt;      // std::string
+#include &lt;vector&gt;      // std::vector
+#include "output_container.h"
+
+using namespace std;
+
+int main()
+{
+  // 初始数组
+  vector&lt;int&gt; v{13, 6, 4, 11, 29};
+  cout &lt;&lt; v &lt;&lt; endl;
+
+  // 从小到大排序
+  sort(v.begin(), v.end());
+  cout &lt;&lt; v &lt;&lt; endl;
+
+  // 从小到大排序
+  sort(v.begin(), v.end(),
+       greater&lt;int&gt;());
+  cout &lt;&lt; v &lt;&lt; endl;
+
+  cout &lt;&lt; hex;
+
+  auto hp = hash&lt;int*&gt;();
+  cout &lt;&lt; "hash(nullptr)  = "
+       &lt;&lt; hp(nullptr) &lt;&lt; endl;
+  cout &lt;&lt; "hash(v.data()) = "
+       &lt;&lt; hp(v.data()) &lt;&lt; endl;
+  cout &lt;&lt; "v.data()       = "
+       &lt;&lt; static_cast&lt;void*&gt;(v.data())
+       &lt;&lt; endl;
+
+  auto hs = hash&lt;string&gt;();
+  cout &lt;&lt; "hash(\"hello\")  = "
+       &lt;&lt; hs(string("hello")) &lt;&lt; endl;
+  cout &lt;&lt; "hash(\"hellp\")  = "
+       &lt;&lt; hs(string("hellp")) &lt;&lt; endl;
+}
+</code></pre><p>在 MSVC 下的某次运行结果如下所示：</p><blockquote>
+<p><code>{ 13, 6, 4, 11, 29 }</code><br>
+<code>{ 4, 6, 11, 13, 29 }</code><br>
+<code>{ 29, 13, 11, 6, 4 }</code><br>
+<code>hash(nullptr) = a8c7f832281a39c5</code><br>
+<code>hash(v.data()) = 7a0bdfd7df0923d2</code><br>
+<code>v.data() = 000001EFFB10EAE0</code><br>
+<code>hash("hello") = a430d84680aabd0b</code><br>
+<code>hash("hellp") = a430e54680aad322</code></p>
+</blockquote><p>可以看到，在这个实现里，空指针的哈希值是一个非零的数值，指针的哈希值也和指针的数值不一样。要注意不同的实现处理的方式会不一样。事实上，我的测试结果是 GCC、Clang 和 MSVC 对常见类型的哈希方式都各有不同。</p><p>在上面的例子里，我们同时可以看到，这两个函数对象的值不重要。我们甚至可以认为，每个 <code>less</code>（或 <code>greater</code> 或 <code>hash</code>）对象都是等价的。关键在于其类型。以 <code>sort</code> 为例，第三个参数的类型确定了其排序行为。</p><p>对于容器也是如此，函数对象的类型确定了容器的行为。</p><h2>priority_queue</h2><p><code>priority_queue</code> 也是一个容器适配器。上一讲没有和其他容器适配器一起讲的原因就在于它用到了比较函数对象（默认是 <code>less</code>）。它和 <code>stack</code> 相似，支持 <code>push</code>、<code>pop</code>、<code>top</code> 等有限的操作，但容器内的顺序既不是后进先出，也不是先进先出，而是（部分）排序的结果。在使用缺省的 <code>less</code> 作为其 <code>Compare</code> 模板参数时，最大的数值会出现在容器的“顶部”。如果需要最小的数值出现在容器顶部，则可以传递 <code>greater</code> 作为其 <code>Compare</code> 模板参数。</p><p>下面的代码可以演示其功能：</p><pre><code class="language-c++">#include &lt;functional&gt;  // std::greater
+#include &lt;iostream&gt;    // std::cout/endl
+#include &lt;memory&gt;      // std::pair
+#include &lt;queue&gt;       // std::priority_queue
+#include &lt;vector&gt;      // std::vector
+#include "output_container.h"
+
+using namespace std;
+
+int main()
+{
+  priority_queue&lt;
+    pair&lt;int, int&gt;,
+    vector&lt;pair&lt;int, int&gt;&gt;,
+    greater&lt;pair&lt;int, int&gt;&gt;&gt;
+    q;
+  q.push({1, 1});
+  q.push({2, 2});
+  q.push({0, 3});
+  q.push({9, 4});
+  while (!q.empty()) {
+    cout &lt;&lt; q.top() &lt;&lt; endl;
+    q.pop();
+  }
+}
+</code></pre><p>输出为：</p><blockquote>
+<p><code>(0, 3)</code><br>
+<code>(1, 1)</code><br>
+<code>(2, 2)</code><br>
+<code>(9, 4)</code></p>
+</blockquote><h2>关联容器</h2><p>关联容器有 <code>set</code>（集合）、<code>map</code>（映射）、<code>multiset</code>（多重集）和 <code>multimap</code>（多重映射）。跳出 C++ 的语境，<code>map</code>（映射）的更常见的名字是关联数组和字典 <span class="orange">[3]</span>，而在 JSON 里直接被称为对象（object）。在 C++ 外这些容器常常是无序的；在 C++ 里关联容器则被认为是有序的。</p><p>我们可以通过以下的 xeus-cling 交互来体会一下。</p><pre><code class="language-c++">#include &lt;functional&gt;
+#include &lt;map&gt;
+#include &lt;set&gt;
+#include &lt;string&gt;
+using namespace std;
+</code></pre><pre><code class="language-c++">set&lt;int&gt; s{1, 1, 1, 2, 3, 4};
+</code></pre><pre><code class="language-c++">s
+</code></pre><blockquote>
+<p><code>{ 1, 2, 3, 4 }</code></p>
+</blockquote><pre><code class="language-c++">multiset&lt;int, greater&lt;int&gt;&gt; ms{1, 1, 1, 2, 3, 4};
+</code></pre><pre><code class="language-c++">ms
+</code></pre><blockquote>
+<p><code>{ 4, 3, 2, 1, 1, 1 }</code></p>
+</blockquote><pre><code class="language-c++">map&lt;string, int&gt; mp{
+  {"one", 1},
+  {"two", 2},
+  {"three", 3},
+  {"four", 4}
+};
+</code></pre><pre><code class="language-c++">mp
+</code></pre><blockquote>
+<p><code>{ "four" =&gt; 4, "one" =&gt; 1, "three" =&gt; 3, "two" =&gt; 2 }</code></p>
+</blockquote><pre><code class="language-c++">mp.insert({"four", 4});
+</code></pre><pre><code class="language-c++">mp
+</code></pre><blockquote>
+<p><code>{ "four" =&gt; 4, "one" =&gt; 1, "three" =&gt; 3, "two" =&gt; 2 }</code></p>
+</blockquote><pre><code class="language-c++">mp.find("four") == mp.end()
+</code></pre><blockquote>
+<p><code>false</code></p>
+</blockquote><pre><code class="language-c++">mp.find("five") == mp.end()
+</code></pre><blockquote>
+<p><code>(bool) true</code></p>
+</blockquote><pre><code class="language-c++">mp["five"] = 5;
+</code></pre><pre><code class="language-c++">mp
+</code></pre><blockquote>
+<p><code>{ "five" =&gt; 5, "four" =&gt; 4, "one" =&gt; 1, "three" =&gt; 3, "two" =&gt; 2 }</code></p>
+</blockquote><pre><code class="language-c++">multimap&lt;string, int&gt; mmp{
+  {"one", 1},
+  {"two", 2},
+  {"three", 3},
+  {"four", 4}
+};
+</code></pre><pre><code class="language-c++">mmp
+</code></pre><blockquote>
+<p><code>{ "four" =&gt; 4, "one" =&gt; 1, "three" =&gt; 3, "two" =&gt; 2 }</code></p>
+</blockquote><pre><code class="language-c++">mmp.insert({"four", -4});
+</code></pre><pre><code class="language-c++">mmp
+</code></pre><blockquote>
+<p><code>{ "four" =&gt; 4, "four" =&gt; -4, "one" =&gt; 1, "three" =&gt; 3, "two" =&gt; 2 }</code></p>
+</blockquote><p>可以看到，关联容器是一种有序的容器。名字带“multi”的允许键重复，不带的不允许键重复。<code>set</code> 和 <code>multiset</code> 只能用来存放键，而 <code>map</code> 和 <code>multimap</code> 则存放一个个键值对。</p><p>与序列容器相比，关联容器没有前、后的概念及相关的成员函数，但同样提供 <code>insert</code>、<code>emplace</code> 等成员函数。此外，关联容器都有 <code>find</code>、<code>lower_bound</code>、<code>upper_bound</code> 等查找函数，结果是一个迭代器：</p><ul>
+<li><code>find(k)</code> 可以找到任何一个等价于查找键 k 的元素（<code>!(x &lt; k || k &lt; x)</code>）</li>
+<li><code>lower_bound(k)</code> 找到第一个不小于查找键 k 的元素（<code>!(x &lt; k)</code>）</li>
+<li><code>upper_bound(k)</code> 找到第一个大于查找键 k 的元素（<code>k &lt; x</code>）</li>
+</ul><pre><code class="language-c++">mp.find("four")-&gt;second
+</code></pre><blockquote>
+<p><code>4</code></p>
+</blockquote><pre><code class="language-c++">mp.lower_bound("four")-&gt;second
+</code></pre><blockquote>
+<p><code>4</code></p>
+</blockquote><pre><code class="language-c++">(--mp.upper_bound("four"))-&gt;second
+</code></pre><blockquote>
+<p><code>4</code></p>
+</blockquote><pre><code class="language-c++">mmp.lower_bound("four")-&gt;second
+</code></pre><blockquote>
+<p><code>4</code></p>
+</blockquote><pre><code class="language-c++">(--mmp.upper_bound("four"))-&gt;second
+</code></pre><blockquote>
+<p><code>-4</code></p>
+</blockquote><p>如果你需要在 <code>multimap</code> 里精确查找满足某个键的区间的话，建议使用 <code>equal_range</code>，可以一次性取得上下界（半开半闭）。如下所示：</p><pre><code class="language-c++">#include &lt;tuple&gt;
+multimap&lt;string, int&gt;::iterator
+  lower, upper;
+std::tie(lower, upper) =
+  mmp.equal_range("four");
+</code></pre><pre><code class="language-c++">(lower != upper)  // 检测区间非空
+</code></pre><blockquote>
+<p><code>true</code></p>
+</blockquote><pre><code class="language-c++">lower-&gt;second
+</code></pre><blockquote>
+<p><code>4</code></p>
+</blockquote><pre><code class="language-c++">(--upper)-&gt;second
+</code></pre><blockquote>
+<p><code>-4</code></p>
+</blockquote><p>如果在声明关联容器时没有提供比较类型的参数，缺省使用 <code>less</code> 来进行排序。如果键的类型提供了比较算符 <code>&lt;</code> 的重载，我们不需要做任何额外的工作。否则，我们就需要对键类型进行 <code>less</code> 的特化，或者提供一个其他的函数对象类型。</p><p>对于自定义类型，我推荐尽量使用标准的 <code>less</code> 实现，通过重载 <code>&lt;</code>（及其他标准比较运算符）对该类型的对象进行排序。存储在关联容器中的键一般应满足严格弱序关系（strict weak ordering；<span class="orange">[4]</span>），即：</p><ul>
+<li>对于任何该类型的对象 x：<code>!(x &lt; x)</code>（非自反）</li>
+<li>对于任何该类型的对象 x 和 y：如果 <code>x &lt; y</code>，则 <code>!(y &lt; x)</code>（非对称）</li>
+<li>对于任何该类型的对象 x、y 和 z：如果 <code>x &lt; y</code> 并且 <code>y &lt; z</code>，则 <code>x &lt; z</code>（传递性）</li>
+<li>对于任何该类型的对象 x、y 和 z：如果 x 和 y 不可比（<code>!(x &lt; y)</code> 并且 <code>!(y &lt; x)</code>）并且 y 和 z 不可比，则 x 和 z 不可比（不可比的传递性）</li>
+</ul><p>大部分情况下，类型是可以满足这些条件的，不过：</p><ul>
+<li>如果类型没有一般意义上的大小关系（如复数），我们一定要别扭地定义一个大小关系吗？</li>
+<li>通过比较来进行查找、插入和删除，复杂度为对数 O(log(n))，有没有达到更好的性能的方法？</li>
+</ul><h2>无序关联容器</h2><p>从 C++11 开始，每一个关联容器都有一个对应的无序关联容器，它们是：</p><ul>
+<li><code>unordered_set</code></li>
+<li><code>unordered_map</code></li>
+<li><code>unordered_multiset</code></li>
+<li><code>unordered_multimap</code></li>
+</ul><p>这些容器和关联容器非常相似，主要的区别就在于它们是“无序”的。这些容器不要求提供一个排序的函数对象，而要求一个可以计算哈希值的函数对象。你当然可以在声明容器对象时手动提供这样一个函数对象类型，但更常见的情况是，我们使用标准的 <code>hash</code> 函数对象及其特化。</p><p>下面是一个示例（这次我们暂不使用 xeus-cling，因为它在输出复数时有限制，不能显示其数值）：</p><pre><code class="language-c++">#include &lt;complex&gt;        // std::complex
+#include &lt;iostream&gt;       // std::cout/endl
+#include &lt;unordered_map&gt;  // std::unordered_map
+#include &lt;unordered_set&gt;  // std::unordered_set
+#include "output_container.h"
+
+using namespace std;
+
+namespace std {
+
+template &lt;typename T&gt;
+struct hash&lt;complex&lt;T&gt;&gt; {
+  size_t
+  operator()(const complex&lt;T&gt;&amp; v) const
+    noexcept
+  {
+    hash&lt;T&gt; h;
+    return h(v.real()) + h(v.imag());
+  }
+};
+
+}  // namespace std
+
+int main()
+{
+  unordered_set&lt;int&gt; s{
+    1, 1, 2, 3, 5, 8, 13, 21
+  };
+  cout &lt;&lt; s &lt;&lt; endl;
+
+  unordered_map&lt;complex&lt;double&gt;,
+                double&gt;
+    umc{{{1.0, 1.0}, 1.4142},
+        {{3.0, 4.0}, 5.0}};
+  cout &lt;&lt; umc &lt;&lt; endl;
+}
+</code></pre><p>输出可能是（顺序不能保证）：</p><blockquote>
+<p><code>{ 21, 5, 8, 3, 13, 2, 1 }</code><br>
+<code>{ (3,4) =&gt; 5, (1,1) =&gt; 1.4142 }</code></p>
+</blockquote><p>请注意我们在 <code>std</code> 名空间中添加了特化，这是少数用户可以向 <code>std</code> 名空间添加内容的情况之一。正常情况下，向 <code>std</code> 名空间添加声明或定义是禁止的，属于未定义行为。</p><p>从实际的工程角度，无序关联容器的主要优点在于其性能。关联容器和 <code>priority_queue</code> 的插入和删除操作，以及关联容器的查找操作，其复杂度都是 O(log(n))，而无序关联容器的实现使用哈希表 <span class="orange">[5]</span>，可以达到平均 O(1)！但这取决于我们是否使用了一个好的哈希函数：在哈希函数选择不当的情况下，无序关联容器的插入、删除、查找性能可能成为最差情况的 O(n)，那就比关联容器糟糕得多了。</p><h2>array</h2><p>我们讲的最后一个容器是 C 数组的替代品。C 数组在 C++ 里继续存在，主要是为了保留和 C 的向后兼容性。C 数组本身和 C++ 的容器相差是非常大的：</p><ul>
+<li>C 数组没有 <code>begin</code> 和 <code>end</code> 成员函数（虽然可以使用全局的 <code>begin</code> 和 <code>end</code> 函数）</li>
+<li>C 数组没有 <code>size</code> 成员函数（得用一些模板技巧来获取其长度）</li>
+<li>C 数组作为参数有退化行为，传递给另外一个函数后那个函数不再能获得 C 数组的长度和结束位置</li>
+</ul><p>在 C 的年代，大家有时候会定义这样一个宏来获得数组的长度：</p><pre><code class="language-c++">#define ARRAY_LEN(a) \
+  (sizeof(a) / sizeof((a)[0]))
+</code></pre><p>如果在一个函数内部对数组参数使用这个宏，结果肯定是错的。现在 GCC 会友好地发出警告：</p><pre><code class="language-c++">void test(int a[8])
+{
+  cout &lt;&lt; ARRAY_LEN(a) &lt;&lt; endl;
+}
+</code></pre><blockquote>
+<p>warning: sizeof on array function parameter will return size of ‘int *’ instead of ‘int [8]’ [-Wsizeof-array-argument]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;cout &lt;&lt; ARRAY_LEN(a) &lt;&lt; endl;</p>
+</blockquote><p>C++17 直接提供了一个 <code>size</code> 方法，可以用于提供数组长度，并且在数组退化成指针的情况下会直接失败：</p><pre><code class="language-c++">#include &lt;iostream&gt;  // std::cout/endl
+#include &lt;iterator&gt;  // std::size
+
+void test(int arr[])
+{
+  // 不能编译
+  // std::cout &lt;&lt; std::size(arr)
+  //           &lt;&lt; std::endl;
+}
+
+int main()
+{
+  int arr[] = {1, 2, 3, 4, 5};
+  std::cout &lt;&lt; "The array length is "
+            &lt;&lt; std::size(arr)
+            &lt;&lt; std::endl;
+  test(arr);
+}
+</code></pre><p>此外，C 数组也没有良好的复制行为。你无法用 C 数组作为 <code>map</code> 或 <code>unordered_map</code> 的键类型。下面的代码演示了失败行为：</p><pre><code class="language-c++">#include &lt;map&gt;  // std::map
+
+typedef char mykey_t[8];
+
+int main()
+{
+  std::map&lt;mykey_t, int&gt; mp;
+  mykey_t mykey{"hello"};
+  mp[mykey] = 5;
+  // 轰，大段的编译错误
+}
+</code></pre><p>如果不用 C 数组的话，我们该用什么来替代呢？</p><p>我们有三个可以考虑的选项：</p><ul>
+<li>如果数组较大的话，应该考虑 <code>vector</code>。<code>vector</code> 有最大的灵活性和不错的性能。</li>
+<li>对于字符串数组，当然应该考虑 <code>string</code>。</li>
+<li>如果数组大小固定（C 的数组在 C++ 里本来就是大小固定的）并且较小的话，应该考虑 <code>array</code>。<code>array</code> 保留了 C 数组在栈上分配的特点，同时，提供了 <code>begin</code>、<code>end</code>、<code>size</code> 等通用成员函数。</li>
+</ul><p><code>array</code> 可以避免 C 数组的种种怪异行径。上面的失败代码，如果使用 <code>array</code> 的话，稍作改动就可以通过编译：</p><pre><code class="language-c++">#include &lt;array&gt;     // std::array
+#include &lt;iostream&gt;  // std::cout/endl
+#include &lt;map&gt;       // std::map
+#include "output_container.h"
+
+typedef std::array&lt;char, 8&gt; mykey_t;
+
+int main()
+{
+  std::map&lt;mykey_t, int&gt; mp;
+  mykey_t mykey{"hello"};
+  mp[mykey] = 5;  // OK
+  std::cout &lt;&lt; mp &lt;&lt; std::endl;
+}
+</code></pre><p>输出则是意料之中的：</p><blockquote>
+<p><code>{ hello =&gt; 5 }</code></p>
+</blockquote><h2>内容小结</h2><p>本讲介绍了 C++ 的两个常用的函数对象，<code>less</code> 和 <code>hash</code>；然后介绍了用到这两个函数对象的容器适配器、关联容器和无序关联容器；最后，通过例子展示了为什么我们应当避免 C 数组而考虑使用 <code>array</code>。通过这两讲，我们已经完整地了解了 C++ 提供的标准容器。</p><h2>课后思考</h2><p>请思考一下：</p><ol>
+<li>为什么大部分容器都提供了 <code>begin</code>、<code>end</code> 等方法？</li>
+<li>为什么容器没有继承一个公用的基类？</li>
+</ol><p>欢迎留言和我交流你的看法。</p><h2><span class="reference">参考资料</span></h2><p><span class="reference">[1] cppreference.com, “Containers library”. <a href="https://en.cppreference.com/w/cpp/container">https://en.cppreference.com/w/cpp/container</a> </span></p><p><span class="reference">[1a] cppreference.com, “容器库”. <a href="https://zh.cppreference.com/w/cpp/container">https://zh.cppreference.com/w/cpp/container</a> </span></p><p><span class="reference">[2] cppreference.com, “Explicit (full) template specialization”. <a href="https://en.cppreference.com/w/cpp/language/template_specialization">https://en.cppreference.com/w/cpp/language/template_specialization</a> </span></p><p><span class="reference">[2a] cppreference.com, “显式（全）模板特化”. <a href="https://zh.cppreference.com/w/cpp/language/template_specialization">https://zh.cppreference.com/w/cpp/language/template_specialization</a> </span></p><p><span class="reference">[3] Wikipedia, “Associative array”. <a href="https://en.wikipedia.org/wiki/Associative_array">https://en.wikipedia.org/wiki/Associative_array</a> </span></p><p><span class="reference">[3a] 维基百科, “关联数组”. <a href="https://zh.wikipedia.org/zh-cn/%E5%85%B3%E8%81%94%E6%95%B0%E7%BB%84">https://zh.wikipedia.org/zh-cn/关联数组</a> </span></p><p><span class="reference">[4] Wikipedia, “Weak ordering”. <a href="https://en.wikipedia.org/wiki/Weak_ordering">https://en.wikipedia.org/wiki/Weak_ordering</a> </span></p><p><span class="reference">[5] Wikipedia, “Hash table”. <a href="https://en.wikipedia.org/wiki/Hash_table">https://en.wikipedia.org/wiki/Hash_table</a> </span></p><p><span class="reference">[5a] 维基百科, “哈希表”. <a href="https://zh.wikipedia.org/zh-cn/%E5%93%88%E5%B8%8C%E8%A1%A8">https://zh.wikipedia.org/zh-cn/哈希表</a> </span></p><h2>精选留言：</h2>
+        <ul>
+        
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            罗乾林  2019-12-06 10:41:34
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            1、为algorithm服务<br>2、继承必然要用虚函数，性能有损失 
+        </div>
+        
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            李义盛爱王唐硕  2019-12-06 10:04:26
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            2.继承是强耦合。 继承导致关系混乱。 
+        </div>
+        
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            总统老唐  2019-12-06 09:50:58
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            又更新一课，之前还有同学说更新慢，现在看，是更新太快了，因为都是干货，每一课都要花大力气学 
+        </div>
+        
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            hello world  2019-12-06 08:11:32
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            1. 因为统一要为迭代器服务<br>2. 等大佬们！ 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-12-06 09:24:48</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">同学动作很快，但有点调皮啊。😄</div>
+</div>
+            
+    </div>
+</li>
+            </ul>
+</div>
+</body>
+</html>

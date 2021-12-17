@@ -1,0 +1,1342 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <!--<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>-->
+    <title>11-设置工作模式与环境（中）：建造二级引导器</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <style>
+        html {
+            color: #333;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            text-rendering: optimizelegibility;
+            font-family: Helvetica Neue, PingFang SC, Verdana, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif
+        }
+
+        html.borderbox *,
+        html.borderbox :after,
+        html.borderbox :before {
+            box-sizing: border-box
+        }
+
+        article,
+        aside,
+        blockquote,
+        body,
+        button,
+        code,
+        dd,
+        details,
+        dl,
+        dt,
+        fieldset,
+        figcaption,
+        figure,
+        footer,
+        form,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        header,
+        hr,
+        input,
+        legend,
+        li,
+        menu,
+        nav,
+        ol,
+        p,
+        pre,
+        section,
+        td,
+        textarea,
+        th,
+        ul {
+            margin: 0;
+            padding: 0
+        }
+
+        article,
+        aside,
+        details,
+        figcaption,
+        figure,
+        footer,
+        header,
+        menu,
+        nav,
+        section {
+            display: block
+        }
+
+        audio,
+        canvas,
+        video {
+            display: inline-block
+        }
+
+        body,
+        button,
+        input,
+        select,
+        textarea {
+            font: 300 1em/1.8 PingFang SC, Lantinghei SC, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, Helvetica, sans-serif
+        }
+
+        button::-moz-focus-inner,
+        input::-moz-focus-inner {
+            padding: 0;
+            border: 0
+        }
+
+        table {
+            border-collapse: collapse;
+            border-spacing: 0
+        }
+
+        fieldset,
+        img {
+            border: 0
+        }
+
+        blockquote {
+            position: relative;
+            color: #999;
+            font-weight: 400;
+            border-left: 1px solid #1abc9c;
+            padding-left: 1em;
+            margin: 1em 3em 1em 2em
+        }
+
+        @media only screen and (max-width: 640px) {
+            blockquote {
+                margin: 1em 0
+            }
+        }
+
+        abbr,
+        acronym {
+            border-bottom: 1px dotted;
+            font-variant: normal
+        }
+
+        abbr {
+            cursor: help
+        }
+
+        del {
+            text-decoration: line-through
+        }
+
+        address,
+        caption,
+        cite,
+        code,
+        dfn,
+        em,
+        th,
+        var {
+            font-style: normal;
+            font-weight: 400
+        }
+
+        ol,
+        ul {
+            list-style: none
+        }
+
+        caption,
+        th {
+            text-align: left
+        }
+
+        q:after,
+        q:before {
+            content: ""
+        }
+
+        sub,
+        sup {
+            font-size: 75%;
+            line-height: 0;
+            position: relative
+        }
+
+        :root sub,
+        :root sup {
+            vertical-align: baseline
+        }
+
+        sup {
+            top: -.5em
+        }
+
+        sub {
+            bottom: -.25em
+        }
+
+        a {
+            color: #1abc9c
+        }
+
+        a:hover {
+            text-decoration: underline
+        }
+
+        .typo a {
+            border-bottom: 1px solid #1abc9c
+        }
+
+        .typo a:hover {
+            border-bottom-color: #555;
+            color: #555
+        }
+
+        .typo a:hover,
+        a,
+        ins {
+            text-decoration: none
+        }
+
+        .typo-u,
+        u {
+            text-decoration: underline
+        }
+
+        mark {
+            background: #fffdd1;
+            border-bottom: 1px solid #ffedce;
+            padding: 2px;
+            margin: 0 5px
+        }
+
+        code,
+        pre,
+        pre tt {
+            font-family: Courier, Courier New, monospace
+        }
+
+        pre {
+            background: hsla(0, 0%, 97%, .7);
+            border: 1px solid #ddd;
+            padding: 1em 1.5em;
+            display: block;
+            -webkit-overflow-scrolling: touch
+        }
+
+        hr {
+            border: none;
+            border-bottom: 1px solid #cfcfcf;
+            margin-bottom: .8em;
+            height: 10px
+        }
+
+        .typo-small,
+        figcaption,
+        small {
+            font-size: .9em;
+            color: #888
+        }
+
+        b,
+        strong {
+            font-weight: 700;
+            color: #000
+        }
+
+        [draggable] {
+            cursor: move
+        }
+
+        .clearfix:after,
+        .clearfix:before {
+            content: "";
+            display: table
+        }
+
+        .clearfix:after {
+            clear: both
+        }
+
+        .clearfix {
+            zoom: 1
+        }
+
+        .textwrap,
+        .textwrap td,
+        .textwrap th {
+            word-wrap: break-word;
+            word-break: break-all
+        }
+
+        .textwrap-table {
+            table-layout: fixed
+        }
+
+        .serif {
+            font-family: Palatino, Optima, Georgia, serif
+        }
+
+        .typo-dl,
+        .typo-form,
+        .typo-hr,
+        .typo-ol,
+        .typo-p,
+        .typo-pre,
+        .typo-table,
+        .typo-ul,
+        .typo dl,
+        .typo form,
+        .typo hr,
+        .typo ol,
+        .typo p,
+        .typo pre,
+        .typo table,
+        .typo ul,
+        blockquote {
+            margin-bottom: 1rem
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: PingFang SC, Helvetica Neue, Verdana, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif;
+            color: #000;
+            line-height: 1.35
+        }
+
+        .typo-h1,
+        .typo-h2,
+        .typo-h3,
+        .typo-h4,
+        .typo-h5,
+        .typo-h6,
+        .typo h1,
+        .typo h2,
+        .typo h3,
+        .typo h4,
+        .typo h5,
+        .typo h6 {
+            margin-top: 1.2em;
+            margin-bottom: .6em;
+            line-height: 1.35
+        }
+
+        .typo-h1,
+        .typo h1 {
+            font-size: 2em
+        }
+
+        .typo-h2,
+        .typo h2 {
+            font-size: 1.8em
+        }
+
+        .typo-h3,
+        .typo h3 {
+            font-size: 1.6em
+        }
+
+        .typo-h4,
+        .typo h4 {
+            font-size: 1.4em
+        }
+
+        .typo-h5,
+        .typo-h6,
+        .typo h5,
+        .typo h6 {
+            font-size: 1.2em
+        }
+
+        .typo-ul,
+        .typo ul {
+            margin-left: 1.3em;
+            list-style: disc
+        }
+
+        .typo-ol,
+        .typo ol {
+            list-style: decimal;
+            margin-left: 1.9em
+        }
+
+        .typo-ol ol,
+        .typo-ol ul,
+        .typo-ul ol,
+        .typo-ul ul,
+        .typo li ol,
+        .typo li ul {
+            margin-bottom: .8em;
+            margin-left: 2em
+        }
+
+        .typo-ol ul,
+        .typo-ul ul,
+        .typo li ul {
+            list-style: circle
+        }
+
+        .typo-table td,
+        .typo-table th,
+        .typo table caption,
+        .typo table td,
+        .typo table th {
+            border: 1px solid #ddd;
+            padding: .5em 1em;
+            color: #666
+        }
+
+        .typo-table th,
+        .typo table th {
+            background: #fbfbfb
+        }
+
+        .typo-table thead th,
+        .typo table thead th {
+            background: hsla(0, 0%, 95%, .7)
+        }
+
+        .typo table caption {
+            border-bottom: none
+        }
+
+        .typo-input,
+        .typo-textarea {
+            -webkit-appearance: none;
+            border-radius: 0
+        }
+
+        .typo-em,
+        .typo em,
+        caption,
+        legend {
+            color: #000;
+            font-weight: inherit
+        }
+
+        .typo-em {
+            position: relative
+        }
+
+        .typo-em:after {
+            position: absolute;
+            top: .65em;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            content: "\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB"
+        }
+
+        .typo img {
+            max-width: 100%
+        }
+
+        .common-content {
+            font-weight: 400;
+            color: #353535;
+            line-height: 1.75rem;
+            white-space: normal;
+            word-break: normal;
+            font-size: 1rem
+        }
+
+        .common-content img {
+            display: block;
+            max-width: 100%;
+            background-color: #eee
+        }
+
+        .common-content audio,
+        .common-content video {
+            width: 100%;
+            background-color: #eee
+        }
+
+        .common-content center,
+        .common-content font {
+            margin-top: 1rem;
+            display: inline-block
+        }
+
+        .common-content center {
+            width: 100%
+        }
+
+        .common-content pre {
+            margin-top: 1rem;
+            padding-left: 0;
+            padding-right: 0;
+            position: relative;
+            overflow: hidden
+        }
+
+        .common-content pre code {
+            font-size: .8rem;
+            font-family: Consolas, Liberation Mono, Menlo, monospace, Courier;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            overflow-x: auto
+        }
+
+        .common-content hr {
+            border: none;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-top: 1px solid #f5f5f5;
+            height: 1px;
+            background: none
+        }
+
+        .common-content b,
+        .common-content h1,
+        .common-content h2,
+        .common-content h3,
+        .common-content h4,
+        .common-content h5,
+        .common-content strong {
+            font-weight: 700
+        }
+
+        .common-content h1,
+        .common-content h2 {
+            font-size: 1.125rem;
+            margin-bottom: .45rem
+        }
+
+        .common-content h3,
+        .common-content h4,
+        .common-content h5 {
+            font-size: 1rem;
+            margin-bottom: .45rem
+        }
+
+        .common-content p {
+            font-weight: 400;
+            color: #353535;
+            margin-top: .15rem
+        }
+
+        .common-content .orange {
+            color: #ff5a05
+        }
+
+        .common-content .reference {
+            font-size: 1rem;
+            color: #888
+        }
+
+        .custom-rich-content h1 {
+            margin-top: 0;
+            font-weight: 400;
+            font-size: 15.25px;
+            border-bottom: 1px solid #eee;
+            line-height: 2.8
+        }
+
+        .custom-rich-content li,
+        .custom-rich-content p {
+            font-size: 14px;
+            color: #888;
+            line-height: 1.6
+        }
+
+        table.hljs-ln {
+            margin-bottom: 0;
+            border-spacing: 0;
+            border-collapse: collapse
+        }
+
+        table.hljs-ln,
+        table.hljs-ln tbody,
+        table.hljs-ln td,
+        table.hljs-ln tr {
+            box-sizing: border-box
+        }
+
+        table.hljs-ln td {
+            padding: 0;
+            border: 0
+        }
+
+        table.hljs-ln td.hljs-ln-numbers {
+            min-width: 15px;
+            color: rgba(27, 31, 35, .3);
+            text-align: right;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none
+        }
+
+        table.hljs-ln td.hljs-ln-code,
+        table.hljs-ln td.hljs-ln-numbers {
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
+            font-size: 12px;
+            line-height: 20px;
+            vertical-align: top
+        }
+
+        table.hljs-ln td.hljs-ln-code {
+            position: relative;
+            padding-right: 10px;
+            padding-left: 10px;
+            overflow: visible;
+            color: #24292e;
+            word-wrap: normal;
+            white-space: pre
+        }
+
+        video::-webkit-media-controls {
+            overflow: hidden !important
+        }
+
+        video::-webkit-media-controls-enclosure {
+            width: calc(100% + 32px);
+            margin-left: auto
+        }
+
+        ._29HP61GA_0 {
+            max-width:800px;
+            margin:0 auto;
+            margin-bottom: 20px;
+            font-weight: 400;
+            color: #353535;
+            line-height: 1.76;
+            white-space: normal;
+            word-break: normal;
+            font-size: 17px;
+            -webkit-transition: background-color .3s ease;
+            transition: background-color .3s ease
+        }
+
+        ._29HP61GA_0 .MathJax_Display {
+            overflow: auto
+        }
+
+        ._29HP61GA_0 .poster {
+            position: fixed;
+            left: -10000px;
+            top: -10000px;
+            overflow: hidden;
+            padding: 1rem;
+            background: #ececec
+        }
+
+        ._29HP61GA_0 .richcontent-pre-copy {
+            font-size: 13px;
+            color: #888;
+            position: absolute;
+            right: 1em;
+            top: .5em;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none
+        }
+
+        ._29HP61GA_0 .richcontent-pre-copy .iconfont {
+            font-size: 12px;
+            margin-right: .2em
+        }
+
+        ._29HP61GA_0 a {
+            color: #fa8919;
+            border-bottom: 1px solid #fa8919
+        }
+
+        ._29HP61GA_0 img {
+            display: block;
+            max-width: 100%;
+            position: relative;
+            left: 50%;
+            -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+            background-color: #eee;
+            vertical-align: top;
+            border-radius: 0
+        }
+
+        ._29HP61GA_0 audio,
+        ._29HP61GA_0 video {
+            width: 100%;
+            background-color: #eee
+        }
+
+        ._29HP61GA_0 pre {
+            margin-top: 16px;
+            padding: 34px 0 0;
+            margin-bottom: 30px;
+            position: relative;
+            border-radius: 6px;
+            background: rgba(246, 247, 251, .749);
+            border: 0
+        }
+
+        ._29HP61GA_0 pre code {
+            font-size: 12px;
+            font-family: Consolas, Liberation Mono, Menlo, monospace, Courier;
+            display: block;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            margin-left: 16px;
+            margin-right: 16px;
+            overflow-x: scroll
+        }
+
+        ._29HP61GA_0 pre code:after {
+            content: "";
+            height: 30px;
+            width: 100%;
+            display: block
+        }
+
+        ._29HP61GA_0 hr {
+            border: none;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-top: 1px solid #f5f5f5;
+            height: 1px;
+            background: none
+        }
+
+        ._29HP61GA_0 h1,
+        ._29HP61GA_0 h2,
+        ._29HP61GA_0 h3,
+        ._29HP61GA_0 h4,
+        ._29HP61GA_0 h5 {
+            margin-bottom: 20px;
+            margin-top: 0;
+            font-weight: 700
+        }
+
+        ._29HP61GA_0 b,
+        ._29HP61GA_0 strong {
+            font-weight: 700
+        }
+
+        ._29HP61GA_0 h1 {
+            font-size: 21px
+        }
+
+        ._29HP61GA_0 h2 {
+            font-size: 20px
+        }
+
+        ._29HP61GA_0 h3 {
+            font-size: 19px
+        }
+
+        ._29HP61GA_0 h4 {
+            font-size: 18px
+        }
+
+        ._29HP61GA_0 h5 {
+            font-size: 17px
+        }
+
+        ._29HP61GA_0 center,
+        ._29HP61GA_0 p {
+            font-weight: 400;
+            color: #353535;
+            margin-top: 0;
+            margin-bottom: 30px;
+            word-break: break-word
+        }
+
+        ._29HP61GA_0 center {
+            text-align: center
+        }
+
+        ._29HP61GA_0 blockquote {
+            margin-top: 0;
+            margin-bottom: 34px;
+            border-left: 3px solid #e8e8e8;
+            padding-left: 17px;
+            color: #353535
+        }
+
+        ._29HP61GA_0 blockquote p {
+            margin-top: 0;
+            margin-bottom: 0
+        }
+
+        ._29HP61GA_0 ol,
+        ._29HP61GA_0 ul {
+            margin-bottom: 30px
+        }
+
+        ._29HP61GA_0 ol p,
+        ._29HP61GA_0 ul p {
+            margin-top: 0;
+            margin-bottom: 0
+        }
+
+        ._29HP61GA_0 ol {
+            list-style: decimal;
+            margin-left: 20px
+        }
+
+        ._29HP61GA_0 ul li {
+            padding-left: 17px;
+            position: relative;
+            margin-bottom: 10px
+        }
+
+        ._29HP61GA_0 ul li:after {
+            content: "";
+            height: 6px;
+            width: 6px;
+            border-radius: 50%;
+            background: #353535;
+            position: absolute;
+            top: 10px;
+            left: 0
+        }
+
+        ._29HP61GA_0 .orange {
+            color: #fa8919
+        }
+
+        ._29HP61GA_0 .reference {
+            color: #888
+        }
+
+        ._29HP61GA_0 .m-right {
+            text-align: right
+        }
+
+        ._29HP61GA_0 .m-center {
+            text-align: center;
+            display: block
+        }
+
+        ._29HP61GA_0 .m-gray {
+            color: #888
+        }
+
+        ._29HP61GA_0 .m-small {
+            font-size: 15px
+        }
+
+        ._29HP61GA_0 table.hljs-ln {
+            margin-bottom: 0;
+            border-spacing: 0;
+            border-collapse: collapse
+        }
+
+        ._29HP61GA_0 table.hljs-ln,
+        ._29HP61GA_0 table.hljs-ln tbody,
+        ._29HP61GA_0 table.hljs-ln td,
+        ._29HP61GA_0 table.hljs-ln tr {
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box
+        }
+
+        ._29HP61GA_0 table.hljs-ln td {
+            padding: 0;
+            border: 0
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-numbers {
+            min-width: 15px;
+            font-size: 12px;
+            color: rgba(27, 31, 35, .3);
+            text-align: right;
+            white-space: nowrap;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-code,
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-numbers {
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
+            line-height: 20px;
+            vertical-align: top
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-code {
+            position: relative;
+            padding-right: 10px;
+            padding-left: 10px;
+            overflow: visible;
+            font-size: 13px;
+            color: #666;
+            word-wrap: normal;
+            white-space: pre
+        }
+
+    </style>
+</head>
+<body>
+<div class="_29HP61GA_0">
+<h1>11-设置工作模式与环境（中）：建造二级引导器</h1>
+<p>你好，我是LMOS。</p><p>上节课，我们建造了属于我们的“计算机”，并且在上面安装好了GRUB。这节课我会带你一起实现二级引导器这个关键组件。</p><p>看到这儿你可能会问，GRUB不是已经把我们的操作系统加载到内存中了吗？我们有了GRUB，我们为什么还要实现二级引导器呢？</p><p>这里我要给你说说我的观点，二级引导器作为操作系统的先驱，它需要<strong>收集机器信息</strong>，确定这个计算机能不能运行我们的操作系统，对CPU、内存、显卡进行一些初级的配置，放置好内核相关的文件。</p><p>因为我们二级引导器不是执行具体的加载任务的，而是解析内核文件、收集机器环境信息，它具体收集哪些信息，我会在下节课详细展开。</p><h2>设计机器信息结构</h2><p>二级引导器收集的信息，需要地点存放，我们需要设计一个数据结构。信息放在这个数据结构中，这个结构放在内存1MB的地方，方便以后传给我们的操作系统。</p><p>为了让你抓住重点，我选取了这个数据结构的<strong>关键代码</strong>，这里并没有列出该结构的所有字段（Cosmos/initldr/include/ldrtype.h），这个结构如下所示。</p><pre><code>typedef struct s_MACHBSTART
+{
+    u64_t   mb_krlinitstack;//内核栈地址
+    u64_t   mb_krlitstacksz;//内核栈大小
+    u64_t   mb_imgpadr;//操作系统映像
+    u64_t   mb_imgsz;//操作系统映像大小
+    u64_t   mb_bfontpadr;//操作系统字体地址
+    u64_t   mb_bfontsz;//操作系统字体大小
+    u64_t   mb_fvrmphyadr;//机器显存地址
+    u64_t   mb_fvrmsz;//机器显存大小
+    u64_t   mb_cpumode;//机器CPU工作模式
+    u64_t   mb_memsz;//机器内存大小
+    u64_t   mb_e820padr;//机器e820数组地址
+    u64_t   mb_e820nr;//机器e820数组元素个数
+    u64_t   mb_e820sz;//机器e820数组大小
+    //……
+    u64_t   mb_pml4padr;//机器页表数据地址
+    u64_t   mb_subpageslen;//机器页表个数
+    u64_t   mb_kpmapphymemsz;//操作系统映射空间大小
+    //……
+    graph_t mb_ghparm;//图形信息
+}__attribute__((packed)) machbstart_t;
+</code></pre><h2>规划二级引导器</h2><p>在开始写代码之前，我们先来从整体划分一下二级引导器的功能模块，从全局了解下功能应该怎么划分，这里我特意为你梳理了一个表格。</p><!-- [[[read_end]]] --><p><img src="https://static001.geekbang.org/resource/image/31/1e/3169e9db4549ab036c2de269788a281e.jpg" alt="" title="二级引导器功能划分表"></p><p>前面表格里的这些文件，我都放在了课程配套源码中了，你可以从<a href="https://gitee.com/lmos/cosmos/tree/master/lesson10~11">这里</a>下载。</p><p>上述这些文件都在lesson10～11/Cosmos/initldr/ldrkrl目录中，它们在编译之后会形成三个文件，编译脚本我已经写好了，下面我们用一幅图来展示这个编译过程。</p><p><img src="https://static001.geekbang.org/resource/image/bd/40/bd55f67d02edff4415f06c914403bc40.jpg" alt="" title="二级引导器编译过程示意图"></p><p>这最后三个文件用我们前面说的映像工具打包成映像文件，其指令如下。</p><pre><code>lmoskrlimg -m k -lhf initldrimh.bin -o Cosmos.eki -f initldrkrl.bin initldrsve.bin
+</code></pre><h2>实现GRUB头</h2><p>我们的GRUB头有两个文件组成，<strong>一个imginithead.asm汇编文件</strong>，它有两个功能，既能让GRUB识别，又能设置C语言运行环境，用于调用C函数；<strong>第二就是inithead.c文件</strong>，它的主要功能是查找二级引导器的核心文件——initldrkrl.bin，然后把它放置到特定的内存地址上。</p><p>我们先来实现imginithead.asm，它主要工作是初始化CPU的寄存器，加载GDT，切换到CPU的保护模式，我们一步一步来实现。</p><p>首先是GRUB1和GRUB2需要的两个头结构，代码如下。</p><pre><code>MBT_HDR_FLAGS	EQU 0x00010003
+MBT_HDR_MAGIC	EQU 0x1BADB002
+MBT2_MAGIC	EQU 0xe85250d6
+global _start
+extern inithead_entry
+[section .text]
+[bits 32]
+_start:
+	jmp _entry
+align 4
+mbt_hdr:
+	dd MBT_HDR_MAGIC
+	dd MBT_HDR_FLAGS
+	dd -(MBT_HDR_MAGIC+MBT_HDR_FLAGS)
+	dd mbt_hdr
+	dd _start
+	dd 0
+	dd 0
+	dd _entry
+ALIGN 8
+mbhdr:
+	DD	0xE85250D6
+	DD	0
+	DD	mhdrend - mbhdr
+	DD	-(0xE85250D6 + 0 + (mhdrend - mbhdr))
+	DW	2, 0
+	DD	24
+	DD	mbhdr
+	DD	_start
+	DD	0
+	DD	0
+	DW	3, 0
+	DD	12
+	DD	_entry 
+	DD  0  
+	DW	0, 0
+	DD	8
+mhdrend:
+</code></pre><p>然后是关中断并加载GDT，代码如下所示。</p><pre><code>_entry:
+	cli           ；关中断
+	in al, 0x70 
+	or al, 0x80	
+	out 0x70,al  ；关掉不可屏蔽中断   
+	lgdt [GDT_PTR] ；加载GDT地址到GDTR寄存器
+	jmp dword 0x8 :_32bits_mode ；长跳转刷新CS影子寄存器
+  ;………………
+;GDT全局段描述符表
+GDT_START:
+knull_dsc: dq 0
+kcode_dsc: dq 0x00cf9e000000ffff
+kdata_dsc: dq 0x00cf92000000ffff
+k16cd_dsc: dq 0x00009e000000ffff ；16位代码段描述符
+k16da_dsc: dq 0x000092000000ffff ；16位数据段描述符
+GDT_END:
+GDT_PTR:
+GDTLEN	dw GDT_END-GDT_START-1	;GDT界限
+GDTBASE	dd GDT_ST  
+</code></pre><p>最后是初始化段寄存器和通用寄存器、栈寄存器，这是为了给调用inithead_entry这个C函数做准备，代码如下所示。</p><pre><code>_32bits_mode：
+	mov ax, 0x10
+	mov ds, ax
+	mov ss, ax
+	mov es, ax
+	mov fs, ax
+	mov gs, ax
+	xor eax,eax
+	xor ebx,ebx
+	xor ecx,ecx
+	xor edx,edx
+	xor edi,edi
+	xor esi,esi
+	xor ebp,ebp
+	xor esp,esp
+	mov esp,0x7c00 ；设置栈顶为0x7c00
+	call inithead_entry ；调用inithead_entry函数在inithead.c中实现
+	jmp 0x200000  ；跳转到0x200000地址
+</code></pre><p>上述代码的最后调用了inithead_entry函数，这个函数我们需要另外在inithead.c中实现，我们这就来实现它，如下所示。</p><pre><code>#define MDC_ENDGIC 0xaaffaaffaaffaaff
+#define MDC_RVGIC 0xffaaffaaffaaffaa
+#define REALDRV_PHYADR 0x1000
+#define IMGFILE_PHYADR 0x4000000
+#define IMGKRNL_PHYADR 0x2000000
+#define LDRFILEADR IMGFILE_PHYADR
+#define MLOSDSC_OFF (0x1000)
+#define MRDDSC_ADR (mlosrddsc_t*)(LDRFILEADR+0x1000)
+
+void inithead_entry()
+{
+    write_realintsvefile();
+    write_ldrkrlfile();
+    return;
+}
+//写initldrsve.bin文件到特定的内存中
+void write_realintsvefile()
+{
+    fhdsc_t *fhdscstart = find_file(&quot;initldrsve.bin&quot;);
+    if (fhdscstart == NULL)
+    {
+        error(&quot;not file initldrsve.bin&quot;);
+    }
+    m2mcopy((void *)((u32_t)(fhdscstart-&gt;fhd_intsfsoff) + LDRFILEADR),
+            (void *)REALDRV_PHYADR, (sint_t)fhdscstart-&gt;fhd_frealsz);
+    return;
+}
+//写initldrkrl.bin文件到特定的内存中
+void write_ldrkrlfile()
+{
+    fhdsc_t *fhdscstart = find_file(&quot;initldrkrl.bin&quot;);
+    if (fhdscstart == NULL)
+    {
+        error(&quot;not file initldrkrl.bin&quot;);
+    }
+    m2mcopy((void *)((u32_t)(fhdscstart-&gt;fhd_intsfsoff) + LDRFILEADR),
+            (void *)ILDRKRL_PHYADR, (sint_t)fhdscstart-&gt;fhd_frealsz);
+    return;
+}
+//在映像文件中查找对应的文件
+fhdsc_t *find_file(char_t *fname)
+{
+    mlosrddsc_t *mrddadrs = MRDDSC_ADR;
+    if (mrddadrs-&gt;mdc_endgic != MDC_ENDGIC ||
+        mrddadrs-&gt;mdc_rv != MDC_RVGIC ||
+        mrddadrs-&gt;mdc_fhdnr &lt; 2 ||
+        mrddadrs-&gt;mdc_filnr &lt; 2)
+    {
+        error(&quot;no mrddsc&quot;);
+    }
+    s64_t rethn = -1;
+    fhdsc_t *fhdscstart = (fhdsc_t *)((u32_t)(mrddadrs-&gt;mdc_fhdbk_s) + LDRFILEADR);
+    for (u64_t i = 0; i &lt; mrddadrs-&gt;mdc_fhdnr; i++)
+    {
+        if (strcmpl(fname, fhdscstart[i].fhd_name) == 0)
+        {
+            rethn = (s64_t)i;
+            goto ok_l;
+        }
+    }
+    rethn = -1;
+ok_l:
+    if (rethn &lt; 0)
+    {
+        error(&quot;not find file&quot;);
+    }
+    return &amp;fhdscstart[rethn];
+}
+</code></pre><p>我们实现了inithead_entry函数，它主要干了两件事，即分别调用write_realintsvefile();、write_ldrkrlfile()函数，把映像文件中的initldrsve.bin文件和initldrkrl.bin文件写入到特定的内存地址空间中，具体地址在上面代码中的宏有详细定义。</p><p>这两个函数分别依赖于find_file和m2mcopy函数。</p><p>正如其名，find_file函数负责扫描映像文件中的文件头描述符，对比其中的文件名，然后返回对应的文件头描述符的地址，这样就可以得到文件在映像文件中的位置和大小了。</p><p>find_file函数的接力队友就是m2mcopy函数，因为查找对比之后，最后就是m2mcopy函数负责把映像文件复制到具体的内存空间里。</p><p>代码中的其它函数我就不展开了，感兴趣的同学请自行研究，或者自己改写。</p><h2>进入二级引导器</h2><p>你应该还有印象，刚才说的实现GRUB头这个部分，在imghead.asm汇编文件代码中，我们的最后一条指令是“<strong>jmp 0x200000</strong>”，即跳转到物理内存的0x200000地址处。</p><p>请你注意，这时地址还是物理地址，这个地址正是在inithead.c中由write_ldrkrlfile()函数放置的initldrkrl.bin文件，这一跳就进入了二级引导器的主模块了。</p><p>由于模块的改变，我们还需要写一小段汇编代码，建立下面这个initldr32.asm文件，并写上如下代码。</p><pre><code>_entry:
+	cli
+	lgdt [GDT_PTR]；加载GDT地址到GDTR寄存器
+	lidt [IDT_PTR]；加载IDT地址到IDTR寄存器
+	jmp dword 0x8 :_32bits_mode；长跳转刷新CS影子寄存器
+_32bits_mode:
+	mov ax, 0x10	; 数据段选择子(目的)
+	mov ds, ax
+	mov ss, ax
+	mov es, ax
+	mov fs, ax
+	mov gs, ax
+	xor eax,eax
+	xor ebx,ebx
+	xor ecx,ecx
+	xor edx,edx
+	xor edi,edi
+	xor esi,esi
+	xor ebp,ebp
+	xor esp,esp
+	mov esp,0x90000 ；使得栈底指向了0x90000
+	call ldrkrl_entry ；调用ldrkrl_entry函数
+	xor ebx,ebx
+	jmp 0x2000000 ；跳转到0x2000000的内存地址
+	jmp $
+GDT_START:
+knull_dsc: dq 0
+kcode_dsc: dq 0x00cf9a000000ffff ;a-e
+kdata_dsc: dq 0x00cf92000000ffff
+k16cd_dsc: dq 0x00009a000000ffff ；16位代码段描述符
+k16da_dsc: dq 0x000092000000ffff ；16位数据段描述符
+GDT_END:
+GDT_PTR:
+GDTLEN	dw GDT_END-GDT_START-1	;GDT界限
+GDTBASE	dd GDT_START
+
+IDT_PTR:
+IDTLEN	dw 0x3ff
+IDTBAS	dd 0  ；这是BIOS中断表的地址和长度
+</code></pre><p>我来给你做个解读，代码的1～4行是在加载GDTR和IDTR寄存器，然后初始化CPU相关的寄存器。</p><p>和先前一样，因为代码模块的改变，所以我们要把GDT、IDT，寄存器这些东西重新初始化，最后再去调用二级引导器的主函数ldrkrl_entry。</p><h2>巧妙调用BIOS中断</h2><p>我们不要急着去写ldrkrl_entry函数，因为在后面我们要获得内存布局信息，要设置显卡图形模式，而这些功能依赖于BIOS提供中断服务。</p><p>可是，要在C函数中调用BIOS中断是不可能的，因为C语言代码工作在32位保护模式下，BIOS中断工作在16位的实模式。</p><p>所以，C语言环境下调用BIOS中断，需要处理的问题如下：</p><p>1.保存C语言环境下的CPU上下文 ，即保护模式下的所有通用寄存器、段寄存器、程序指针寄存器，栈寄存器，把它们都保存在内存中。<br>
+2.切换回实模式，调用BIOS中断，把BIOS中断返回的相关结果，保存在内存中。<br>
+3.切换回保护模式，重新加载第1步中保存的寄存器。这样C语言代码才能重新恢复执行。</p><p>要完成上面的功能，必须要写一个汇编函数才能完成，我们就把它写在initldr32.asm文件中，如下所示 。</p><pre><code>realadr_call_entry:
+	pushad     ;保存通用寄存器
+	push    ds
+	push    es
+	push    fs ;保存4个段寄存器
+	push    gs
+	call save_eip_jmp ；调用save_eip_jmp 
+	pop	gs
+	pop	fs
+	pop	es      ;恢复4个段寄存器
+	pop	ds
+	popad       ;恢复通用寄存器
+	ret
+save_eip_jmp:
+	pop esi  ；弹出call save_eip_jmp时保存的eip到esi寄存器中， 
+	mov [PM32_EIP_OFF],esi ；把eip保存到特定的内存空间中
+	mov [PM32_ESP_OFF],esp ；把esp保存到特定的内存空间中
+	jmp dword far [cpmty_mode]；长跳转这里表示把cpmty_mode处的第一个4字节装入eip，把其后的2字节装入cs
+cpmty_mode:
+	dd 0x1000
+	dw 0x18
+	jmp $
+</code></pre><p>上面的代码我列了详细注释，你一看就能明白。不过这里唯一不好懂的是<strong>jmp dword far [cpmty_mode]指令</strong>，别担心，听我给你解读一下。</p><p>其实这个指令是一个<strong>长跳转</strong>，表示把[cpmty_mode]处的数据装入CS：EIP，也就是把0x18：0x1000装入到CS：EIP中。</p><p>这个0x18就是段描述索引（这个知识点不熟悉的话，你可以回看我们<a href="https://time.geekbang.org/column/article/375278">第五节课</a>），它正是指向GDT中的16位代码段描述符；0x1000代表段内的偏移地址，所以在这个地址上，我们必须放一段代码指令，不然CPU跳转到这里将没指令可以执行，那样就会发生错误。</p><p>因为这是一个16位代码，所以我们需要新建立一个文件realintsve.asm，如下所示。</p><pre><code>[bits 16]
+_start:
+_16_mode:
+	mov	bp,0x20 ;0x20是指向GDT中的16位数据段描述符 
+	mov	ds, bp
+	mov	es, bp
+	mov	ss, bp
+	mov	ebp, cr0
+	and	ebp, 0xfffffffe
+	mov	cr0, ebp ；CR0.P=0 关闭保护模式
+	jmp	0:real_entry ；刷新CS影子寄存器，真正进入实模式
+real_entry:
+	mov bp, cs
+	mov ds, bp
+	mov es, bp
+	mov ss, bp ；重新设置实模式下的段寄存器 都是CS中值，即为0 
+	mov sp, 08000h ；设置栈
+	mov bp,func_table
+	add bp,ax
+	call [bp] ；调用函数表中的汇编函数，ax是C函数中传递进来的
+	cli
+	call disable_nmi
+	mov	ebp, cr0
+	or	ebp, 1
+	mov	cr0, ebp ；CR0.P=1 开启保护模式
+	jmp dword 0x8 :_32bits_mode
+[BITS 32]
+_32bits_mode:
+	mov bp, 0x10
+	mov ds, bp
+	mov ss, bp；重新设置保护模式下的段寄存器0x10是32位数据段描述符的索引
+	mov esi,[PM32_EIP_OFF]；加载先前保存的EIP
+	mov esp,[PM32_ESP_OFF]；加载先前保存的ESP
+	jmp esi ；eip=esi 回到了realadr_call_entry函数中
+
+func_table:  ;函数表
+	dw _getmmap ；获取内存布局视图的函数
+	dw _read ；读取硬盘的函数
+    dw _getvbemode ；获取显卡VBE模式 
+    dw _getvbeonemodeinfo ；获取显卡VBE模式的数据
+    dw _setvbemode ；设置显卡VBE模式
+</code></pre><p>上面的代码我们只要将它编译成16位的二进制的文件，并把它放在0x1000开始的内存空间中就可以了。这样在realadr_call_entry函数的最后，就运行到这段代码中来了。</p><p>上述的代码的流程是这样的：首先从 _16_mode:标号处进入实模式，然后根据传递进来（由ax寄存器传入）的函数号，到函数表中调用对应的函数，里面的函数执行完成后，再次进入保护模式，加载EIP和ESP寄存器从而回到realadr_call_entry函数中。GDT还是imghead.asm汇编代码文件中的GDT，这没有变，因为它是由GDTR寄存器指向的。</p><p>说到这里，相信你会立刻明白，之前write_realintsvefile()函数的功能与意义了。它会把<strong>映像文件中的initldrsve.bin文件写入到特定的内存地址空间中</strong>，而initldrsve.bin正是由上面的realintsve.asm文件编译而成的。</p><h2>二级引导器主函数</h2><p>好，现在我们准备得差不多了，从二级引导器的主函数开始，这个函数我们要用C来写，估计你也感受到了写汇编语言的压力，所以不能老是写汇编。</p><p>我们先建立一个C文件ldrkrlentry.c，在其中写上一个主函数，代码如下。</p><pre><code>void ldrkrl_entry()
+{
+    init_bstartparm();
+    return;
+}
+</code></pre><p>上述代码中的 ldrkrl_entry()函数在initldr32.asm文件中被调用，从那条call ldrkrl_entry 指令开始进入了ldrkrl_entry()函数，在其中调用了<strong>init_bstartparm()函数</strong>，这个函数我们还没有实现，但通过名字我们不难推测，它是负责处理开始参数的。</p><p>你还记不记得，我们建造二级引导器的目的，就是要收集机器环境信息。我们要把这些信息形成一个有结构的参数，传递给我们的操作系统内核以备后续使用。</p><p>由此，我们能够确定，<strong>init_bstartparm()函数成了收集机器环境信息的主函数</strong>，下节课我们就会去实现它。</p><h2>重点回顾</h2><p>今天我们开始实现二级引导器了，但是我们还没有完全实现，我们下一节课再接着继续这项工作。</p><p>现在，我们来梳理一下这节课的内容，回顾一下我们今天的成果。</p><p>1.我们设计了机器信息结构，用于存放后面二级引导器收集到的机器信息。<br>
+2.对二级引导器代码模块进行了规划，确定各模块的主要功能。<br>
+3.实现了GRUB规定的GRUB头，以便被GRUB识别，在GRUB头中初始化了CPU寄存器，并且跳转到物理内存的0x200000地址处，真正进入到二级引导器中开始运行。<br>
+4.为了二级引导器能够调用BIOS中断服务程序，我们实现了专门用来完成调用BIOS中断服务程序的realintsve.asm模块。<br>
+5.最后，我们实现了二级引导器的主函数，由它调用完成其它功能的函数。</p><p>这里我还想聊聊，为什么我们要花这么多功夫，去设计二级引导器这个组件呢？</p><p>我们把这些处理操作系统运行环境的工作独立出来，交给二级引导器来做，这会<strong>大大降低后面开发操作系统的难度，也能增加操作系统的通用性。</strong>而且，针对不同的硬件平台，我们只要开发不同的二级引导器就好了。</p><h2>思考题</h2><p>请问GRUB头中为什么需要_entry标号和_start标号的地址？</p><p>欢迎你在留言区跟我交流活动。如果你身边的同事、朋友，对二级引导器的建立有兴趣，也欢迎你把这节课分享给他。</p><p>好，我是LMOS，我们下节课见！</p><h2>精选留言：</h2>
+        <ul>
+        
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            neohope  2021-06-02 14:13:57
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            大体上整理了一下：<br><br>1、grub启动后，选择对应的启动菜单项，grub会通过自带文件系统驱动，定位到对应的eki文件<br><br>2、grub会尝试加载eki文件【eki文件需要满足grub多协议引导头的格式要求】<br>这些是在imginithead.asm中实现的，所以要包括：<br>A、grub文件头，包括魔数、grub1和grub2支持等<br>B、定位的_start符号等<br><br>3、grub校验成功后，会调用_start，然跳转到_entry<br>A、_entry中:关闭中断<br>B、加载GDT<br>C、然后进入_32bits_mode，清理寄存器，设置栈顶<br>D、调用inithead_entry【C】<br><br>4、inithead_entry.c<br>A、从imginithead.asm进入后，首先进入函数调用inithead_entry<br>B、初始化光标，清屏<br>C、从eki文件内部，找到initldrsve.bin文件，并分别拷贝到内存的指定物理地址<br>D、从eki文件内部，找到initldrkrl.bin文件，并分别拷贝到内存的指定物理地址<br>E、返回imginithead.asm<br><br>5、imginithead.asm中继续执行<br>jmp 0x200000<br>而这个位置，就是initldrkrl.bin在内存的位置ILDRKRL_PHYADR<br>所以后面要执行initldrkrl.bin的内容<br><br>6、这样就到了ldrkrl32.asm的_entry<br>A、将GDT加载到GDTR寄存器【内存】<br>B、将IDT加载到IDTR寄存器【中断】<br>C、跳转到_32bits_mode<br>初始寄存器<br>初始化栈<br>调用ldrkrl_entry【C】<br><br>7、ldrkrlentry.c<br>A、初始化光标，清屏<br>B、收集机器参数init_bstartparm【C】<br><br>8、bstartparm.c<br>A、初始化machbstart_t<br>B、各类初始化函数，填充machbstart_t的内容<br>C、返回<br><br>9、ldrkrlentry.c<br>A、返回<br><br>10、ldrkrl32.asm<br>A、跳转到0x2000000地址继续执行 [9赞]
+        </div>
+        
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            springXu  2021-06-02 06:03:12
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            真实进入实际写代码的课程了。<br>对于grub的头格式在的第二节写个HelloOS.bin就已经有了，这次头格式还是会有。理由是grub是一级引导器。<br>这节课的内容就是围绕着由一级转到二级引导器的过程展开了。<br>关于二级引导器的加载过程，简单点说就是把我们内核加载到指定内存的位置并执行，这个加载函数核心是m2mcopy函数，东哥留给我们自己分析了，但东哥强调分析了下为什么会有32位下的代码和16位汇编代码共存的现象。 其实是为了让BIOS提供的获取硬件信息的操作函数（也就是实模式下的BIOS中断号来获取的）做成了c语言环境下也可以调用的功能。这就像跨语言互相调用的技术。汇编调用c语言的方法，反过来c语言调用汇编方法。但更为复杂些，原因是保护模式到实模式再回到保护模式的切换过程。内核可以获取硬件信息就可以根据硬件环境参数，配置自身参数开始工作了。如何配置参数，那又是下节继续播讲。周五见。<br>关于思考题，这个是grub也是要把控制权交给我们二级引导器的入口地址。 至于为什么不光有一个_start就可以了，我猜测是为了做验证吧。_start的操作是jmp 地址。这个地址正好是_entry。有错误还请东哥指正。哈哈 [2赞]
+        </div>
+        
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            嗣树  2021-06-03 17:50:17
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            回答一下问题，GRUB 头中为什么需要 _entry 标号和 _start 标号的地址？<br><br>我们定义的 flags 值为：<br>MBT_HDR_FLAGS EQU 0x00010003<br><br>根据 Multiboot Specification 定义的头结构<br>Offset	Type	Field Name		Note<br>0		u32		magic			required<br>4		u32		flags			required<br>8		u32		checksum		required<br>12		u32		header_addr		if flags[16] is set<br>16		u32		load_addr		        if flags[16] is set<br>20		u32		load_end_addr	        if flags[16] is set<br>24		u32		bss_end_addr	        if flags[16] is set<br>28		u32		entry_addr		if flags[16] is set<br>32		u32		mode_type		if flags[2] is set<br>36		u32		width			if flags[2] is set<br>40		u32		height			if flags[2] is set<br>44		u32		depth			if flags[2] is set<br><br>flags[16] 解释如下：<br>If bit 16 in the ‘flags’ word is set, then the fields at offsets 12-28 in the Multiboot header are valid, and the boot loader should use them instead of the fields in the actual executable header to calculate where to load the OS image. This information does not need to be provided if the kernel image is in ELF format, but it must be provided if the images is in a.out format or in some other format. Compliant boot loaders must be able to load images that either are in ELF format or contain the load address information embedded in the Multiboot header; they may also directly support other executable formats, such as particular a.out variants, but are not required to.<br><br>也就是如果我们用的是标准的 ELF 文件就不需要提供额外的地址信息，而我们用的是自己定义的格式就需要人家从哪里加载哪里运行，所以需要将 bit 16 使能，填充相应的字段。<br><br>再解释下两个字段的含义：<br>load_addr<br>Contains the physical address of the beginning of the text segment. The offset in the OS image file at which to start loading is defined by the offset at which the header was found, minus (header_addr - load_addr). load_addr must be less than or equal to header_addr.<br><br>entry_addr<br>The physical address to which the boot loader should jump in order to start running the operating system. 
+        </div>
+        
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            pedro  2021-06-02 07:25:32
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            早起看专栏！<br>先回答思考题，grub是multiboot规范，因此引导器头部数据必须得满足一定的规则才能被grub所加载，本文中的MBT_HDR_FLAGS为0x001003，第16位被置为1，因此load_addr和entry_addr都是有效的，而它们正好分别对应_start和_entry。<br>其中load_addr是引导器二进制文件text段的起始地址，即_start，grub解析头部数据后，拿到_start地址，并从该地址处开始执行二级引导器代码。<br>而entry_addr对应的是操作系统的入口点，也就是_entry。引导程序最后将跳转到这里，不过本文的实现并没有完全按照这种思路来，_start直接跳到_entry，然后由_entry负责二级引导工作。 [5赞]
+        </div>
+        
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            飞翔  2021-06-02 15:02:38
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            lmoskrlimg这个工具从哪里找，在centos上没有找到？ [1赞]
+        </div>
+        
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            Freddy  2021-06-04 11:06:35
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            lmoskrlimg 这个命令怎么安装？ 
+        </div>
+        
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            blentle  2021-06-03 09:00:39
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            老师，有没有开源的二级引导器参考 
+        </div>
+        
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            熊光红  2021-06-03 08:13:24
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            请问老师，如何调试内核？怎么搭建调试环境 
+        </div>
+        
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            二三子也  2021-06-02 18:08:02
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            老师有个问题：0x200000。在x86-64平台下，这个值是grub默认将multiboot2定义的文件加载到的位置吗？如果是的话，这个值是手册提供的？还是调试出来的？ 
+        </div>
+        
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            尼欧  2021-06-02 18:05:12
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            打卡 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">编辑回复2021-06-02 22:36:28</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">加油，这周就要显示logo了，期待你也可以动手实现。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            二三子也  2021-06-02 16:16:59
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            m2mcopy的代码前后拷贝的方式直接省略掉了边界检查。Good Taste. 
+        </div>
+        
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            blentle  2021-06-02 08:50:25
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            越来越有意思了 [1赞]
+        </div>
+        
+    </div>
+</li>
+            </ul>
+</div>
+</body>
+</html>

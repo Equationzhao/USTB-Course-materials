@@ -1,0 +1,1280 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>07-迭代器和好用的新for循环</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <style>
+        html {
+            color: #333;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            text-rendering: optimizelegibility;
+            font-family: Helvetica Neue, PingFang SC, Verdana, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif
+        }
+
+        html.borderbox *,
+        html.borderbox :after,
+        html.borderbox :before {
+            box-sizing: border-box
+        }
+
+        article,
+        aside,
+        blockquote,
+        body,
+        button,
+        code,
+        dd,
+        details,
+        dl,
+        dt,
+        fieldset,
+        figcaption,
+        figure,
+        footer,
+        form,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        header,
+        hr,
+        input,
+        legend,
+        li,
+        menu,
+        nav,
+        ol,
+        p,
+        pre,
+        section,
+        td,
+        textarea,
+        th,
+        ul {
+            margin: 0;
+            padding: 0
+        }
+
+        article,
+        aside,
+        details,
+        figcaption,
+        figure,
+        footer,
+        header,
+        menu,
+        nav,
+        section {
+            display: block
+        }
+
+        audio,
+        canvas,
+        video {
+            display: inline-block
+        }
+
+        body,
+        button,
+        input,
+        select,
+        textarea {
+            font: 300 1em/1.8 PingFang SC, Lantinghei SC, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, Helvetica, sans-serif
+        }
+
+        button::-moz-focus-inner,
+        input::-moz-focus-inner {
+            padding: 0;
+            border: 0
+        }
+
+        table {
+            border-collapse: collapse;
+            border-spacing: 0
+        }
+
+        fieldset,
+        img {
+            border: 0
+        }
+
+        blockquote {
+            position: relative;
+            color: #999;
+            font-weight: 400;
+            border-left: 1px solid #1abc9c;
+            padding-left: 1em;
+            margin: 1em 3em 1em 2em
+        }
+
+        @media only screen and (max-width: 640px) {
+            blockquote {
+                margin: 1em 0
+            }
+        }
+
+        abbr,
+        acronym {
+            border-bottom: 1px dotted;
+            font-variant: normal
+        }
+
+        abbr {
+            cursor: help
+        }
+
+        del {
+            text-decoration: line-through
+        }
+
+        address,
+        caption,
+        cite,
+        code,
+        dfn,
+        em,
+        th,
+        var {
+            font-style: normal;
+            font-weight: 400
+        }
+
+        ol,
+        ul {
+            list-style: none
+        }
+
+        caption,
+        th {
+            text-align: left
+        }
+
+        q:after,
+        q:before {
+            content: ""
+        }
+
+        sub,
+        sup {
+            font-size: 75%;
+            line-height: 0;
+            position: relative
+        }
+
+        :root sub,
+        :root sup {
+            vertical-align: baseline
+        }
+
+        sup {
+            top: -.5em
+        }
+
+        sub {
+            bottom: -.25em
+        }
+
+        a {
+            color: #1abc9c
+        }
+
+        a:hover {
+            text-decoration: underline
+        }
+
+        .typo a {
+            border-bottom: 1px solid #1abc9c
+        }
+
+        .typo a:hover {
+            border-bottom-color: #555;
+            color: #555
+        }
+
+        .typo a:hover,
+        a,
+        ins {
+            text-decoration: none
+        }
+
+        .typo-u,
+        u {
+            text-decoration: underline
+        }
+
+        mark {
+            background: #fffdd1;
+            border-bottom: 1px solid #ffedce;
+            padding: 2px;
+            margin: 0 5px
+        }
+
+        code,
+        pre,
+        pre tt {
+            font-family: Courier, Courier New, monospace
+        }
+
+        pre {
+            background: hsla(0, 0%, 97%, .7);
+            border: 1px solid #ddd;
+            padding: 1em 1.5em;
+            display: block;
+            -webkit-overflow-scrolling: touch
+        }
+
+        hr {
+            border: none;
+            border-bottom: 1px solid #cfcfcf;
+            margin-bottom: .8em;
+            height: 10px
+        }
+
+        .typo-small,
+        figcaption,
+        small {
+            font-size: .9em;
+            color: #888
+        }
+
+        b,
+        strong {
+            font-weight: 700;
+            color: #000
+        }
+
+        [draggable] {
+            cursor: move
+        }
+
+        .clearfix:after,
+        .clearfix:before {
+            content: "";
+            display: table
+        }
+
+        .clearfix:after {
+            clear: both
+        }
+
+        .clearfix {
+            zoom: 1
+        }
+
+        .textwrap,
+        .textwrap td,
+        .textwrap th {
+            word-wrap: break-word;
+            word-break: break-all
+        }
+
+        .textwrap-table {
+            table-layout: fixed
+        }
+
+        .serif {
+            font-family: Palatino, Optima, Georgia, serif
+        }
+
+        .typo-dl,
+        .typo-form,
+        .typo-hr,
+        .typo-ol,
+        .typo-p,
+        .typo-pre,
+        .typo-table,
+        .typo-ul,
+        .typo dl,
+        .typo form,
+        .typo hr,
+        .typo ol,
+        .typo p,
+        .typo pre,
+        .typo table,
+        .typo ul,
+        blockquote {
+            margin-bottom: 1rem
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: PingFang SC, Helvetica Neue, Verdana, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif;
+            color: #000;
+            line-height: 1.35
+        }
+
+        .typo-h1,
+        .typo-h2,
+        .typo-h3,
+        .typo-h4,
+        .typo-h5,
+        .typo-h6,
+        .typo h1,
+        .typo h2,
+        .typo h3,
+        .typo h4,
+        .typo h5,
+        .typo h6 {
+            margin-top: 1.2em;
+            margin-bottom: .6em;
+            line-height: 1.35
+        }
+
+        .typo-h1,
+        .typo h1 {
+            font-size: 2em
+        }
+
+        .typo-h2,
+        .typo h2 {
+            font-size: 1.8em
+        }
+
+        .typo-h3,
+        .typo h3 {
+            font-size: 1.6em
+        }
+
+        .typo-h4,
+        .typo h4 {
+            font-size: 1.4em
+        }
+
+        .typo-h5,
+        .typo-h6,
+        .typo h5,
+        .typo h6 {
+            font-size: 1.2em
+        }
+
+        .typo-ul,
+        .typo ul {
+            margin-left: 1.3em;
+            list-style: disc
+        }
+
+        .typo-ol,
+        .typo ol {
+            list-style: decimal;
+            margin-left: 1.9em
+        }
+
+        .typo-ol ol,
+        .typo-ol ul,
+        .typo-ul ol,
+        .typo-ul ul,
+        .typo li ol,
+        .typo li ul {
+            margin-bottom: .8em;
+            margin-left: 2em
+        }
+
+        .typo-ol ul,
+        .typo-ul ul,
+        .typo li ul {
+            list-style: circle
+        }
+
+        .typo-table td,
+        .typo-table th,
+        .typo table caption,
+        .typo table td,
+        .typo table th {
+            border: 1px solid #ddd;
+            padding: .5em 1em;
+            color: #666
+        }
+
+        .typo-table th,
+        .typo table th {
+            background: #fbfbfb
+        }
+
+        .typo-table thead th,
+        .typo table thead th {
+            background: hsla(0, 0%, 95%, .7)
+        }
+
+        .typo table caption {
+            border-bottom: none
+        }
+
+        .typo-input,
+        .typo-textarea {
+            -webkit-appearance: none;
+            border-radius: 0
+        }
+
+        .typo-em,
+        .typo em,
+        caption,
+        legend {
+            color: #000;
+            font-weight: inherit
+        }
+
+        .typo-em {
+            position: relative
+        }
+
+        .typo-em:after {
+            position: absolute;
+            top: .65em;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            content: "\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB"
+        }
+
+        .typo img {
+            max-width: 100%
+        }
+
+        .common-content {
+            font-weight: 400;
+            color: #353535;
+            line-height: 1.75rem;
+            white-space: normal;
+            word-break: normal;
+            font-size: 1rem
+        }
+
+        .common-content img {
+            display: block;
+            max-width: 100%;
+            background-color: #eee
+        }
+
+        .common-content audio,
+        .common-content video {
+            width: 100%;
+            background-color: #eee
+        }
+
+        .common-content center,
+        .common-content font {
+            margin-top: 1rem;
+            display: inline-block
+        }
+
+        .common-content center {
+            width: 100%
+        }
+
+        .common-content pre {
+            margin-top: 1rem;
+            padding-left: 0;
+            padding-right: 0;
+            position: relative;
+            overflow: hidden
+        }
+
+        .common-content pre code {
+            font-size: .8rem;
+            font-family: Consolas, Liberation Mono, Menlo, monospace, Courier;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            overflow-x: auto
+        }
+
+        .common-content hr {
+            border: none;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-top: 1px solid #f5f5f5;
+            height: 1px;
+            background: none
+        }
+
+        .common-content b,
+        .common-content h1,
+        .common-content h2,
+        .common-content h3,
+        .common-content h4,
+        .common-content h5,
+        .common-content strong {
+            font-weight: 700
+        }
+
+        .common-content h1,
+        .common-content h2 {
+            font-size: 1.125rem;
+            margin-bottom: .45rem
+        }
+
+        .common-content h3,
+        .common-content h4,
+        .common-content h5 {
+            font-size: 1rem;
+            margin-bottom: .45rem
+        }
+
+        .common-content p {
+            font-weight: 400;
+            color: #353535;
+            margin-top: .15rem
+        }
+
+        .common-content .orange {
+            color: #ff5a05
+        }
+
+        .common-content .reference {
+            font-size: 1rem;
+            color: #888
+        }
+
+        .custom-rich-content h1 {
+            margin-top: 0;
+            font-weight: 400;
+            font-size: 15.25px;
+            border-bottom: 1px solid #eee;
+            line-height: 2.8
+        }
+
+        .custom-rich-content li,
+        .custom-rich-content p {
+            font-size: 14px;
+            color: #888;
+            line-height: 1.6
+        }
+
+        table.hljs-ln {
+            margin-bottom: 0;
+            border-spacing: 0;
+            border-collapse: collapse
+        }
+
+        table.hljs-ln,
+        table.hljs-ln tbody,
+        table.hljs-ln td,
+        table.hljs-ln tr {
+            box-sizing: border-box
+        }
+
+        table.hljs-ln td {
+            padding: 0;
+            border: 0
+        }
+
+        table.hljs-ln td.hljs-ln-numbers {
+            min-width: 15px;
+            color: rgba(27, 31, 35, .3);
+            text-align: right;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none
+        }
+
+        table.hljs-ln td.hljs-ln-code,
+        table.hljs-ln td.hljs-ln-numbers {
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
+            font-size: 12px;
+            line-height: 20px;
+            vertical-align: top
+        }
+
+        table.hljs-ln td.hljs-ln-code {
+            position: relative;
+            padding-right: 10px;
+            padding-left: 10px;
+            overflow: visible;
+            color: #24292e;
+            word-wrap: normal;
+            white-space: pre
+        }
+
+        video::-webkit-media-controls {
+            overflow: hidden !important
+        }
+
+        video::-webkit-media-controls-enclosure {
+            width: calc(100% + 32px);
+            margin-left: auto
+        }
+
+        ._29HP61GA_0 {
+            max-width:800px;
+            margin:0 auto;
+            margin-bottom: 20px;
+            font-weight: 400;
+            color: #353535;
+            line-height: 1.76;
+            white-space: normal;
+            word-break: normal;
+            font-size: 17px;
+            -webkit-transition: background-color .3s ease;
+            transition: background-color .3s ease
+        }
+
+        ._29HP61GA_0 .MathJax_Display {
+            overflow: auto
+        }
+
+        ._29HP61GA_0 .poster {
+            position: fixed;
+            left: -10000px;
+            top: -10000px;
+            overflow: hidden;
+            padding: 1rem;
+            background: #ececec
+        }
+
+        ._29HP61GA_0 .richcontent-pre-copy {
+            font-size: 13px;
+            color: #888;
+            position: absolute;
+            right: 1em;
+            top: .5em;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none
+        }
+
+        ._29HP61GA_0 .richcontent-pre-copy .iconfont {
+            font-size: 12px;
+            margin-right: .2em
+        }
+
+        ._29HP61GA_0 a {
+            color: #fa8919;
+            border-bottom: 1px solid #fa8919
+        }
+
+        ._29HP61GA_0 img {
+            display: block;
+            max-width: 100%;
+            position: relative;
+            left: 50%;
+            -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+            background-color: #eee;
+            vertical-align: top;
+            border-radius: 0
+        }
+
+        ._29HP61GA_0 audio,
+        ._29HP61GA_0 video {
+            width: 100%;
+            background-color: #eee
+        }
+
+        ._29HP61GA_0 pre {
+            margin-top: 16px;
+            padding: 34px 0 0;
+            margin-bottom: 30px;
+            position: relative;
+            border-radius: 6px;
+            background: rgba(246, 247, 251, .749);
+            border: 0
+        }
+
+        ._29HP61GA_0 pre code {
+            font-size: 12px;
+            font-family: Consolas, Liberation Mono, Menlo, monospace, Courier;
+            display: block;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            margin-left: 16px;
+            margin-right: 16px;
+            overflow-x: scroll
+        }
+
+        ._29HP61GA_0 pre code:after {
+            content: "";
+            height: 30px;
+            width: 100%;
+            display: block
+        }
+
+        ._29HP61GA_0 hr {
+            border: none;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-top: 1px solid #f5f5f5;
+            height: 1px;
+            background: none
+        }
+
+        ._29HP61GA_0 h1,
+        ._29HP61GA_0 h2,
+        ._29HP61GA_0 h3,
+        ._29HP61GA_0 h4,
+        ._29HP61GA_0 h5 {
+            margin-bottom: 20px;
+            margin-top: 0;
+            font-weight: 700
+        }
+
+        ._29HP61GA_0 b,
+        ._29HP61GA_0 strong {
+            font-weight: 700
+        }
+
+        ._29HP61GA_0 h1 {
+            font-size: 21px
+        }
+
+        ._29HP61GA_0 h2 {
+            font-size: 20px
+        }
+
+        ._29HP61GA_0 h3 {
+            font-size: 19px
+        }
+
+        ._29HP61GA_0 h4 {
+            font-size: 18px
+        }
+
+        ._29HP61GA_0 h5 {
+            font-size: 17px
+        }
+
+        ._29HP61GA_0 center,
+        ._29HP61GA_0 p {
+            font-weight: 400;
+            color: #353535;
+            margin-top: 0;
+            margin-bottom: 30px;
+            word-break: break-word
+        }
+
+        ._29HP61GA_0 center {
+            text-align: center
+        }
+
+        ._29HP61GA_0 blockquote {
+            margin-top: 0;
+            margin-bottom: 34px;
+            border-left: 3px solid #e8e8e8;
+            padding-left: 17px;
+            color: #353535
+        }
+
+        ._29HP61GA_0 blockquote p {
+            margin-top: 0;
+            margin-bottom: 0
+        }
+
+        ._29HP61GA_0 ol,
+        ._29HP61GA_0 ul {
+            margin-bottom: 30px
+        }
+
+        ._29HP61GA_0 ol p,
+        ._29HP61GA_0 ul p {
+            margin-top: 0;
+            margin-bottom: 0
+        }
+
+        ._29HP61GA_0 ol {
+            list-style: decimal;
+            margin-left: 20px
+        }
+
+        ._29HP61GA_0 ul li {
+            padding-left: 17px;
+            position: relative;
+            margin-bottom: 10px
+        }
+
+        ._29HP61GA_0 ul li:after {
+            content: "";
+            height: 6px;
+            width: 6px;
+            border-radius: 50%;
+            background: #353535;
+            position: absolute;
+            top: 10px;
+            left: 0
+        }
+
+        ._29HP61GA_0 .orange {
+            color: #fa8919
+        }
+
+        ._29HP61GA_0 .reference {
+            color: #888
+        }
+
+        ._29HP61GA_0 .m-right {
+            text-align: right
+        }
+
+        ._29HP61GA_0 .m-center {
+            text-align: center;
+            display: block
+        }
+
+        ._29HP61GA_0 .m-gray {
+            color: #888
+        }
+
+        ._29HP61GA_0 .m-small {
+            font-size: 15px
+        }
+
+        ._29HP61GA_0 table.hljs-ln {
+            margin-bottom: 0;
+            border-spacing: 0;
+            border-collapse: collapse
+        }
+
+        ._29HP61GA_0 table.hljs-ln,
+        ._29HP61GA_0 table.hljs-ln tbody,
+        ._29HP61GA_0 table.hljs-ln td,
+        ._29HP61GA_0 table.hljs-ln tr {
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box
+        }
+
+        ._29HP61GA_0 table.hljs-ln td {
+            padding: 0;
+            border: 0
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-numbers {
+            min-width: 15px;
+            font-size: 12px;
+            color: rgba(27, 31, 35, .3);
+            text-align: right;
+            white-space: nowrap;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-code,
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-numbers {
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
+            line-height: 20px;
+            vertical-align: top
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-code {
+            position: relative;
+            padding-right: 10px;
+            padding-left: 10px;
+            overflow: visible;
+            font-size: 13px;
+            color: #666;
+            word-wrap: normal;
+            white-space: pre
+        }
+
+    </style>
+</head>
+<body>
+<div class="_29HP61GA_0">
+<h1>07-迭代器和好用的新for循环</h1>
+<p>你好，我是吴咏炜。</p><p>我们已经讲过了容器。在使用容器的过程中，你也应该对迭代器（iterator）或多或少有了些了解。今天，我们就来系统地讲一下迭代器。</p><h2>什么是迭代器？</h2><p>迭代器是一个很通用的概念，并不是一个特定的类型。它实际上是一组对类型的要求（<span class="orange">[1]</span>）。它的最基本要求就是从一个端点出发，下一步、下一步地到达另一个端点。按照一般的中文习惯，也许“遍历”是比“迭代”更好的用词。我们可以遍历一个字符串的字符，遍历一个文件的内容，遍历目录里的所有文件，等等。这些都可以用迭代器来表达。</p><p>我在用 output_container.h 输出容器内容的时候，实际上就对容器的 <code>begin</code> 和 <code>end</code> 成员函数返回的对象类型提出了要求。假设前者返回的类型是 I，后者返回的类型是 S，这些要求是：</p><ul>
+<li>I 对象支持 <code>*</code> 操作，解引用取得容器内的某个对象。</li>
+<li>I 对象支持 <code>++</code>，指向下一个对象。</li>
+<li>I 对象可以和 I 或 S 对象进行相等比较，判断是否遍历到了特定位置（在 S 的情况下是是否结束了遍历）。</li>
+</ul><p>注意在 C++17 之前，<code>begin</code> 和 <code>end</code> 返回的类型 I 和 S 必须是相同的。从 C++17 开始，I 和 S 可以是不同的类型。这带来了更大的灵活性和更多的优化可能性。</p><p>上面的类型 I，多多少少就是一个满足输入迭代器（input iterator）的类型了。不过，output_container.h 只使用了前置 <code>++</code>，但输入迭代器要求前置和后置 <code>++</code> 都得到支持。</p><!-- [[[read_end]]] --><p>输入迭代器不要求对同一迭代器可以多次使用 <code>*</code> 运算符，也不要求可以保存迭代器来重新遍历对象，换句话说，只要求可以单次访问。如果取消这些限制、允许多次访问的话，那迭代器同时满足了前向迭代器（forward iterator）。</p><p>一个前向迭代器的类型，如果同时支持 <code>--</code>（前置及后置），回到前一个对象，那它就是个双向迭代器（bidirectional iterator）。也就是说，可以正向遍历，也可以反向遍历。</p><p>一个双向迭代器，如果额外支持在整数类型上的 <code>+</code>、<code>-</code>、<code>+=</code>、<code>-=</code>，跳跃式地移动迭代器；支持 <code>[]</code>，数组式的下标访问；支持迭代器的大小比较（之前只要求相等比较）；那它就是个随机访问迭代器（random-access iterator）。</p><p>一个随机访问迭代器 <code>i</code> 和一个整数 <code>n</code>，在 <code>*i</code> 可解引用且 <code>i + n</code> 是合法迭代器的前提下，如果额外还满足 <code>*(addressdof(*i) + n)</code> 等价于 <code>*(i + n)</code>，即保证迭代器指向的对象在内存里是连续存放的，那它（在 C++20 里）就是个连续迭代器（contiguous iterator）。</p><p>以上这些迭代器只考虑了读取。如果一个类型像输入迭代器，但 <code>*i</code> 只能作为左值来写而不能读，那它就是个输出迭代器（output iterator）。</p><p>而比输入迭代器和输出迭代器更底层的概念，就是迭代器了。基本要求是：</p><ul>
+<li>对象可以被拷贝构造、拷贝赋值和析构。</li>
+<li>对象支持 <code>*</code> 运算符。</li>
+<li>对象支持前置 <code>++</code> 运算符。</li>
+</ul><p>迭代器类型的关系可从下图中全部看到：</p><p><img src="https://static001.geekbang.org/resource/image/dd/5a/dd25c3f074fe0b792dddecfd15f74e5a.png" alt=""></p><p>迭代器通常是对象。但需要注意的是，指针可以满足上面所有的迭代器要求，因而也是迭代器。这应该并不让人惊讶，因为本来迭代器就是根据指针的特性，对其进行抽象的结果。事实上，<code>vector</code> 的迭代器，在很多实现里就直接是使用指针的。</p><h2>常用迭代器</h2><p>最常用的迭代器就是容器的 <code>iterator</code> 类型了。以我们学过的顺序容器为例，它们都定义了嵌套的 <code>iterator</code> 类型和 <code>const_iterator</code> 类型。一般而言，<code>iterator</code> 可写入，<code>const_iterator</code> 类型不可写入，但这些迭代器都被定义为输入迭代器或其派生类型：</p><ul>
+<li><code>vector::iterator</code> 和 <code>array::iterator</code> 可以满足到连续迭代器。</li>
+<li><code>deque::iterator</code> 可以满足到随机访问迭代器（记得它的内存只有部分连续）。</li>
+<li><code>list::iterator</code> 可以满足到双向迭代器（链表不能快速跳转）。</li>
+<li><code>forward_list::iterator</code> 可以满足到前向迭代器（单向链表不能反向遍历）。</li>
+</ul><p>很常见的一个输出迭代器是 <code>back_inserter</code> 返回的类型 <code>back_inserter_iterator</code> 了；用它我们可以很方便地在容器的尾部进行插入操作。另外一个常见的输出迭代器是 <code>ostream_iterator</code>，方便我们把容器内容“拷贝”到一个输出流。示例如下：</p><pre><code class="language-c++">#include &lt;algorithm&gt;  // std::copy
+#include &lt;iterator&gt;   // std::back_inserter
+#include &lt;vector&gt;     // std::vector
+using namespace std;
+</code></pre><pre><code class="language-c++">vector&lt;int&gt; v1{1, 2, 3, 4, 5};
+vector&lt;int&gt; v2;
+copy(v1.begin(), v1.end(),
+     back_inserter(v2));
+</code></pre><pre><code class="language-c++">v2
+</code></pre><blockquote>
+<p><code>{ 1, 2, 3, 4, 5 }</code></p>
+</blockquote><pre><code class="language-c++">#include &lt;iostream&gt;  // std::cout
+copy(v2.begin(), v2.end(),
+     ostream_iterator&lt;int&gt;(cout, " "));
+</code></pre><blockquote>
+<p><code>1 2 3 4 5</code></p>
+</blockquote><h2>使用输入行迭代器</h2><p>下面我们来看一下一个我写的输入迭代器。它的功能本身很简单，就是把一个输入流（<code>istream</code>）的内容一行行读进来。配上 C++11 引入的基于范围的 for 循环的语法，我们可以把遍历输入流的代码以一种自然、非过程式的方式写出来，如下所示：</p><pre><code class="language-c++">for (const string&amp; line :
+     istream_line_reader(is)) {
+  // 示例循环体中仅进行简单输出
+  cout &lt;&lt; line &lt;&lt; endl;
+}
+</code></pre><p>我们可以对比一下以传统的方式写的 C++ 代码，其中需要照顾不少细节：</p><pre><code class="language-c++">string line;
+for (;;) {
+  getline(is, line);
+  if (!is) {
+    break;
+  }
+  cout &lt;&lt; line &lt;&lt; endl;
+}
+</code></pre><p>从 <code>is</code> 读入输入行的逻辑，在前面的代码里一个语句就全部搞定了，在这儿用了 5 个语句……</p><p>我们后面会分析一下这个输入迭代器。在此之前，我先解说一下基于范围的 for 循环这个语法。虽然这可以说是个语法糖，但它对提高代码的可读性真的非常重要。如果不用这个语法糖的话，简洁性上的优势就小多了。我们直接把这个循环改写成等价的普通 for 循环的样子。</p><pre><code class="language-c++">{
+  auto&amp;&amp; r = istream_line_reader(is);
+  auto it = r.begin();
+  auto end = r.end();
+  for (; it != end; ++it) {
+    const string&amp; line = *it;
+    cout &lt;&lt; line &lt;&lt; endl;
+  }
+}
+</code></pre><p>可以看到，它做的事情也不复杂，就是：</p><ul>
+<li>获取冒号后边的范围表达式的结果，并隐式产生一个引用，在整个循环期间都有效。注意根据生命期延长规则，表达式结果如果是临时对象的话，这个对象要在循环结束后才被销毁。</li>
+<li>自动生成遍历这个范围的迭代器。</li>
+<li>循环内自动生成根据冒号左边的声明和 <code>*it</code> 来进行初始化的语句。</li>
+<li>下面就是完全正常的循环体。</li>
+</ul><p>生成迭代器这一步有可能是——但不一定是——调用 <code>r</code> 的 <code>begin</code> 和 <code>end</code> 成员函数。具体规则是：</p><ul>
+<li>对于 C 数组（必须是没有退化为指针的情况），编译器会自动生成指向数组头尾的指针（相当于自动应用可用于数组的 <code>std::begin</code> 和 <code>std::end</code> 函数）。</li>
+<li>对于有 <code>begin</code> 和 <code>end</code> 成员的对象，编译器会调用其 <code>begin</code> 和 <code>end</code> 成员函数（我们目前的情况）。</li>
+<li>否则，编译器会尝试在 <code>r</code> 对象所在的名空间寻找可以用于 <code>r</code> 的 <code>begin</code> 和 <code>end</code> 函数，并调用 <code>begin(r)</code> 和 <code>end(r)</code>；找不到的话则失败报错。</li>
+</ul><h2>定义输入行迭代器</h2><p>下面我们看一下，要实现这个输入行迭代器，需要做些什么工作。</p><p>C++ 里有些固定的类型要求规范。对于一个迭代器，我们需要定义下面的类型：</p><pre><code class="language-c++">class istream_line_reader {
+public:
+  class iterator {  // 实现 InputIterator
+  public:
+    typedef ptrdiff_t difference_type;
+    typedef string value_type;
+    typedef const value_type* pointer;
+    typedef const value_type&amp; reference;
+    typedef input_iterator_tag
+      iterator_category;
+    …
+  };
+  …
+};
+</code></pre><p>仿照一般的容器，我们把迭代器定义为 <code>istream_line_reader</code> 的嵌套类。它里面的这五个类型是必须定义的（其他泛型 C++ 代码可能会用到这五个类型；之前标准库定义了一个可以继承的类模板 <code>std::iterator</code> 来产生这些类型定义，但这个类目前已经被废弃 <span class="orange">[2]</span>）。其中：</p><ul>
+<li><code>difference_type</code> 是代表迭代器之间距离的类型，定义为 <code>ptrdiff_t</code> 只是种标准做法（指针间差值的类型），对这个类型没什么特别作用。</li>
+<li><code>value_type</code> 是迭代器指向的对象的值类型，我们使用 <code>string</code>，表示迭代器指向的是字符串。</li>
+<li><code>pointer</code> 是迭代器指向的对象的指针类型，这儿就平淡无奇地定义为 <code>value_type</code> 的常指针了（我们可不希望别人来更改指针指向的内容）。</li>
+<li>类似的，<code>reference</code> 是 <code>value_type</code> 的常引用。</li>
+<li><code>iterator_category</code> 被定义为 <code>input_iterator_tag</code>，标识这个迭代器的类型是 input iterator（输入迭代器）。</li>
+</ul><p>作为一个真的只能读一次的输入迭代器，有个特殊的麻烦（前向迭代器或其衍生类型没有）：到底应该让 <code>*</code> 负责读取还是 <code>++</code> 负责读取。我们这儿采用常见、也较为简单的做法，让 <code>++</code> 负责读取，<code>*</code> 负责返回读取的内容（这个做法会有些副作用，但按我们目前的用法则没有问题）。这样的话，这个 <code>iterator</code> 类需要有一个数据成员指向输入流，一个数据成员来存放读取的结果。根据这个思路，我们定义这个类的基本成员函数和数据成员：</p><pre><code class="language-c++">class istream_line_reader {
+public:
+  class iterator {
+    …
+    iterator() noexcept
+      : stream_(nullptr) {}
+    explicit iterator(istream&amp; is)
+      : stream_(&amp;is)
+    {
+      ++*this;
+    }
+
+    reference operator*() const noexcept
+    {
+      return line_;
+    }
+    pointer operator-&gt;() const noexcept
+    {
+      return &amp;line_;
+    }
+    iterator&amp; operator++()
+    {
+      getline(*stream_, line_);
+      if (!*stream_) {
+        stream_ = nullptr;
+      }
+      return *this;
+    }
+    iterator operator++(int)
+    {
+      iterator temp(*this);
+      ++*this;
+      return temp;
+    }
+
+  private:
+    istream* stream_;
+    string line_;
+  };
+  …
+};
+</code></pre><p>我们定义了默认构造函数，将 <code>stream_</code> 清空；相应的，在带参数的构造函数里，我们根据传入的输入流来设置 <code>stream_</code>。我们也定义了 <code>*</code> 和 <code>-&gt;</code> 运算符来取得迭代器指向的文本行的引用和指针，并用 <code>++</code> 来读取输入流的内容（后置 <code>++</code> 则以惯常方式使用前置 <code>++</code> 和拷贝构造来实现）。唯一“特别”点的地方，是我们在构造函数里调用了 <code>++</code>，确保在构造后调用 <code>*</code> 运算符时可以读取内容，符合日常先使用 <code>*</code>、再使用 <code>++</code> 的习惯。一旦文件读取到尾部（或出错），则 <code>stream_</code> 被清空，回到默认构造的情况。</p><p>对于迭代器之间的比较，我们则主要考虑文件有没有读到尾部的情况，简单定义为：</p><pre><code class="language-c++">    bool operator==(const iterator&amp; rhs)
+      const noexcept
+    {
+      return stream_ == rhs.stream_;
+    }
+    bool operator!=(const iterator&amp; rhs)
+      const noexcept
+    {
+      return !operator==(rhs);
+    }
+</code></pre><p>有了这个 <code>iterator</code> 的定义后，<code>istream_line_reader</code> 的定义就简单得很了：</p><pre><code class="language-c++">class istream_line_reader {
+public:
+  class iterator {…};
+  istream_line_reader() noexcept
+    : stream_(nullptr) {}
+  explicit istream_line_reader(
+    istream&amp; is) noexcept
+    : stream_(&amp;is) {}
+  iterator begin()
+  {
+    return iterator(*stream_);
+  }
+  iterator end() const noexcept
+  {
+    return iterator();
+  }
+
+private:
+  istream* stream_;
+};
+</code></pre><p>也就是说，构造函数只是简单地把输入流的指针赋给 <code>stream_</code> 成员变量。<code>begin</code> 成员函数则负责构造一个真正有意义的迭代器；<code>end</code> 成员函数则只是返回一个默认构造的迭代器而已。</p><p>以上就是一个完整的基于输入流的行迭代器了。这个行输入模板的设计动机和性能测试结果可参见参考资料 <span class="orange">[3]</span> 和 <span class="orange">[4]</span>；完整的工程可用代码，请参见参考资料 <span class="orange">[5]</span>。该项目中还提供了利用 C 文件接口的 file_line_reader 和基于内存映射文件的 mmap_line_reader。</p><h2>内容小结</h2><p>今天我们介绍了所有的迭代器类型，并介绍了基于范围的 for 循环。随后，我们介绍了一个实际的输入迭代器工具，并用它来简化从输入流中读入文本行这一常见操作。最后，我们展示了这个输入迭代器的定义。</p><h2>课后思考</h2><p>请思考一下：</p><ol>
+<li>目前这个输入行迭代器的行为，在什么情况下可能导致意料之外的后果？</li>
+<li>请尝试一下改进这个输入行迭代器，看看能不能消除这种意外。如果可以，该怎么做？如果不可以，为什么？</li>
+</ol><p>欢迎留言和我交流你的看法。</p><h2><span class="reference">参考资料</span></h2><p><span class="reference">[1] cppreference.com, “Iterator library”. <a href="https://en.cppreference.com/w/cpp/iterator">https://en.cppreference.com/w/cpp/iterator</a> </span></p><p><span class="reference">[1a] cppreference.com, “迭代器库”. <a href="https://zh.cppreference.com/w/cpp/iterator">https://zh.cppreference.com/w/cpp/iterator</a> </span></p><p><span class="reference">[2] Jonathan Boccara, “std::iterator is deprecated: why, what it was, and what to use instead”. <a href="https://www.fluentcpp.com/2018/05/08/std-iterator-deprecated/">https://www.fluentcpp.com/2018/05/08/std-iterator-deprecated/</a> </span></p><p><span class="reference">[3] 吴咏炜, “Python <code>yield</code> and C++ coroutines”. <a href="https://yongweiwu.wordpress.com/2016/08/16/python-yield-and-cplusplus-coroutines/">https://yongweiwu.wordpress.com/2016/08/16/python-yield-and-cplusplus-coroutines/</a> </span></p><p><span class="reference">[4] 吴咏炜, “Performance of my line readers”. <a href="https://yongweiwu.wordpress.com/2016/11/12/performance-of-my-line-readers/">https://yongweiwu.wordpress.com/2016/11/12/performance-of-my-line-readers/</a> </span></p><p><span class="reference">[5] 吴咏炜, nvwa. <a href="https://github.com/adah1972/nvwa/">https://github.com/adah1972/nvwa/</a> </span></p><h2>精选留言：</h2>
+        <ul>
+        
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            nelson  2019-12-12 01:48:41
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            如果stream_是nullptr会怎么样？ [1赞]
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-12-12 07:31:06</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">得到一个空的不能遍历的迭代器。跟任何 end() 相等比较返回真，因而你不可以对它做 ++ 操作。如果你要硬来，它就死给你看。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            晚风·和煦  2019-12-11 11:14:52
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            从 C++17 开始，I 和 S 可以是不同的类型。这带来了更大的灵活性和更多的优化可能性。   没太理解这句话😂 [1赞]
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-12-11 18:34:33</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">现在 r.begin() 和 r.end() 可以是不同类型了。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            木瓜777  2019-12-13 09:09:28
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            iterator operator++(int)    {      iterator temp(*this);      ++*this;      return temp;    }<br><br>这个拷贝构造，是否会出问题？ 如果失败，this继续读取下一行，但temp是异常的。 
+        </div>
+        
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            Geek_94a091  2019-12-13 00:03:14
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            遍历一遍后，第二次调用begin会崩溃，stream_指针已经为空 
+        </div>
+        
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            MT  2019-12-12 19:29:41
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            老师，可以讲以下为什么可以将I 和 S 设置成不同的类型吗？具体使用在那些方面? 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-12-13 00:40:39</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">给个例子你仔细研读一下吧。功能是遍历字符串，直到遇到字符串结尾（事先不知道字符串长度）。<br><br>#include &lt;stdio.h&gt;<br><br>struct null_sentinel {};<br><br>bool operator!=(const char* ptr, null_sentinel)<br>{<br>    return *ptr != 0;<br>}<br><br>&#47;&#47; operator!=(null_sentinel, const char* ptr), operator==, ...<br><br>struct c_string_view {<br>    c_string_view(const char* str) : str_(str) {}<br>    const char* begin() const { return str_; }<br>    null_sentinel end() const { return null_sentinel{}; }<br>    const char* str_;<br>};<br><br>int main()<br>{<br>    c_string_view msg{&quot;Hello world!&quot;};<br>    for (char ch : msg) {<br>        putchar(ch);<br>    }<br>    putchar(&#39;\n&#39;);<br>}<br></div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            Scott  2019-12-12 13:47:54
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            我的理解是istream_line_reader的iterator在到达end时，再++会直接crash，这个和STL里面主流容器的行为是不一致的。<br>可以在get_line之前，判断一下stream_是否为nullptr，不是才调用，对end的iterator反复进行++都一直返回自己本身。 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-12-12 16:54:54</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">你对容器的 end() 解引用，同样可能崩溃（取决于实现）。你不被允许这么做。这么做，你就进入了 undefined behavior 的领域，系统是死还是出 bug 都正常。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            禾桃  2019-12-11 18:15:11
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            输入迭代器和输出迭代器，<br>这个入和出是相对于什么而言的？<br>感觉有点绕。<br><br>谢谢！ 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-12-12 07:17:37</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">cout &lt;&lt; *it 就是读；<br>*it = 42 就是写。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            tt  2019-12-11 14:56:13
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            意料之外的后果，是不是主要就是资源发生了不可控或不可知的泄露或状态改变？<br><br>这里的资源我觉得一是string对象，一个是istream对象，那么在这两个对象的内存管理上会引起问题？<br><br>比如构造函数中传入的istream指针没有被管理起来，它指向的对象如果被析构就会发生异常？ 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-12-11 18:39:49</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">你说的情况会出问题，但这个是需要调用者保证的，我做不了什么事情。<br><br>再想想。🤓</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            小一日一  2019-12-11 12:15:30
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            看了老师的代码再看自己学的代码，感觉我的C++是小学生水平。<br><br>以为自己看过几遍C++ PRIMER 5th, 看过并理解effective++, more effective c++, inside the c++ object model, 能应付平时的开发需要，也能看懂公司别人的代码，就觉得自己的C++不错了，看了老师github的代码后我是彻底服了，感叹C++太博大精深，永远不敢说自己精通C++。<br><br>我什么时候才能达到老师对C++理解并使用的高度呢，难道也需要20年么？ 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-12-11 18:38:11</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">肯定还有更好的 C++ 代码的。学习无止境！<br><br>认真学习，应该不用那么久。反过来，说明老程序员还有点价值么。🤗</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            小一日一  2019-12-11 12:05:54
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            1. 我能想到的一点是，istream_line_reader在构造时没有对输入流的状态做检测，如果在输入流处于错误状态时调用getline()，会抛 ios_base::failure异常。<br>2. 我把带输入流检查的构造贴一下：<br>    istream_line_reader() noexcept : stream_(nullptr) {}                                                                                   <br>    explicit istream_line_reader( istream&amp; is) noexcept {                                                                                  <br>        if (is.good()) stream_ = &amp;is;                                                                                                      <br>        else stream_ = nullptr;                                                                                                            <br>    } 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-12-11 18:36:21</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">抛异常是很正常的呀，不是问题。不过，IO streams 缺省应该是不抛异常的。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            廖熊猫  2019-12-11 10:37:12
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            我认为是因为stream操作有副作用吧，在使用++还是*读取的时候有提到，每次读取的话都会受到影响，如果我在使用迭代器之前操作了stream，这个迭代器的操作范围就不是我预期的范围了。迭代器玩法很多啊，有一本《Functional C++》讲了很多基于范围的操作，不过水平不够，没学到什么精髓。 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-12-12 07:22:28</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">你说的用法我觉得还是不会让人惊讶的……<br><br>你是说 Ivan Čukić 写的 Functional Programming in C++ 吗？我是那本书的技术校对……嗯，我当然推荐它的。Range 下面会单独有一讲。<br><br>学语言，还是要多读多写多练。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            Geek_71d4ac  2019-12-11 08:26:46
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            在构造函数中使用this是否安全？万一构造中途失败了呢？ 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-12-11 18:29:49</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">本身没有任何问题。如何保证行为安全（如异常安全）是个独立问题，跟是否在构造函数里没啥关系。尽量不使用裸指针非常重要，用了的话就需要照顾很多细节了……</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            未来、尽在我手  2019-12-11 00:23:49
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            老师，可以讲讲auto？<br>我一直很期待新的for，可是没看到在哪？<br>这儿就详细介绍了迭代器及各种不同的迭代器。 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-12-11 08:06:42</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">auto 正是下一讲的主要内容。第二个问题，在正文里搜“基于范围的 for 循环”。代码例子没细看么？🤔</div>
+</div>
+            
+    </div>
+</li>
+            </ul>
+</div>
+</body>
+</html>

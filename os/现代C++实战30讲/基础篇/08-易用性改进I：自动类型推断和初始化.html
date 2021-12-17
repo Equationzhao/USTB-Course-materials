@@ -1,0 +1,1055 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>08-易用性改进I：自动类型推断和初始化</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <style>
+        html {
+            color: #333;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            text-rendering: optimizelegibility;
+            font-family: Helvetica Neue, PingFang SC, Verdana, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif
+        }
+
+        html.borderbox *,
+        html.borderbox :after,
+        html.borderbox :before {
+            box-sizing: border-box
+        }
+
+        article,
+        aside,
+        blockquote,
+        body,
+        button,
+        code,
+        dd,
+        details,
+        dl,
+        dt,
+        fieldset,
+        figcaption,
+        figure,
+        footer,
+        form,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        header,
+        hr,
+        input,
+        legend,
+        li,
+        menu,
+        nav,
+        ol,
+        p,
+        pre,
+        section,
+        td,
+        textarea,
+        th,
+        ul {
+            margin: 0;
+            padding: 0
+        }
+
+        article,
+        aside,
+        details,
+        figcaption,
+        figure,
+        footer,
+        header,
+        menu,
+        nav,
+        section {
+            display: block
+        }
+
+        audio,
+        canvas,
+        video {
+            display: inline-block
+        }
+
+        body,
+        button,
+        input,
+        select,
+        textarea {
+            font: 300 1em/1.8 PingFang SC, Lantinghei SC, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, Helvetica, sans-serif
+        }
+
+        button::-moz-focus-inner,
+        input::-moz-focus-inner {
+            padding: 0;
+            border: 0
+        }
+
+        table {
+            border-collapse: collapse;
+            border-spacing: 0
+        }
+
+        fieldset,
+        img {
+            border: 0
+        }
+
+        blockquote {
+            position: relative;
+            color: #999;
+            font-weight: 400;
+            border-left: 1px solid #1abc9c;
+            padding-left: 1em;
+            margin: 1em 3em 1em 2em
+        }
+
+        @media only screen and (max-width: 640px) {
+            blockquote {
+                margin: 1em 0
+            }
+        }
+
+        abbr,
+        acronym {
+            border-bottom: 1px dotted;
+            font-variant: normal
+        }
+
+        abbr {
+            cursor: help
+        }
+
+        del {
+            text-decoration: line-through
+        }
+
+        address,
+        caption,
+        cite,
+        code,
+        dfn,
+        em,
+        th,
+        var {
+            font-style: normal;
+            font-weight: 400
+        }
+
+        ol,
+        ul {
+            list-style: none
+        }
+
+        caption,
+        th {
+            text-align: left
+        }
+
+        q:after,
+        q:before {
+            content: ""
+        }
+
+        sub,
+        sup {
+            font-size: 75%;
+            line-height: 0;
+            position: relative
+        }
+
+        :root sub,
+        :root sup {
+            vertical-align: baseline
+        }
+
+        sup {
+            top: -.5em
+        }
+
+        sub {
+            bottom: -.25em
+        }
+
+        a {
+            color: #1abc9c
+        }
+
+        a:hover {
+            text-decoration: underline
+        }
+
+        .typo a {
+            border-bottom: 1px solid #1abc9c
+        }
+
+        .typo a:hover {
+            border-bottom-color: #555;
+            color: #555
+        }
+
+        .typo a:hover,
+        a,
+        ins {
+            text-decoration: none
+        }
+
+        .typo-u,
+        u {
+            text-decoration: underline
+        }
+
+        mark {
+            background: #fffdd1;
+            border-bottom: 1px solid #ffedce;
+            padding: 2px;
+            margin: 0 5px
+        }
+
+        code,
+        pre,
+        pre tt {
+            font-family: Courier, Courier New, monospace
+        }
+
+        pre {
+            background: hsla(0, 0%, 97%, .7);
+            border: 1px solid #ddd;
+            padding: 1em 1.5em;
+            display: block;
+            -webkit-overflow-scrolling: touch
+        }
+
+        hr {
+            border: none;
+            border-bottom: 1px solid #cfcfcf;
+            margin-bottom: .8em;
+            height: 10px
+        }
+
+        .typo-small,
+        figcaption,
+        small {
+            font-size: .9em;
+            color: #888
+        }
+
+        b,
+        strong {
+            font-weight: 700;
+            color: #000
+        }
+
+        [draggable] {
+            cursor: move
+        }
+
+        .clearfix:after,
+        .clearfix:before {
+            content: "";
+            display: table
+        }
+
+        .clearfix:after {
+            clear: both
+        }
+
+        .clearfix {
+            zoom: 1
+        }
+
+        .textwrap,
+        .textwrap td,
+        .textwrap th {
+            word-wrap: break-word;
+            word-break: break-all
+        }
+
+        .textwrap-table {
+            table-layout: fixed
+        }
+
+        .serif {
+            font-family: Palatino, Optima, Georgia, serif
+        }
+
+        .typo-dl,
+        .typo-form,
+        .typo-hr,
+        .typo-ol,
+        .typo-p,
+        .typo-pre,
+        .typo-table,
+        .typo-ul,
+        .typo dl,
+        .typo form,
+        .typo hr,
+        .typo ol,
+        .typo p,
+        .typo pre,
+        .typo table,
+        .typo ul,
+        blockquote {
+            margin-bottom: 1rem
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: PingFang SC, Helvetica Neue, Verdana, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif;
+            color: #000;
+            line-height: 1.35
+        }
+
+        .typo-h1,
+        .typo-h2,
+        .typo-h3,
+        .typo-h4,
+        .typo-h5,
+        .typo-h6,
+        .typo h1,
+        .typo h2,
+        .typo h3,
+        .typo h4,
+        .typo h5,
+        .typo h6 {
+            margin-top: 1.2em;
+            margin-bottom: .6em;
+            line-height: 1.35
+        }
+
+        .typo-h1,
+        .typo h1 {
+            font-size: 2em
+        }
+
+        .typo-h2,
+        .typo h2 {
+            font-size: 1.8em
+        }
+
+        .typo-h3,
+        .typo h3 {
+            font-size: 1.6em
+        }
+
+        .typo-h4,
+        .typo h4 {
+            font-size: 1.4em
+        }
+
+        .typo-h5,
+        .typo-h6,
+        .typo h5,
+        .typo h6 {
+            font-size: 1.2em
+        }
+
+        .typo-ul,
+        .typo ul {
+            margin-left: 1.3em;
+            list-style: disc
+        }
+
+        .typo-ol,
+        .typo ol {
+            list-style: decimal;
+            margin-left: 1.9em
+        }
+
+        .typo-ol ol,
+        .typo-ol ul,
+        .typo-ul ol,
+        .typo-ul ul,
+        .typo li ol,
+        .typo li ul {
+            margin-bottom: .8em;
+            margin-left: 2em
+        }
+
+        .typo-ol ul,
+        .typo-ul ul,
+        .typo li ul {
+            list-style: circle
+        }
+
+        .typo-table td,
+        .typo-table th,
+        .typo table caption,
+        .typo table td,
+        .typo table th {
+            border: 1px solid #ddd;
+            padding: .5em 1em;
+            color: #666
+        }
+
+        .typo-table th,
+        .typo table th {
+            background: #fbfbfb
+        }
+
+        .typo-table thead th,
+        .typo table thead th {
+            background: hsla(0, 0%, 95%, .7)
+        }
+
+        .typo table caption {
+            border-bottom: none
+        }
+
+        .typo-input,
+        .typo-textarea {
+            -webkit-appearance: none;
+            border-radius: 0
+        }
+
+        .typo-em,
+        .typo em,
+        caption,
+        legend {
+            color: #000;
+            font-weight: inherit
+        }
+
+        .typo-em {
+            position: relative
+        }
+
+        .typo-em:after {
+            position: absolute;
+            top: .65em;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            content: "\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB"
+        }
+
+        .typo img {
+            max-width: 100%
+        }
+
+        .common-content {
+            font-weight: 400;
+            color: #353535;
+            line-height: 1.75rem;
+            white-space: normal;
+            word-break: normal;
+            font-size: 1rem
+        }
+
+        .common-content img {
+            display: block;
+            max-width: 100%;
+            background-color: #eee
+        }
+
+        .common-content audio,
+        .common-content video {
+            width: 100%;
+            background-color: #eee
+        }
+
+        .common-content center,
+        .common-content font {
+            margin-top: 1rem;
+            display: inline-block
+        }
+
+        .common-content center {
+            width: 100%
+        }
+
+        .common-content pre {
+            margin-top: 1rem;
+            padding-left: 0;
+            padding-right: 0;
+            position: relative;
+            overflow: hidden
+        }
+
+        .common-content pre code {
+            font-size: .8rem;
+            font-family: Consolas, Liberation Mono, Menlo, monospace, Courier;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            overflow-x: auto
+        }
+
+        .common-content hr {
+            border: none;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-top: 1px solid #f5f5f5;
+            height: 1px;
+            background: none
+        }
+
+        .common-content b,
+        .common-content h1,
+        .common-content h2,
+        .common-content h3,
+        .common-content h4,
+        .common-content h5,
+        .common-content strong {
+            font-weight: 700
+        }
+
+        .common-content h1,
+        .common-content h2 {
+            font-size: 1.125rem;
+            margin-bottom: .45rem
+        }
+
+        .common-content h3,
+        .common-content h4,
+        .common-content h5 {
+            font-size: 1rem;
+            margin-bottom: .45rem
+        }
+
+        .common-content p {
+            font-weight: 400;
+            color: #353535;
+            margin-top: .15rem
+        }
+
+        .common-content .orange {
+            color: #ff5a05
+        }
+
+        .common-content .reference {
+            font-size: 1rem;
+            color: #888
+        }
+
+        .custom-rich-content h1 {
+            margin-top: 0;
+            font-weight: 400;
+            font-size: 15.25px;
+            border-bottom: 1px solid #eee;
+            line-height: 2.8
+        }
+
+        .custom-rich-content li,
+        .custom-rich-content p {
+            font-size: 14px;
+            color: #888;
+            line-height: 1.6
+        }
+
+        table.hljs-ln {
+            margin-bottom: 0;
+            border-spacing: 0;
+            border-collapse: collapse
+        }
+
+        table.hljs-ln,
+        table.hljs-ln tbody,
+        table.hljs-ln td,
+        table.hljs-ln tr {
+            box-sizing: border-box
+        }
+
+        table.hljs-ln td {
+            padding: 0;
+            border: 0
+        }
+
+        table.hljs-ln td.hljs-ln-numbers {
+            min-width: 15px;
+            color: rgba(27, 31, 35, .3);
+            text-align: right;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none
+        }
+
+        table.hljs-ln td.hljs-ln-code,
+        table.hljs-ln td.hljs-ln-numbers {
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
+            font-size: 12px;
+            line-height: 20px;
+            vertical-align: top
+        }
+
+        table.hljs-ln td.hljs-ln-code {
+            position: relative;
+            padding-right: 10px;
+            padding-left: 10px;
+            overflow: visible;
+            color: #24292e;
+            word-wrap: normal;
+            white-space: pre
+        }
+
+        video::-webkit-media-controls {
+            overflow: hidden !important
+        }
+
+        video::-webkit-media-controls-enclosure {
+            width: calc(100% + 32px);
+            margin-left: auto
+        }
+
+        ._29HP61GA_0 {
+            max-width:800px;
+            margin:0 auto;
+            margin-bottom: 20px;
+            font-weight: 400;
+            color: #353535;
+            line-height: 1.76;
+            white-space: normal;
+            word-break: normal;
+            font-size: 17px;
+            -webkit-transition: background-color .3s ease;
+            transition: background-color .3s ease
+        }
+
+        ._29HP61GA_0 .MathJax_Display {
+            overflow: auto
+        }
+
+        ._29HP61GA_0 .poster {
+            position: fixed;
+            left: -10000px;
+            top: -10000px;
+            overflow: hidden;
+            padding: 1rem;
+            background: #ececec
+        }
+
+        ._29HP61GA_0 .richcontent-pre-copy {
+            font-size: 13px;
+            color: #888;
+            position: absolute;
+            right: 1em;
+            top: .5em;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none
+        }
+
+        ._29HP61GA_0 .richcontent-pre-copy .iconfont {
+            font-size: 12px;
+            margin-right: .2em
+        }
+
+        ._29HP61GA_0 a {
+            color: #fa8919;
+            border-bottom: 1px solid #fa8919
+        }
+
+        ._29HP61GA_0 img {
+            display: block;
+            max-width: 100%;
+            position: relative;
+            left: 50%;
+            -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+            background-color: #eee;
+            vertical-align: top;
+            border-radius: 0
+        }
+
+        ._29HP61GA_0 audio,
+        ._29HP61GA_0 video {
+            width: 100%;
+            background-color: #eee
+        }
+
+        ._29HP61GA_0 pre {
+            margin-top: 16px;
+            padding: 34px 0 0;
+            margin-bottom: 30px;
+            position: relative;
+            border-radius: 6px;
+            background: rgba(246, 247, 251, .749);
+            border: 0
+        }
+
+        ._29HP61GA_0 pre code {
+            font-size: 12px;
+            font-family: Consolas, Liberation Mono, Menlo, monospace, Courier;
+            display: block;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            margin-left: 16px;
+            margin-right: 16px;
+            overflow-x: scroll
+        }
+
+        ._29HP61GA_0 pre code:after {
+            content: "";
+            height: 30px;
+            width: 100%;
+            display: block
+        }
+
+        ._29HP61GA_0 hr {
+            border: none;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-top: 1px solid #f5f5f5;
+            height: 1px;
+            background: none
+        }
+
+        ._29HP61GA_0 h1,
+        ._29HP61GA_0 h2,
+        ._29HP61GA_0 h3,
+        ._29HP61GA_0 h4,
+        ._29HP61GA_0 h5 {
+            margin-bottom: 20px;
+            margin-top: 0;
+            font-weight: 700
+        }
+
+        ._29HP61GA_0 b,
+        ._29HP61GA_0 strong {
+            font-weight: 700
+        }
+
+        ._29HP61GA_0 h1 {
+            font-size: 21px
+        }
+
+        ._29HP61GA_0 h2 {
+            font-size: 20px
+        }
+
+        ._29HP61GA_0 h3 {
+            font-size: 19px
+        }
+
+        ._29HP61GA_0 h4 {
+            font-size: 18px
+        }
+
+        ._29HP61GA_0 h5 {
+            font-size: 17px
+        }
+
+        ._29HP61GA_0 center,
+        ._29HP61GA_0 p {
+            font-weight: 400;
+            color: #353535;
+            margin-top: 0;
+            margin-bottom: 30px;
+            word-break: break-word
+        }
+
+        ._29HP61GA_0 center {
+            text-align: center
+        }
+
+        ._29HP61GA_0 blockquote {
+            margin-top: 0;
+            margin-bottom: 34px;
+            border-left: 3px solid #e8e8e8;
+            padding-left: 17px;
+            color: #353535
+        }
+
+        ._29HP61GA_0 blockquote p {
+            margin-top: 0;
+            margin-bottom: 0
+        }
+
+        ._29HP61GA_0 ol,
+        ._29HP61GA_0 ul {
+            margin-bottom: 30px
+        }
+
+        ._29HP61GA_0 ol p,
+        ._29HP61GA_0 ul p {
+            margin-top: 0;
+            margin-bottom: 0
+        }
+
+        ._29HP61GA_0 ol {
+            list-style: decimal;
+            margin-left: 20px
+        }
+
+        ._29HP61GA_0 ul li {
+            padding-left: 17px;
+            position: relative;
+            margin-bottom: 10px
+        }
+
+        ._29HP61GA_0 ul li:after {
+            content: "";
+            height: 6px;
+            width: 6px;
+            border-radius: 50%;
+            background: #353535;
+            position: absolute;
+            top: 10px;
+            left: 0
+        }
+
+        ._29HP61GA_0 .orange {
+            color: #fa8919
+        }
+
+        ._29HP61GA_0 .reference {
+            color: #888
+        }
+
+        ._29HP61GA_0 .m-right {
+            text-align: right
+        }
+
+        ._29HP61GA_0 .m-center {
+            text-align: center;
+            display: block
+        }
+
+        ._29HP61GA_0 .m-gray {
+            color: #888
+        }
+
+        ._29HP61GA_0 .m-small {
+            font-size: 15px
+        }
+
+        ._29HP61GA_0 table.hljs-ln {
+            margin-bottom: 0;
+            border-spacing: 0;
+            border-collapse: collapse
+        }
+
+        ._29HP61GA_0 table.hljs-ln,
+        ._29HP61GA_0 table.hljs-ln tbody,
+        ._29HP61GA_0 table.hljs-ln td,
+        ._29HP61GA_0 table.hljs-ln tr {
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box
+        }
+
+        ._29HP61GA_0 table.hljs-ln td {
+            padding: 0;
+            border: 0
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-numbers {
+            min-width: 15px;
+            font-size: 12px;
+            color: rgba(27, 31, 35, .3);
+            text-align: right;
+            white-space: nowrap;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-code,
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-numbers {
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
+            line-height: 20px;
+            vertical-align: top
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-code {
+            position: relative;
+            padding-right: 10px;
+            padding-left: 10px;
+            overflow: visible;
+            font-size: 13px;
+            color: #666;
+            word-wrap: normal;
+            white-space: pre
+        }
+
+    </style>
+</head>
+<body>
+<div class="_29HP61GA_0">
+<h1>08-易用性改进I：自动类型推断和初始化</h1>
+<p>你好，我是吴咏炜。</p><p>在之前的几讲里，我们已经多多少少接触到了一些 C++11 以来增加的新特性。下面的两讲，我会重点讲一下现代 C++（C++11/14/17）带来的易用性改进。</p><p>就像我们 <a href="https://time.geekbang.org/column/article/169177">[开篇词]</a> 中说的，我们主要是介绍 C++ 里好用的特性，而非让你死记规则。因此，这里讲到的内容，有时是一种简化的说法。对于日常使用，本讲介绍的应该能满足大部分的需求。对于复杂用法和边角情况，你可能还是需要查阅参考资料里的明细规则。</p><h2>自动类型推断</h2><p>如果要挑选 C++11 带来的最重大改变的话，自动类型推断肯定排名前三。如果只看易用性或表达能力的改进的话，那它就是“舍我其谁”的第一了。</p><h3>auto</h3><p>自动类型推断，顾名思义，就是编译器能够根据表达式的类型，自动决定变量的类型（从 C++14 开始，还有函数的返回类型），不再需要程序员手工声明（<span class="orange">[1]</span>）。但需要说明的是，<code>auto</code> 并没有改变 C++ 是静态类型语言这一事实——使用 <code>auto</code> 的变量（或函数返回值）的类型仍然是编译时就确定了，只不过编译器能自动帮你填充而已。</p><p>自动类型推断使得像下面这样累赘的表达式成为历史：</p><pre><code class="language-c++">// vector&lt;int&gt; v;
+for (vector&lt;int&gt;::iterator
+       it = v.begin(),
+       end = v.end();
+     it != end; ++it) {
+  // 循环体
+}
+</code></pre><!-- [[[read_end]]] --><p>现在我们可以直接写（当然，是不使用基于范围的 for 循环的情况）：</p><pre><code class="language-c++">for (auto it = v.begin(), end = v.end();
+     it != end; ++it) {
+  // 循环体
+}
+</code></pre><p>不使用自动类型推断时，如果容器类型未知的话，我们还需要加上 <code>typename</code>（注意此处 const 引用还要求我们写 <code>const_iterator</code> 作为迭代器的类型）：</p><pre><code class="language-c++">template &lt;typename T&gt;
+void foo(const T&amp; container)
+{
+  for (typename T::const_iterator
+         it = v.begin(),
+    …
+}
+</code></pre><p>如果 <code>begin</code> 返回的类型不是该类型的 <code>const_iterator</code> 嵌套类型的话，那实际上不用自动类型推断就没法表达了。这还真不是假设。比如，如果我们的遍历函数要求支持 C 数组的话，不用自动类型推断的话，就只能使用两个不同的重载：</p><pre><code class="language-c++">template &lt;typename T, std::size_t N&gt;
+void foo(const T (&amp;a)[N])
+{
+  typedef const T* ptr_t;
+  for (ptr_t it = a, end = a + N;
+       it != end; ++it) {
+    // 循环体
+  }
+}
+
+template &lt;typename T&gt;
+void foo(const T&amp; c)
+{
+  for (typename T::const_iterator
+         it = c.begin(),
+         end = c.end();
+       it != end; ++it) {
+    // 循环体
+  }
+}
+</code></pre><p>如果使用自动类型推断的话，再加上 C++11 提供的全局 <code>begin</code> 和 <code>end</code> 函数，上面的代码可以统一成：</p><pre><code class="language-c++">template &lt;typename T&gt;
+void foo(const T&amp; c)
+{
+  using std::begin;
+  using std::end;
+  // 使用依赖参数查找（ADL）；见 <span class="orange">[2]</span>
+  for (auto it = begin(c),
+       ite = end(c);
+       it != ite; ++it) {
+    // 循环体
+  }
+}
+</code></pre><p>从这个例子可见，自动类型推断不仅降低了代码的啰嗦程度，也提高了代码的抽象性，使我们可以用更少的代码写出通用的功能。</p><p><code>auto</code> 实际使用的规则类似于函数模板参数的推导规则（<span class="orange">[3]</span>）。当你写了一个含 <code>auto</code> 的表达式时，相当于把 <code>auto</code> 替换为模板参数的结果。举具体的例子：</p><ul>
+<li><code>auto a = expr;</code> 意味着用 <code>expr</code> 去匹配一个假想的 <code>template &lt;typename T&gt; f(T)</code> 函数模板，结果为值类型。</li>
+<li><code>const auto&amp; a = expr;</code> 意味着用 <code>expr</code> 去匹配一个假想的 <code>template &lt;typename T&gt; f(const T&amp;)</code> 函数模板，结果为常左值引用类型。</li>
+<li><code>auto&amp;&amp; a = expr;</code> 意味着用 <code>expr</code> 去匹配一个假想的 <code>template &lt;typename T&gt; f(T&amp;&amp;)</code> 函数模板，根据 <a href="https://time.geekbang.org/column/article/169268">[第 3 讲]</a> 中我们讨论过的转发引用和引用坍缩规则，结果是一个跟 <code>expr</code> 值类别相同的引用类型。</li>
+</ul><h3>decltype</h3><p><code>decltype</code> 的用途是获得一个表达式的类型，结果可以跟类型一样使用。它有两个基本用法：</p><ul>
+<li><code>decltype(变量名)</code> 可以获得变量的精确类型。</li>
+<li><code>decltype(表达式)</code> （表达式不是变量名，但包括 <code>decltype((变量名))</code> 的情况）可以获得表达式的引用类型；除非表达式的结果是个纯右值（prvalue），此时结果仍然是值类型。</li>
+</ul><p>如果我们有 <code>int a;</code>，那么：</p><ul>
+<li><code>decltype(a)</code> 会获得 <code>int</code>（因为 <code>a</code> 是 <code>int</code>）。</li>
+<li><code>decltype((a))</code> 会获得 <code>int&amp;</code>（因为 <code>a</code> 是 lvalue）。</li>
+<li><code>decltype(a + a)</code> 会获得 <code>int</code>（因为 <code>a + a</code> 是 prvalue）。</li>
+</ul><h3>decltype(auto)</h3><p>通常情况下，能写 <code>auto</code> 来声明变量肯定是件比较轻松的事。但这儿有个限制，你需要在写下 <code>auto</code> 时就决定你写下的是个引用类型还是值类型。根据类型推导规则，<code>auto</code> 是值类型，<code>auto&amp;</code> 是左值引用类型，<code>auto&amp;&amp;</code> 是转发引用（可以是左值引用，也可以是右值引用）。使用 <code>auto</code> 不能通用地根据表达式类型来决定返回值的类型。不过，<code>decltype(expr)</code> 既可以是值类型，也可以是引用类型。因此，我们可以这么写：</p><pre><code class="language-c++">decltype(expr) a = expr;
+</code></pre><p>这种写法明显不能让人满意，特别是表达式很长的情况（而且，任何代码重复都是潜在的问题）。为此，C++14 引入了 <code>decltype(auto)</code> 语法。对于上面的情况，我们只需要像下面这样写就行了。</p><pre><code class="language-c++">decltype(auto) a = expr;
+</code></pre><p>这种代码主要用在通用的转发函数模板中：你可能根本不知道你调用的函数是不是会返回一个引用。这时使用这种语法就会方便很多。</p><h3>函数返回值类型推断</h3><p>从 C++14 开始，函数的返回值也可以用 <code>auto</code> 或 <code>decltype(auto)</code> 来声明了。同样的，用 <code>auto</code> 可以得到值类型，用 <code>auto&amp;</code> 或 <code>auto&amp;&amp;</code> 可以得到引用类型；而用 <code>decltype(auto)</code> 可以根据返回表达式通用地决定返回的是值类型还是引用类型。</p><p>和这个形式相关的有另外一个语法，后置返回值类型声明。严格来说，这不算“类型推断”，不过我们也放在一起讲吧。它的形式是这个样子：</p><pre><code class="language-c++">auto foo(参数) -&gt; 返回值类型声明
+{
+  // 函数体
+}
+</code></pre><p>通常，在返回类型比较复杂、特别是返回类型跟参数类型有某种推导关系时会使用这种语法。以后我们会讲到一些实例。今天暂时不多讲了。</p><h3>类模板的模板参数推导</h3><p>如果你用过 <code>pair</code> 的话，一般都不会使用下面这种形式：</p><pre><code class="language-c++">pair&lt;int, int&gt; pr{1, 42};
+</code></pre><p>使用 <code>make_pair</code> 显然更容易一些：</p><pre><code class="language-c++">auto pr = make_pair(1, 42);
+</code></pre><p>这是因为函数模板有模板参数推导，使得调用者不必手工指定参数类型；但 C++17 之前的类模板却没有这个功能，也因而催生了像 <code>make_pair</code> 这样的工具函数。</p><p>在进入了 C++17 的世界后，这类函数变得不必要了。现在我们可以直接写：</p><pre><code class="language-c++">pair pr{1, 42};
+</code></pre><p>生活一下子变得简单多了！</p><p>在初次见到 <code>array</code> 时，我觉得它的主要缺点就是不能像 C 数组一样自动从初始化列表来推断数组的大小了：</p><pre><code class="language-c++">int a1[] = {1, 2, 3};
+array&lt;int, 3&gt; a2{1, 2, 3}; // 啰嗦
+// array&lt;int&gt; a3{1, 2, 3}; 不行
+</code></pre><p>这个问题在 C++17 里也是基本不存在的。虽然不能只提供一个模板参数，但你可以两个参数全都不写 🤣：</p><pre><code class="language-c++">array a{1, 2, 3};
+// 得到 array&lt;int, 3&gt;
+</code></pre><p>这种自动推导机制，可以是编译器根据构造函数来自动生成：</p><pre><code class="language-c++">template &lt;typename T&gt;
+struct MyObj {
+  MyObj(T value);
+  …
+};
+
+MyObj obj1{string("hello")};
+// 得到 MyObj&lt;string&gt;
+MyObj obj2{"hello"};
+// 得到 MyObj&lt;const char*&gt;
+</code></pre><p>也可以是手工提供一个推导向导，达到自己需要的效果：</p><pre><code class="language-c++">template &lt;typename T&gt;
+struct MyObj {
+  MyObj(T value);
+  …
+};
+
+MyObj(const char*) -&gt; MyObj&lt;string&gt;;
+
+MyObj obj{"hello"};
+// 得到 MyObj&lt;string&gt;
+</code></pre><p>更多的技术细节请参见参考资料 <span class="orange">[4]</span>。</p><h3>结构化绑定</h3><p>在讲关联容器的时候我们有过这样一个例子：</p><pre><code class="language-c++">multimap&lt;string, int&gt;::iterator
+  lower, upper;
+std::tie(lower, upper) =
+  mmp.equal_range("four");
+</code></pre><p>这个例子里，返回值是个 <code>pair</code>，我们希望用两个变量来接收数值，就不得不声明了两个变量，然后使用 <code>tie</code> 来接收结果。在 C++11/14 里，这里是没法使用 <code>auto</code> 的。好在 C++17 引入了一个新语法，解决了这个问题。目前，我们可以把上面的代码简化为：</p><pre><code class="language-c++">auto [lower, upper] =
+  mmp.equal_range("four");
+</code></pre><p>这个语法使得我们可以用 <code>auto</code> 声明变量来分别获取 <code>pair</code> 或 <code>tuple</code> 返回值里各个子项，可以让代码的可读性更好。</p><p>关于这个语法的更多技术说明，请参见参考资料 <span class="orange">[5]</span>。</p><h2>列表初始化</h2><p>在 C++98 里，标准容器比起 C 风格数组至少有一个明显的劣势：不能在代码里方便地初始化容器的内容。比如，对于数组你可以写：</p><pre><code class="language-c++">int a[] = {1, 2, 3, 4, 5};
+</code></pre><p>而对于 <code>vector</code> 你却得写：</p><pre><code class="language-c++">vector&lt;int&gt; v;
+v.push(1);
+v.push(2);
+v.push(3);
+v.push(4);
+v.push(5);
+</code></pre><p>这样真是又啰嗦，性能又差，显然无法让人满意。于是，C++ 标准委员会引入了列表初始化，允许以更简单的方式来初始化对象。现在我们初始化容器也可以和初始化数组一样简单了：</p><pre><code class="language-c++">vector&lt;int&gt; v{1, 2, 3, 4, 5};
+</code></pre><p>同样重要的是，这不是对标准库容器的特殊魔法，而是一个通用的、可以用于各种类的方法。从技术角度，编译器的魔法只是对 <code>{1, 2, 3}</code> 这样的表达式自动生成一个初始化列表，在这个例子里其类型是 <code>initializer_list&lt;int&gt;</code>。程序员只需要声明一个接受 <code>initializer_list</code> 的构造函数即可使用。从效率的角度，至少在动态对象的情况下，容器和数组也并无二致，都是通过拷贝（构造）进行初始化。</p><p>对于初始化列表在构造函数外的用法和更多的技术细节，请参见参考资料 <span class="orange">[6]</span>。</p><h2>统一初始化</h2><p>你可能已经注意到了，我在代码里使用了大括号 <code>{}</code> 来进行对象的初始化。这当然也是 C++11 引入的新语法，能够代替很多小括号 <code>()</code> 在变量初始化时使用。这被称为统一初始化（uniform initialization）。</p><p>大括号对于构造一个对象而言，最大的好处是避免了 C++ 里“最令人恼火的语法分析”（the most vexing parse）。我也遇到过。假设你有一个类，原型如下：</p><pre><code class="language-c++">class utf8_to_wstring {
+public:
+  utf8_to_wstring(const char*);
+  operator wchar_t*();
+};
+</code></pre><p>然后你在 Windows 下想使用这个类来帮助转换文件名，打开文件：</p><pre><code class="language-c++">ifstream ifs(
+  utf8_to_wstring(filename));
+</code></pre><p>你随后就会发现，<code>ifs</code> 的行为无论如何都不正常。最后，要么你自己查到，要么有人告诉你，上面这个写法会被编译器认为是和下面的写法等价的：</p><pre><code class="language-c++">ifstream ifs(
+  utf8_to_wstring filename);
+</code></pre><p>换句话说，编译器认为你是声明了一个叫 <code>ifs</code> 的函数，而不是对象！</p><p>如果你把任何一对小括号替换成大括号（或者都替换，如下），则可以避免此类问题：</p><pre><code class="language-c++">ifstream ifs{
+  utf8_to_wstring{filename}};
+</code></pre><p>推而广之，你几乎可以在所有初始化对象的地方使用大括号而不是小括号。它还有一个附带的特点：当一个构造函数没有标成 <code>explicit</code> 时，你可以使用大括号不写类名来进行构造，如果调用上下文要求那类对象的话。如：</p><pre><code class="language-c++">Obj getObj()
+{
+  return {1.0};
+}
+</code></pre><p>如果 Obj 类可以使用浮点数进行构造的话，上面的写法就是合法的。如果有无参数、多参数的构造函数，也可以使用这个形式。除了形式上的区别，它跟 <code>Obj(1.0)</code> 的主要区别是，后者可以用来调用 <code>Obj(int)</code>，而使用大括号时编译器会拒绝“窄”转换，不接受以 <code>{1.0}</code> 或 <code>Obj{1.0}</code> 的形式调用构造函数 <code>Obj(int)</code>。</p><p>这个语法主要的限制是，如果一个构造函数既有使用初始化列表的构造函数，又有不使用初始化列表的构造函数，那编译器会<strong>千方百计</strong>地试图调用使用初始化列表的构造函数，导致各种意外。所以，如果给一个推荐的话，那就是：</p><ul>
+<li>如果一个类没有使用初始化列表的构造函数时，初始化该类对象可全部使用统一初始化语法。</li>
+<li>如果一个类有使用初始化列表的构造函数时，则只应用在初始化列表构造的情况。</li>
+</ul><p>关于这个语法的更多详细用法讨论，请参见参考资料 <span class="orange">[7]</span>。</p><h2>类数据成员的默认初始化</h2><p>按照 C++98 的语法，数据成员可以在构造函数里进行初始化。这本身不是问题，但实践中，如果数据成员比较多、构造函数又有多个的话，逐个去初始化是个累赘，并且很容易在增加数据成员时漏掉在某个构造函数中进行初始化。为此，C++11 增加了一个语法，允许在声明数据成员时直接给予一个初始化表达式。这样，当且仅当构造函数的初始化列表中不包含该数据成员时，这个数据成员就会自动使用初始化表达式进行初始化。</p><p>这个句子有点长。我们看个例子：</p><pre><code class="language-c++">class Complex {
+public:
+  Complex()
+    : re_(0) , im_(0) {}
+  Complex(float re)
+    : re_(re), im_(0) {}
+  Complex(float re, float im)
+    : re_(re) , im_(im) {}
+  …
+
+private:
+  float re_;
+  float im_;
+};
+</code></pre><p>假设由于某种原因，我们不能使用缺省参数来简化构造函数，我们可以用什么方式来优化上面这个代码呢？</p><p>使用数据成员的默认初始化的话，我们就可以这么写：</p><pre><code class="language-c++">class Complex {
+public:
+  Complex() {}
+  Complex(float re) : re_(re) {}
+  Complex(float re, float im)
+    : re_(re) , im_(im) {}
+
+private:
+  float re_{0};
+  float im_{0};
+};
+</code></pre><p>第一个构造函数没有任何初始化列表，所以类数据成员的初始化全部由默认初始化完成，<code>re_</code> 和 <code>im_</code> 都是 0。第二个构造函数提供了 <code>re_</code> 的初始化，<code>im_</code> 仍由默认初始化完成。第三个构造函数则完全不使用默认初始化。</p><h2>内容小结</h2><p>在本讲中，我们介绍了现代 C++ 引入的几个易用性改进：自动类型推断，初始化列表，及类数据成员的默认初始化。使用这些特性非常简单，可以立即简化你的 C++ 代码，而不会引入额外的开销。唯一的要求只是你不要再使用那些上古时代的老掉牙编译器了……</p><h2>课后思考</h2><p>你使用过现代 C++ 的这些特性了吗？如果还没有的话，哪些特性你打算在下一个项目里开始使用？</p><p>欢迎留言来分享你的看法。</p><h2><span class="reference">参考资料</span></h2><p><span class="reference">[1] cppreference.com, “Placeholder type specifiers”. <a href="https://en.cppreference.com/w/cpp/language/auto">https://en.cppreference.com/w/cpp/language/auto</a> </span></p><p><span class="reference">[1a] cppreference.com, “占位符类型说明符”. <a href="https://zh.cppreference.com/w/cpp/language/auto">https://zh.cppreference.com/w/cpp/language/auto</a> </span></p><p><span class="reference">[2] Wikipedia, “Argument-dependent name lookup”. <a href="https://en.wikipedia.org/wiki/Argument-dependent_name_lookup">https://en.wikipedia.org/wiki/Argument-dependent_name_lookup</a> </span></p><p><span class="reference">[2a] 维基百科, “依赖于实参的名字查找”. <a href="https://zh.wikipedia.org/zh-cn/%E4%BE%9D%E8%B5%96%E4%BA%8E%E5%AE%9E%E5%8F%82%E7%9A%84%E5%90%8D%E5%AD%97%E6%9F%A5%E6%89%BE">https://zh.wikipedia.org/zh-cn/依赖于实参的名字查找</a> </span></p><p><span class="reference">[3] cppreference.com, “Template argument deduction”. <a href="https://en.cppreference.com/w/cpp/language/template_argument_deduction">https://en.cppreference.com/w/cpp/language/template_argument_deduction</a> </span></p><p><span class="reference">[3a] cppreference.com, “模板实参推导”. <a href="https://zh.cppreference.com/w/cpp/language/template_argument_deduction">https://zh.cppreference.com/w/cpp/language/template_argument_deduction</a> </span></p><p><span class="reference">[4] cppreference.com, “Class template argument deduction”. <a href="https://en.cppreference.com/w/cpp/language/class_template_argument_deduction">https://en.cppreference.com/w/cpp/language/class_template_argument_deduction</a> </span></p><p><span class="reference">[4a] cppreference.com, “类模板实参推导”. <a href="https://zh.cppreference.com/w/cpp/language/class_template_argument_deduction">https://zh.cppreference.com/w/cpp/language/class_template_argument_deduction</a> </span></p><p><span class="reference">[5] cppreference.com, “Structured binding declaration”. <a href="https://en.cppreference.com/w/cpp/language/structured_binding">https://en.cppreference.com/w/cpp/language/structured_binding</a> </span></p><p><span class="reference">[5a] cppreference.com, “结构化绑定声明”. <a href="https://zh.cppreference.com/w/cpp/language/structured_binding">https://zh.cppreference.com/w/cpp/language/structured_binding</a> </span></p><p><span class="reference">[6] cppreference.com, “std::initializer_list”. <a href="https://en.cppreference.com/w/cpp/utility/initializer_list">https://en.cppreference.com/w/cpp/utility/initializer_list</a> </span></p><p><span class="reference">[6a] cppreference.com, “std::initializer_list”. <a href="https://en.cppreference.com/w/cpp/utility/initializer_list">https://en.cppreference.com/w/cpp/utility/initializer_list</a> </span></p><p><span class="reference">[7] Scott Meyers, <em>Effective Modern C++</em>, item 7. O’Reilly Media, 2014. 有中文版（高博译，中国电力出版社，2018 年）</span></p><h2>精选留言：</h2>
+        <ul>
+        
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            Geek_94a091  2019-12-13 00:36:36
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            想知道auto到底什么情况下用，什么情况下不要用auto，用多了会不会造成阅读困难 
+        </div>
+        
+    </div>
+</li>
+            </ul>
+</div>
+</body>
+</html>

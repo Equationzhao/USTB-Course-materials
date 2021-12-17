@@ -1,0 +1,1313 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>30-Coroutines：协作式的交叉调度执行</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <style>
+        html {
+            color: #333;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            text-rendering: optimizelegibility;
+            font-family: Helvetica Neue, PingFang SC, Verdana, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif
+        }
+
+        html.borderbox *,
+        html.borderbox :after,
+        html.borderbox :before {
+            box-sizing: border-box
+        }
+
+        article,
+        aside,
+        blockquote,
+        body,
+        button,
+        code,
+        dd,
+        details,
+        dl,
+        dt,
+        fieldset,
+        figcaption,
+        figure,
+        footer,
+        form,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        header,
+        hr,
+        input,
+        legend,
+        li,
+        menu,
+        nav,
+        ol,
+        p,
+        pre,
+        section,
+        td,
+        textarea,
+        th,
+        ul {
+            margin: 0;
+            padding: 0
+        }
+
+        article,
+        aside,
+        details,
+        figcaption,
+        figure,
+        footer,
+        header,
+        menu,
+        nav,
+        section {
+            display: block
+        }
+
+        audio,
+        canvas,
+        video {
+            display: inline-block
+        }
+
+        body,
+        button,
+        input,
+        select,
+        textarea {
+            font: 300 1em/1.8 PingFang SC, Lantinghei SC, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, Helvetica, sans-serif
+        }
+
+        button::-moz-focus-inner,
+        input::-moz-focus-inner {
+            padding: 0;
+            border: 0
+        }
+
+        table {
+            border-collapse: collapse;
+            border-spacing: 0
+        }
+
+        fieldset,
+        img {
+            border: 0
+        }
+
+        blockquote {
+            position: relative;
+            color: #999;
+            font-weight: 400;
+            border-left: 1px solid #1abc9c;
+            padding-left: 1em;
+            margin: 1em 3em 1em 2em
+        }
+
+        @media only screen and (max-width: 640px) {
+            blockquote {
+                margin: 1em 0
+            }
+        }
+
+        abbr,
+        acronym {
+            border-bottom: 1px dotted;
+            font-variant: normal
+        }
+
+        abbr {
+            cursor: help
+        }
+
+        del {
+            text-decoration: line-through
+        }
+
+        address,
+        caption,
+        cite,
+        code,
+        dfn,
+        em,
+        th,
+        var {
+            font-style: normal;
+            font-weight: 400
+        }
+
+        ol,
+        ul {
+            list-style: none
+        }
+
+        caption,
+        th {
+            text-align: left
+        }
+
+        q:after,
+        q:before {
+            content: ""
+        }
+
+        sub,
+        sup {
+            font-size: 75%;
+            line-height: 0;
+            position: relative
+        }
+
+        :root sub,
+        :root sup {
+            vertical-align: baseline
+        }
+
+        sup {
+            top: -.5em
+        }
+
+        sub {
+            bottom: -.25em
+        }
+
+        a {
+            color: #1abc9c
+        }
+
+        a:hover {
+            text-decoration: underline
+        }
+
+        .typo a {
+            border-bottom: 1px solid #1abc9c
+        }
+
+        .typo a:hover {
+            border-bottom-color: #555;
+            color: #555
+        }
+
+        .typo a:hover,
+        a,
+        ins {
+            text-decoration: none
+        }
+
+        .typo-u,
+        u {
+            text-decoration: underline
+        }
+
+        mark {
+            background: #fffdd1;
+            border-bottom: 1px solid #ffedce;
+            padding: 2px;
+            margin: 0 5px
+        }
+
+        code,
+        pre,
+        pre tt {
+            font-family: Courier, Courier New, monospace
+        }
+
+        pre {
+            background: hsla(0, 0%, 97%, .7);
+            border: 1px solid #ddd;
+            padding: 1em 1.5em;
+            display: block;
+            -webkit-overflow-scrolling: touch
+        }
+
+        hr {
+            border: none;
+            border-bottom: 1px solid #cfcfcf;
+            margin-bottom: .8em;
+            height: 10px
+        }
+
+        .typo-small,
+        figcaption,
+        small {
+            font-size: .9em;
+            color: #888
+        }
+
+        b,
+        strong {
+            font-weight: 700;
+            color: #000
+        }
+
+        [draggable] {
+            cursor: move
+        }
+
+        .clearfix:after,
+        .clearfix:before {
+            content: "";
+            display: table
+        }
+
+        .clearfix:after {
+            clear: both
+        }
+
+        .clearfix {
+            zoom: 1
+        }
+
+        .textwrap,
+        .textwrap td,
+        .textwrap th {
+            word-wrap: break-word;
+            word-break: break-all
+        }
+
+        .textwrap-table {
+            table-layout: fixed
+        }
+
+        .serif {
+            font-family: Palatino, Optima, Georgia, serif
+        }
+
+        .typo-dl,
+        .typo-form,
+        .typo-hr,
+        .typo-ol,
+        .typo-p,
+        .typo-pre,
+        .typo-table,
+        .typo-ul,
+        .typo dl,
+        .typo form,
+        .typo hr,
+        .typo ol,
+        .typo p,
+        .typo pre,
+        .typo table,
+        .typo ul,
+        blockquote {
+            margin-bottom: 1rem
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: PingFang SC, Helvetica Neue, Verdana, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif;
+            color: #000;
+            line-height: 1.35
+        }
+
+        .typo-h1,
+        .typo-h2,
+        .typo-h3,
+        .typo-h4,
+        .typo-h5,
+        .typo-h6,
+        .typo h1,
+        .typo h2,
+        .typo h3,
+        .typo h4,
+        .typo h5,
+        .typo h6 {
+            margin-top: 1.2em;
+            margin-bottom: .6em;
+            line-height: 1.35
+        }
+
+        .typo-h1,
+        .typo h1 {
+            font-size: 2em
+        }
+
+        .typo-h2,
+        .typo h2 {
+            font-size: 1.8em
+        }
+
+        .typo-h3,
+        .typo h3 {
+            font-size: 1.6em
+        }
+
+        .typo-h4,
+        .typo h4 {
+            font-size: 1.4em
+        }
+
+        .typo-h5,
+        .typo-h6,
+        .typo h5,
+        .typo h6 {
+            font-size: 1.2em
+        }
+
+        .typo-ul,
+        .typo ul {
+            margin-left: 1.3em;
+            list-style: disc
+        }
+
+        .typo-ol,
+        .typo ol {
+            list-style: decimal;
+            margin-left: 1.9em
+        }
+
+        .typo-ol ol,
+        .typo-ol ul,
+        .typo-ul ol,
+        .typo-ul ul,
+        .typo li ol,
+        .typo li ul {
+            margin-bottom: .8em;
+            margin-left: 2em
+        }
+
+        .typo-ol ul,
+        .typo-ul ul,
+        .typo li ul {
+            list-style: circle
+        }
+
+        .typo-table td,
+        .typo-table th,
+        .typo table caption,
+        .typo table td,
+        .typo table th {
+            border: 1px solid #ddd;
+            padding: .5em 1em;
+            color: #666
+        }
+
+        .typo-table th,
+        .typo table th {
+            background: #fbfbfb
+        }
+
+        .typo-table thead th,
+        .typo table thead th {
+            background: hsla(0, 0%, 95%, .7)
+        }
+
+        .typo table caption {
+            border-bottom: none
+        }
+
+        .typo-input,
+        .typo-textarea {
+            -webkit-appearance: none;
+            border-radius: 0
+        }
+
+        .typo-em,
+        .typo em,
+        caption,
+        legend {
+            color: #000;
+            font-weight: inherit
+        }
+
+        .typo-em {
+            position: relative
+        }
+
+        .typo-em:after {
+            position: absolute;
+            top: .65em;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            content: "\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB"
+        }
+
+        .typo img {
+            max-width: 100%
+        }
+
+        .common-content {
+            font-weight: 400;
+            color: #353535;
+            line-height: 1.75rem;
+            white-space: normal;
+            word-break: normal;
+            font-size: 1rem
+        }
+
+        .common-content img {
+            display: block;
+            max-width: 100%;
+            background-color: #eee
+        }
+
+        .common-content audio,
+        .common-content video {
+            width: 100%;
+            background-color: #eee
+        }
+
+        .common-content center,
+        .common-content font {
+            margin-top: 1rem;
+            display: inline-block
+        }
+
+        .common-content center {
+            width: 100%
+        }
+
+        .common-content pre {
+            margin-top: 1rem;
+            padding-left: 0;
+            padding-right: 0;
+            position: relative;
+            overflow: hidden
+        }
+
+        .common-content pre code {
+            font-size: .8rem;
+            font-family: Consolas, Liberation Mono, Menlo, monospace, Courier;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            overflow-x: auto
+        }
+
+        .common-content hr {
+            border: none;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-top: 1px solid #f5f5f5;
+            height: 1px;
+            background: none
+        }
+
+        .common-content b,
+        .common-content h1,
+        .common-content h2,
+        .common-content h3,
+        .common-content h4,
+        .common-content h5,
+        .common-content strong {
+            font-weight: 700
+        }
+
+        .common-content h1,
+        .common-content h2 {
+            font-size: 1.125rem;
+            margin-bottom: .45rem
+        }
+
+        .common-content h3,
+        .common-content h4,
+        .common-content h5 {
+            font-size: 1rem;
+            margin-bottom: .45rem
+        }
+
+        .common-content p {
+            font-weight: 400;
+            color: #353535;
+            margin-top: .15rem
+        }
+
+        .common-content .orange {
+            color: #ff5a05
+        }
+
+        .common-content .reference {
+            font-size: 1rem;
+            color: #888
+        }
+
+        .custom-rich-content h1 {
+            margin-top: 0;
+            font-weight: 400;
+            font-size: 15.25px;
+            border-bottom: 1px solid #eee;
+            line-height: 2.8
+        }
+
+        .custom-rich-content li,
+        .custom-rich-content p {
+            font-size: 14px;
+            color: #888;
+            line-height: 1.6
+        }
+
+        table.hljs-ln {
+            margin-bottom: 0;
+            border-spacing: 0;
+            border-collapse: collapse
+        }
+
+        table.hljs-ln,
+        table.hljs-ln tbody,
+        table.hljs-ln td,
+        table.hljs-ln tr {
+            box-sizing: border-box
+        }
+
+        table.hljs-ln td {
+            padding: 0;
+            border: 0
+        }
+
+        table.hljs-ln td.hljs-ln-numbers {
+            min-width: 15px;
+            color: rgba(27, 31, 35, .3);
+            text-align: right;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none
+        }
+
+        table.hljs-ln td.hljs-ln-code,
+        table.hljs-ln td.hljs-ln-numbers {
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
+            font-size: 12px;
+            line-height: 20px;
+            vertical-align: top
+        }
+
+        table.hljs-ln td.hljs-ln-code {
+            position: relative;
+            padding-right: 10px;
+            padding-left: 10px;
+            overflow: visible;
+            color: #24292e;
+            word-wrap: normal;
+            white-space: pre
+        }
+
+        video::-webkit-media-controls {
+            overflow: hidden !important
+        }
+
+        video::-webkit-media-controls-enclosure {
+            width: calc(100% + 32px);
+            margin-left: auto
+        }
+
+        ._29HP61GA_0 {
+            max-width:800px;
+            margin:0 auto;
+            margin-bottom: 20px;
+            font-weight: 400;
+            color: #353535;
+            line-height: 1.76;
+            white-space: normal;
+            word-break: normal;
+            font-size: 17px;
+            -webkit-transition: background-color .3s ease;
+            transition: background-color .3s ease
+        }
+
+        ._29HP61GA_0 .MathJax_Display {
+            overflow: auto
+        }
+
+        ._29HP61GA_0 .poster {
+            position: fixed;
+            left: -10000px;
+            top: -10000px;
+            overflow: hidden;
+            padding: 1rem;
+            background: #ececec
+        }
+
+        ._29HP61GA_0 .richcontent-pre-copy {
+            font-size: 13px;
+            color: #888;
+            position: absolute;
+            right: 1em;
+            top: .5em;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none
+        }
+
+        ._29HP61GA_0 .richcontent-pre-copy .iconfont {
+            font-size: 12px;
+            margin-right: .2em
+        }
+
+        ._29HP61GA_0 a {
+            color: #fa8919;
+            border-bottom: 1px solid #fa8919
+        }
+
+        ._29HP61GA_0 img {
+            display: block;
+            max-width: 100%;
+            position: relative;
+            left: 50%;
+            -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+            background-color: #eee;
+            vertical-align: top;
+            border-radius: 0
+        }
+
+        ._29HP61GA_0 audio,
+        ._29HP61GA_0 video {
+            width: 100%;
+            background-color: #eee
+        }
+
+        ._29HP61GA_0 pre {
+            margin-top: 16px;
+            padding: 34px 0 0;
+            margin-bottom: 30px;
+            position: relative;
+            border-radius: 6px;
+            background: rgba(246, 247, 251, .749);
+            border: 0
+        }
+
+        ._29HP61GA_0 pre code {
+            font-size: 12px;
+            font-family: Consolas, Liberation Mono, Menlo, monospace, Courier;
+            display: block;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            margin-left: 16px;
+            margin-right: 16px;
+            overflow-x: scroll
+        }
+
+        ._29HP61GA_0 pre code:after {
+            content: "";
+            height: 30px;
+            width: 100%;
+            display: block
+        }
+
+        ._29HP61GA_0 hr {
+            border: none;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-top: 1px solid #f5f5f5;
+            height: 1px;
+            background: none
+        }
+
+        ._29HP61GA_0 h1,
+        ._29HP61GA_0 h2,
+        ._29HP61GA_0 h3,
+        ._29HP61GA_0 h4,
+        ._29HP61GA_0 h5 {
+            margin-bottom: 20px;
+            margin-top: 0;
+            font-weight: 700
+        }
+
+        ._29HP61GA_0 b,
+        ._29HP61GA_0 strong {
+            font-weight: 700
+        }
+
+        ._29HP61GA_0 h1 {
+            font-size: 21px
+        }
+
+        ._29HP61GA_0 h2 {
+            font-size: 20px
+        }
+
+        ._29HP61GA_0 h3 {
+            font-size: 19px
+        }
+
+        ._29HP61GA_0 h4 {
+            font-size: 18px
+        }
+
+        ._29HP61GA_0 h5 {
+            font-size: 17px
+        }
+
+        ._29HP61GA_0 center,
+        ._29HP61GA_0 p {
+            font-weight: 400;
+            color: #353535;
+            margin-top: 0;
+            margin-bottom: 30px;
+            word-break: break-word
+        }
+
+        ._29HP61GA_0 center {
+            text-align: center
+        }
+
+        ._29HP61GA_0 blockquote {
+            margin-top: 0;
+            margin-bottom: 34px;
+            border-left: 3px solid #e8e8e8;
+            padding-left: 17px;
+            color: #353535
+        }
+
+        ._29HP61GA_0 blockquote p {
+            margin-top: 0;
+            margin-bottom: 0
+        }
+
+        ._29HP61GA_0 ol,
+        ._29HP61GA_0 ul {
+            margin-bottom: 30px
+        }
+
+        ._29HP61GA_0 ol p,
+        ._29HP61GA_0 ul p {
+            margin-top: 0;
+            margin-bottom: 0
+        }
+
+        ._29HP61GA_0 ol {
+            list-style: decimal;
+            margin-left: 20px
+        }
+
+        ._29HP61GA_0 ul li {
+            padding-left: 17px;
+            position: relative;
+            margin-bottom: 10px
+        }
+
+        ._29HP61GA_0 ul li:after {
+            content: "";
+            height: 6px;
+            width: 6px;
+            border-radius: 50%;
+            background: #353535;
+            position: absolute;
+            top: 10px;
+            left: 0
+        }
+
+        ._29HP61GA_0 .orange {
+            color: #fa8919
+        }
+
+        ._29HP61GA_0 .reference {
+            color: #888
+        }
+
+        ._29HP61GA_0 .m-right {
+            text-align: right
+        }
+
+        ._29HP61GA_0 .m-center {
+            text-align: center;
+            display: block
+        }
+
+        ._29HP61GA_0 .m-gray {
+            color: #888
+        }
+
+        ._29HP61GA_0 .m-small {
+            font-size: 15px
+        }
+
+        ._29HP61GA_0 table.hljs-ln {
+            margin-bottom: 0;
+            border-spacing: 0;
+            border-collapse: collapse
+        }
+
+        ._29HP61GA_0 table.hljs-ln,
+        ._29HP61GA_0 table.hljs-ln tbody,
+        ._29HP61GA_0 table.hljs-ln td,
+        ._29HP61GA_0 table.hljs-ln tr {
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box
+        }
+
+        ._29HP61GA_0 table.hljs-ln td {
+            padding: 0;
+            border: 0
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-numbers {
+            min-width: 15px;
+            font-size: 12px;
+            color: rgba(27, 31, 35, .3);
+            text-align: right;
+            white-space: nowrap;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-code,
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-numbers {
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
+            line-height: 20px;
+            vertical-align: top
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-code {
+            position: relative;
+            padding-right: 10px;
+            padding-left: 10px;
+            overflow: visible;
+            font-size: 13px;
+            color: #666;
+            word-wrap: normal;
+            white-space: pre
+        }
+
+    </style>
+</head>
+<body>
+<div class="_29HP61GA_0">
+<h1>30-Coroutines：协作式的交叉调度执行</h1>
+<p>你好，我是吴咏炜。</p><p>今天是我们未来篇的最后一讲，也是这个专栏正文内容的最后一篇了。我们讨论 C++20 里的又一个非常重要的新功能——协程 Coroutines。</p><h2>什么是协程？</h2><p>协程是一个很早就被提出的编程概念。根据高德纳的描述，协程的概念在 1958 年就被提出了。不过，它在主流编程语言中得到的支持不那么好，因而你很可能对它并不熟悉吧。</p><p>如果查阅维基百科，你可以看到下面这样的定义 <span class="orange">[1]</span>：</p><blockquote>
+<p>协程是计算机程序的⼀类组件，推⼴了协作式多任务的⼦程序，允许执⾏被挂起与被恢复。相对⼦例程⽽⾔，协程更为⼀般和灵活……</p>
+</blockquote><p>等学完了这一讲，也许你可以明白这段话的意思。但对不了解协程的人来说，估计只能吐槽一句了，这是什么鬼？</p><p><img src="https://static001.geekbang.org/resource/image/4d/f9/4d4fb4a1c16edb1087d934cd1bb7eef9.png" alt="" title="图片源自网络"></p><p>很遗憾，在 C++ 里的标准协程有点小复杂。我们还是从……Python 开始。</p><pre><code class="language-python">def fibonacci():
+    a = 0
+    b = 1
+    while True:
+        yield b
+        a, b = b, a + b
+</code></pre><p>即使你没学过 Python，上面这个生成斐波那契数列的代码应该也不难理解。唯一看起来让人会觉得有点奇怪的应该就是那个 <code>yield</code> 了。这种写法在 Python 里叫做“生成器”（generator），返回的是一个可迭代的对象，每次迭代就能得到一个 yield 出来的结果。这就是一种很常见的协程形式了。</p><!-- [[[read_end]]] --><p>如何使用这个生成器，请看下面的代码：</p><pre><code class="language-python"># 打印头 20 项
+for i in islice(fibonacci(), 20):
+    print(i)
+
+# 打印小于 10000 的数列项
+for i in takewhile(
+        lambda x: x &lt; 10000,
+        fibonacci()):
+    print(i)
+</code></pre><p>这些代码很容易理解：<code>islice</code> 相当于 <a href="https://time.geekbang.org/column/article/195553">[第 29 讲]</a> 中的 <code>take</code>，取一个范围的头若干项；<code>takewhile</code> 则在范围中逐项取出内容，直到第一个参数的条件不能被满足。两个函数的结果都可以被看作是 C++ 中的视图。</p><p>我们唯一需要提的是，在代码的执行过程中，<code>fibonacci</code> 和它的调用代码是交叉执行的。下面我们用代码行加注释的方式标一下：</p><pre><code class="language-python">a = 0  # fibonacci()
+b = 0  # fibonacci()
+yield b  # fibonacci()
+print(i)  # 调用者
+a, b = 1, 0 + 1  # fibonacci()
+yield b  # fibonacci()
+print(i)  # 调用者
+a, b = 1, 1 + 1  # fibonacci()
+yield b  # fibonacci()
+print(i)  # 调用者
+a, b = 2, 1 + 2  # fibonacci()
+yield b  # fibonacci()
+print(i)  # 调用者
+…
+</code></pre><p>学到这儿的同学应该都知道我们在 C++ 里怎么完成类似的功能吧？我就不讲解了，直接给出可工作的代码。这是对应的 <code>fibonacci</code> 的定义：</p><pre><code class="language-c++">#include &lt;stddef.h&gt;
+#include &lt;stdint.h&gt;
+
+class fibonacci {
+public:
+  class sentinel;
+  class iterator;
+  iterator begin() noexcept;
+  sentinel end() noexcept;
+};
+
+class fibonacci::sentinel {};
+
+class fibonacci::iterator {
+public:
+  // Required to satisfy iterator
+  // concept
+  typedef ptrdiff_t difference_type;
+  typedef uint64_t value_type;
+  typedef const uint64_t* pointer;
+  typedef const uint64_t&amp; reference;
+  typedef std::input_iterator_tag
+    iterator_category;
+
+  value_type operator*() const
+  {
+    return b_;
+  }
+  pointer operator-&gt;() const
+  {
+    return &amp;b_;
+  }
+  iterator&amp; operator++()
+  {
+    auto tmp = a_;
+    a_ = b_;
+    b_ += tmp;
+    return *this;
+  }
+  iterator operator++(int)
+  {
+    auto tmp = *this;
+    ++*this;
+    return tmp;
+  }
+  bool
+  operator==(const sentinel&amp;) const
+  {
+    return false;
+  }
+  bool
+  operator!=(const sentinel&amp;) const
+  {
+    return true;
+  }
+
+private:
+  uint64_t a_{0};
+  uint64_t b_{1};
+};
+
+// sentinel needs to be
+// equality_comparable_with iterator
+bool operator==(
+  const fibonacci::sentinel&amp; lhs,
+  const fibonacci::iterator&amp; rhs)
+{
+  return rhs == lhs;
+}
+bool operator!=(
+  const fibonacci::sentinel&amp; lhs,
+  const fibonacci::iterator&amp; rhs)
+{
+  return rhs != lhs;
+}
+
+inline fibonacci::iterator
+fibonacci::begin() noexcept
+{
+  return iterator();
+}
+
+inline fibonacci::sentinel
+fibonacci::end() noexcept
+{
+  return sentinel();
+}
+</code></pre><p>调用代码跟 Python 的相似：</p><pre><code class="language-c++">// 打印头 20 项
+for (auto i :
+     fibonacci() | take(20)) {
+  cout &lt;&lt; i &lt;&lt; endl;
+}
+
+// 打印小于 10000 的数列项
+for (auto i :
+     fibonacci() |
+       take_while([](uint64_t x) {
+         return x &lt; 10000;
+       })) {
+  cout &lt;&lt; i &lt;&lt; endl;
+}
+</code></pre><p>这似乎还行。但 <code>fibonacci</code> 的定义差异就大了：在 Python 里是 6 行有效代码，在 C++ 里是 53 行。C++ 的生产率似乎有点低啊……</p><h2>C++20 协程</h2><p>C++20 协程的基础是微软提出的 Coroutines TS（可查看工作草案 <span class="orange">[2]</span>），它在 2019 年 7 月被批准加入到 C++20 草案中。目前，MSVC 和 Clang 已经支持协程。不过，需要提一下的是，目前被标准化的只是协程的底层语言支持，而不是上层的高级封装；稍后，我们会回到这个话题。</p><p>协程可以有很多不同的用途，下面列举了几种常见情况：</p><ul>
+<li>生成器</li>
+<li>异步 I/O</li>
+<li>惰性求值</li>
+<li>事件驱动应用</li>
+</ul><p>这一讲中，我们主要还是沿用生成器的例子，向你展示协程的基本用法。异步 I/O 应当在协程得到广泛采用之后，成为最能有明显收益的使用场景；但目前，就我看到的，只有 Windows 平台上有较好的支持——微软目前还是做了很多努力的。</p><p>回到 Coroutines。我们今天采用 Coroutines TS 中的写法，包括 <code>std::experimental</code> 名空间，以确保你可以在 MSVC 和 Clang 下编译代码。首先，我们看一下协程相关的新关键字，有下面三个：</p><ul>
+<li><code>co_await</code></li>
+<li><code>co_yield</code></li>
+<li><code>co_return</code></li>
+</ul><p>这三个关键字最初是没有 <code>co_</code> 前缀的，但考虑到 <code>await</code>、<code>yield</code> 已经在很多代码里出现，就改成了目前这个样子。同时，<code>return</code> 和 <code>co_return</code> 也作出了明确的区分：一个协程里只能使用 <code>co_return</code>，不能使用 <code>return</code>。这三个关键字只要有一个出现在函数中，这个函数就是一个协程了——从外部则看不出来，没有用其他语言常用的 <code>async</code> 关键字来标记（<code>async</code> 也已经有其他用途了，见 <a href="https://time.geekbang.org/column/article/186689">[第 19 讲]</a>）。C++ 认为一个函数是否是一个协程是一个实现细节，不是对外接口的一部分。</p><p>我们看一下用协程实现的 <code>fibonacci</code> 长什么样子：</p><pre><code class="language-c++">uint64_resumable fibonacci()
+{
+  uint64_t a = 0;
+  uint64_t b = 1;
+  while (true) {
+    co_yield b;
+    auto tmp = a;
+    a = b;
+    b += tmp;
+  }
+}
+</code></pre><p>这个形式跟 Python 的非常相似了吧，也非常简洁。我们稍后再讨论 <code>uint64_resumable</code> 的定义，先看一下调用代码的样子：</p><pre><code class="language-c++">auto res = fibonacci();
+while (res.resume()) {
+  auto i = res.get();
+  if (i &gt;= 10000) {
+    break;
+  }
+  cout &lt;&lt; i &lt;&lt; endl;
+}
+</code></pre><p>这个代码也非常简单，但我们需要留意 <code>resume</code> 和 <code>get</code> 两个函数调用——这就是我们的 <code>uint64_resumable</code> 类型需要提供的接口了。</p><h3>co_await、co_yield、co_return 和协程控制</h3><p>在讨论该如何定义 <code>uint64_resumable</code> 之前，我们需要先讨论一下协程的这三个新关键字。</p><p>首先是 <code>co_await</code>。对于下面这样一个表达式：</p><pre><code class="language-c++">auto result = co_await 表达式;
+</code></pre><p>编译器会把它理解为：</p><pre><code class="language-c++">auto&amp;&amp; __a = 表达式;
+if (!__a.await_ready()) {
+  __a.await_suspend(协程句柄);
+  // 挂起/恢复点
+}
+auto result = __a.await_resume();
+</code></pre><p>也就是说，“表达式”需要支持 <code>await_ready</code>、<code>await_suspend</code> 和 <code>await_resume</code> 三个接口。如果 <code>await_ready()</code> 返回真，就代表不需要真正挂起，直接返回后面的结果就可以；否则，执行 <code>await_suspend</code> 之后即挂起协程，等待协程被唤醒之后再返回 <code>await_resume()</code> 的结果。这样一个表达式被称作是个 awaitable。</p><p>标准里定义了两个 awaitable，如下所示：</p><pre><code class="language-c++">struct suspend_always {
+  bool await_ready() const noexcept
+  {
+    return false;
+  }
+  void await_suspend(
+    coroutine_handle&lt;&gt;)
+    const noexcept {}
+  void await_resume()
+    const noexcept {}
+};
+
+struct suspend_never {
+  bool await_ready() const noexcept
+  {
+    return true;
+  }
+  void await_suspend(
+    coroutine_handle&lt;&gt;)
+    const noexcept {}
+  void await_resume()
+    const noexcept {}
+};
+</code></pre><p>也就是说，<code>suspend_always</code> 永远告诉调用者需要挂起，而 <code>suspend_never</code> 则永远告诉调用者不需要挂起。两者的 <code>await_suspend</code> 和 <code>await_resume</code> 都是平凡实现，不做任何实际的事情。一个 awaitable 可以自行实现这些接口，以定制挂起之前和恢复之后需要执行的操作。</p><p>上面的 <code>coroutine_handle</code> 是 C++ 标准库提供的类模板。这个类是用户代码跟系统协程调度真正交互的地方，有下面这些成员函数我们等会就会用到：</p><ul>
+<li><code>destroy</code>：销毁协程</li>
+<li><code>done</code>：判断协程是否已经执行完成</li>
+<li><code>resume</code>：让协程恢复执行</li>
+<li><code>promise</code>：获得协程相关的 promise 对象（和 <a href="https://time.geekbang.org/column/article/186689">[第 19 讲]</a> 中的“承诺量”有点相似，是协程和调用者的主要交互对象；一般类型名称为 <code>promise_type</code>）</li>
+<li><code>from_promise</code>（静态）：通过 promise 对象的引用来生成一个协程句柄</li>
+</ul><p>协程的执行过程大致是这个样子的：</p><ol>
+<li>为协程调用分配一个协程帧，含协程调用的参数、变量、状态、promise 对象等所需的空间。</li>
+<li>调用 <code>promise.get_return_object()</code>，返回值会在协程第一次挂起时返回给协程的调用者。</li>
+<li>执行 <code>co_await promise.initial_suspsend()</code>；根据上面对 <code>co_await</code> 语义的描述，协程可能在此第一次挂起（但也可能此时不挂起，在后面的协程体执行过程中挂起）。</li>
+<li>执行协程体中的语句，中间可能有挂起和恢复；如果期间发生异常没有在协程体中处理，则调用 <code>promise.unhandled_exception()</code>。</li>
+<li>当协程执行到底，或者执行到 <code>co_return</code> 语句时，会根据是否有非 void 的返回值，调用 <code>promise.return_value(…)</code> 或 <code>promise.return_void()</code>，然后执行 <code>co_await promise.final_suspsend()</code>。</li>
+</ol><p>用代码可以大致表示如下：</p><pre><code class="language-c++">  frame = operator new(…);
+  promise_type&amp; promise =
+    frame-&gt;promise;
+
+  // 在初次挂起时返回给调用者
+  auto return_value =
+    promise.get_return_object();
+
+  co_await promise
+    .initial_suspsend();
+  try {
+    执行协程体;
+    可能被 co_wait、co_yield 挂起;
+    恢复后继续执行，直到 co_return;
+  }
+  catch (...) {
+    promise.unhandled_exception();
+  }
+
+final_suspend:
+  co_await promise.final_suspsend();
+</code></pre><p>上面描述了 <code>co_await</code> 和 <code>co_return</code>，那 <code>co_yield</code> 呢？也很简单，<code>co_yield 表达式</code> 等价于：</p><pre><code class="language-c++">co_await promise.yield_value(表达式);
+</code></pre><h3>定义 <code>uint64_resumable</code></h3><p>了解了上述知识之后，我们就可以展示一下 <code>uint64_resumable</code> 的定义了：</p><pre><code class="language-c++">class uint64_resumable {
+public:
+  struct promise_type {…};
+
+  using coro_handle =
+    coroutine_handle&lt;promise_type&gt;;
+  explicit uint64_resumable(
+    coro_handle handle)
+    : handle_(handle)
+  {
+  }
+  ~uint64_resumable()
+  {
+    handle_.destroy();
+  }
+  uint64_resumable(
+    const uint64_resumable&amp;) =
+    delete;
+  uint64_resumable(
+    uint64_resumable&amp;&amp;) = default;
+  bool resume();
+  uint64_t get();
+
+private:
+  coro_handle handle_;
+};
+</code></pre><p>这个代码相当简单，我们的结构内部有个 <code>promise_type</code>（下面会定义），而私有成员只有一个协程句柄。协程构造需要一个协程句柄，析构时将使用协程句柄来销毁协程；为简单起见，我们允许结构被移动，但不可复制（以免重复调用 <code>handle_.destroy()</code>）。除此之外，我们这个结构只提供了调用者需要的 <code>resume</code> 和 <code>get</code> 成员函数，分别定义如下：</p><pre><code class="language-c++">bool uint64_resumable::resume()
+{
+  if (!handle_.done()) {
+    handle_.resume();
+  }
+  return !handle_.done();
+}
+
+uint64_t uint64_resumable::get()
+{
+  return handle_.promise().value_;
+}
+</code></pre><p>也就是说，<code>resume</code> 会判断协程是否已经结束，没结束就恢复协程的执行；当协程再次挂起时（调用者恢复执行），返回协程是否仍在执行中的状态。而 <code>get</code> 简单地返回存储在 promise 对象中的数值。</p><p>现在我们需要看一下 promise 类型了，它里面有很多协程的定制点，可以修改协程的行为：</p><pre><code class="language-c++">struct promise_type {
+  uint64_t value_;
+  using coro_handle =
+    coroutine_handle&lt;promise_type&gt;;
+  auto get_return_object()
+  {
+    return uint64_resumable{
+      coro_handle::from_promise(
+        *this)};
+  }
+  constexpr auto initial_suspend()
+  {
+    return suspend_always();
+  }
+  constexpr auto final_suspend()
+  {
+    return suspend_always();
+  }
+  auto yield_value(uint64_t value)
+  {
+    value_ = value;
+    return suspend_always();
+  }
+  void return_void() {}
+  void unhandled_exception()
+  {
+    std::terminate();
+  }
+};
+</code></pre><p>简单解说一下：</p><ul>
+<li>结构里面只有一个数据成员 <code>value_</code>，存放供 <code>uint64_resumable::get</code> 取用的数值。</li>
+<li><code>get_return_object</code> 是第一个定制点。我们前面提到过，调用协程的返回值就是 <code>get_return_object()</code> 的结果。我们这儿就是使用 promise 对象来构造一个 <code>uint64_resumable</code>。</li>
+<li><code>initial_suspend</code> 是第二个定制点。我们此处返回 <code>suspend_always()</code>，即协程立即挂起，调用者马上得到 <code>get_return_object()</code> 的结果。</li>
+<li><code>final_suspend</code> 是第三个定制点。我们此处返回 <code>suspend_always()</code>，即使执行到了 <code>co_return</code> 语句，协程仍处于挂起状态。如果我们返回 <code>suspend_never()</code> 的话，那一旦执行了 <code>co_return</code> 或执行到协程结束，协程就会被销毁，连同已初始化的本地变量和 promise，并释放协程帧内存。</li>
+<li><code>yield_value</code> 是第四个定制点。我们这儿仅对 <code>value_</code> 进行赋值，然后让协程挂起（执行控制回到调用者）。</li>
+<li><code>return_void</code> 是第五个定制点。我们的代码永不返回，这儿无事可做。</li>
+<li><code>unhandled_exception</code> 是第六个定制点。我们这儿也不应该发生任何异常，所以我们简单地调用 <code>terminate</code> 来终结程序的执行。</li>
+</ul><p>好了，这样，我们就完成了协程相关的所有定义。有没有觉得轻松点？</p><hr></hr><p>没有？那就对了。正如我在这一节开头说的，C++20 标准化的只是协程的底层语言支持（我上面还并不是一个非常完整的描述）。要用这些底层直接写应用代码，那是非常痛苦的事。这些接口的目标用户实际上也不是普通开发者，而是库的作者。</p><p>幸好，我们并不是没有任何高层抽象，虽然这些实现不“标准”。</p><h2>C++20 协程的高层抽象</h2><h3>cppcoro</h3><p>我们首先看一下跨平台的 cppcoro 库 <span class="orange">[3]</span>，它提供的高层接口就包含了 <code>generator</code>。如果使用 cppcoro，我们的 <code>fibonacci</code> 协程可以这样实现：</p><pre><code class="language-c++">#include &lt;cppcoro/generator.hpp&gt;
+using cppcoro::generator;
+
+generator&lt;uint64_t&gt; fibonacci()
+{
+  uint64_t a = 0;
+  uint64_t b = 1;
+  while (true) {
+    co_yield b;
+    auto tmp = a;
+    a = b;
+    b += tmp;
+  }
+}
+</code></pre><p>使用 <code>fibonacci</code> 也比刚才的代码要方便：</p><pre><code class="language-c++">for (auto i : fibonacci()) {
+  if (i &gt;= 10000) {
+    break;
+  }
+  cout &lt;&lt; i &lt;&lt; endl;
+}
+</code></pre><p>除了生成器，cppcoro 还支持异步任务和异步 I/O——遗憾的是，异步 I/O 目前只有 Windows 平台上有，还没人实现 Linux 或 macOS 上的支持。</p><h3>MSVC</h3><p>作为协程的先行者和 Coroutines TS 的提出者，微软在协程上做了很多工作。生成器当然也在其中：</p><pre><code class="language-c++">#include &lt;experimental/generator&gt;
+using std::experimental::generator;
+
+generator&lt;uint64_t&gt; fibonacci()
+{
+  uint64_t a = 0;
+  uint64_t b = 1;
+  while (true) {
+    co_yield b;
+    auto tmp = a;
+    a = b;
+    b += tmp;
+  }
+}
+</code></pre><p>微软还有一些有趣的私有扩展。比如，MSVC 把标准 C++ 的 <code>future</code> 改造成了 awaitable。下面的代码在 MSVC 下可以编译通过，简单地展示了基本用法：</p><pre><code class="language-c++">#include &lt;experimental/coroutine&gt;
+using namespace std;
+
+future&lt;int&gt; compute_value()
+{
+  int result = co_await async([] {
+    this_thread::sleep_for(1s);
+    return 42;
+  });
+  co_return result;
+}
+
+int main()
+{
+  auto value = compute_value();
+  cout &lt;&lt; value.get() &lt;&lt; endl;
+}
+</code></pre><p>代码中有一个地方我需要提醒一下：虽然上面 <code>async</code> 返回的是 <code>future&lt;int&gt;</code>，但 <code>compute_value</code> 的调用者得到的并不是这个 <code>future</code>——它得到的是另外一个独立的 <code>future</code>，并最终由 <code>co_return</code> 把结果数值填充了进去。</p><h2>有栈协程和无栈协程</h2><p>我们最后需要说一下有栈（stackful）协程和无栈（stackless）协程的区别。C++ 里很早就有了有栈的协程，概念上来讲，有栈的协程跟纤程、goroutines 基本是一个概念，都是由用户自行调度的、操作系统之外的运行单元。每个这样的运行单元都有自己独立的栈空间，缺点当然就是栈的空间占用和切换栈的开销了。而无栈的协程自己没有独立的栈空间，每个协程只需要一个很小的栈帧，空间占用小，也没有栈的切换开销。</p><p>C++20 的协程是无栈的。部分原因是有栈的协程可以使用纯库方式实现，而无栈的协程需要一点编译器魔法帮忙。毕竟，协程里面的变量都是要放到堆上而不是栈上的。</p><p>一个简单的无栈协程调用的内存布局如下图所示：</p><p><img src="https://static001.geekbang.org/resource/image/e3/66/e35d2b262c741acf40d69eedc6a5ad66.png" alt=""></p><p>可以看到，协程 C 本身的本地变量不占用栈，但当它调用其他函数时，它会使用线程原先的栈空间。在上面的函数 D 的执行过程中，协程是不可以挂起的——如果控制回到 B 继续，B 可能会使用目前已经被 D 使用的栈空间！</p><p>因此，无栈的协程牺牲了一定的灵活性，换来了空间的节省和性能。有栈的协程你可能起几千个就占用不少内存空间，而无栈的协程可以轻轻松松起到亿级——毕竟，维持基本状态的开销我实测下来只有一百字节左右。</p><p>反过来，如果无栈的协程不满足需要——比如，你的协程里需要有递归调用，并在深层挂起——你就不得不寻找一个有栈的协程的解决方案。目前已经有一些成熟的方案，比如 Boost.Coroutine2 <span class="orange">[4]</span>。下面的代码展示如何在 Boost.Coroutine2 里实现 <code>fibonacci</code>，让你感受一点点小区别：</p><pre><code class="language-c++">#include &lt;iostream&gt;
+#include &lt;stdint.h&gt;
+#include &lt;boost/coroutine2/all.hpp&gt;
+
+typedef boost::coroutines2::
+  coroutine&lt;const uint64_t&gt;
+    coro_t;
+
+void fibonacci(
+  coro_t::push_type&amp; yield)
+{
+  uint64_t a = 0;
+  uint64_t b = 1;
+  while (true) {
+    yield(b);
+    auto tmp = a;
+    a = b;
+    b += tmp;
+  }
+}
+
+int main()
+{
+  for (auto i : coro_t::pull_type(
+         boost::coroutines2::
+           fixedsize_stack(),
+         fibonacci)) {
+    if (i &gt;= 10000) {
+      break;
+    }
+    std::cout &lt;&lt; i &lt;&lt; std::endl;
+  }
+}
+</code></pre><h2>编译器支持</h2><p>前面提到了，MSVC 和 Clang 目前支持协程。不过，它们都需要特殊的命令行选项来开启协程支持：</p><ul>
+<li>MSVC 需要 <code>/await</code> 命令行选项</li>
+<li>Clang 需要 <code>-fcoroutines-ts</code> 命令行选项</li>
+</ul><p>为了满足使用 CMake 的同学的要求，也为了方便大家编译，我把示例代码放到了 GitHub 上：</p><p><a href="https://github.com/adah1972/geek_time_cpp">https://github.com/adah1972/geek_time_cpp</a></p><p>第一次我只放了第 30 讲的代码，但我会把其他的代码陆续补上。</p><h2>内容小结</h2><p>本讲讨论了 C++20 里的第三个重要特性：协程。协程仍然很新，但它的重要性是毋庸置疑的——尤其在生成器和异步 I/O 上。</p><h2>课后思考</h2><p>请仔细比较第一个 <code>fibonacci</code> 的 C++ 实现和最后使用 <code>generator</code> 的 <code>fibonacci</code> 的实现，体会协程代码如果自行用状态机的方式来实现，是一件多麻烦的事情。</p><p>如果你对协程有兴趣，可以查看参考资料 <span class="orange">[5]</span>，里面提供了一些较为深入的原理介绍。</p><h2><span class="reference">参考资料 </span></h2><p><span class="reference">[1] 维基百科, “协程”. <a href="https://zh.wikipedia.org/zh-cn/%E5%8D%8F%E7%A8%8B">https://zh.wikipedia.org/zh-cn/协程</a> </span></p><p><span class="reference">[2] Gor Nishanov, “Working draft, C++ extensions for coroutines”. <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/n4775.pdf">http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/n4775.pdf</a> </span></p><p><span class="reference">[3] Lewis Baker, CppCoro. <a href="https://github.com/lewissbaker/cppcoro">https://github.com/lewissbaker/cppcoro</a> </span></p><p><span class="reference">[4] Oliver Kowalke, Boost.Coroutine2. <a href="https://www.boost.org/doc/libs/release/libs/coroutine2/doc/html/index.html">https://www.boost.org/doc/libs/release/libs/coroutine2/doc/html/index.html</a> </span></p><p><span class="reference">[5] Dawid Pilarski, “Coroutines introduction”. <a href="https://blog.panicsoftware.com/coroutines-introduction/">https://blog.panicsoftware.com/coroutines-introduction/</a> </span></p><h2>精选留言：</h2>
+        <ul>
+        
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            晚风·和煦  2020-02-11 02:20:14
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            老师，map&lt;int, int&gt;().swap(map1);<br>这个语句为什么不能达到真正释放map1内存的效果呢？必须得用malloc_trim 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2020-02-11 13:38:32</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">先说是不是，然后才谈得上为什么。<br><br>在大部分情况下都没有必要那么做。我从来没在代码里写过 malloc_trim。<br><br>在有虚拟内存的世界里，我看不出调用 malloc_trim 的必要性。操作系统自己能管好。<br><br>如果嵌入式开发，没有虚拟内存，你用 malloc_trim 也不见得有用。因为一旦堆的尾部有分配，你并不能释放内存回操作系统。<br><br>而且，你为什么要还内存给操作系统？以后你不用了吗？是程序要退出了吗？如果程序要退出，本来占用的资源就会被释放掉。如果程序不退出，进程管好自己的事，下次分配能不麻烦操作系统就不麻烦操作系统，应该反而更好。<br><br>我的个人见解，谁告诉你这句话的，基本上并不真懂应用开发，只是学了点核心调用的知识，在瞎卖弄而已。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            Vackine  2020-02-10 09:41:27
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            感觉跟python里面的async的新的标准库好像，是真的有性能上的提升么，还是只是编程魔法？ 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2020-02-10 19:58:45</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">编程魔法和性能提升有矛盾么？🤪<br><br>严肃点，协程不是为了提高代码性能，而是为了提高程序员的生产率。从这点上来说，协程仍然是一种编译器的黑魔法。<br><br>跟手写比起来，没有性能的提升。就如同除了极少数的情况（比如泛型允许内联导致C++的排序比C的qsort快），C++代码不会比C代码性能更高。</div>
+</div>
+            
+    </div>
+</li>
+            </ul>
+</div>
+</body>
+</html>

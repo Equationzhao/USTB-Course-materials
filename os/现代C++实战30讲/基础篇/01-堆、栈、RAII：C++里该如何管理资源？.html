@@ -1,0 +1,1368 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>01-堆、栈、RAII：C--里该如何管理资源？</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <style>
+        html {
+            color: #333;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            text-rendering: optimizelegibility;
+            font-family: Helvetica Neue, PingFang SC, Verdana, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif
+        }
+
+        html.borderbox *,
+        html.borderbox :after,
+        html.borderbox :before {
+            box-sizing: border-box
+        }
+
+        article,
+        aside,
+        blockquote,
+        body,
+        button,
+        code,
+        dd,
+        details,
+        dl,
+        dt,
+        fieldset,
+        figcaption,
+        figure,
+        footer,
+        form,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        header,
+        hr,
+        input,
+        legend,
+        li,
+        menu,
+        nav,
+        ol,
+        p,
+        pre,
+        section,
+        td,
+        textarea,
+        th,
+        ul {
+            margin: 0;
+            padding: 0
+        }
+
+        article,
+        aside,
+        details,
+        figcaption,
+        figure,
+        footer,
+        header,
+        menu,
+        nav,
+        section {
+            display: block
+        }
+
+        audio,
+        canvas,
+        video {
+            display: inline-block
+        }
+
+        body,
+        button,
+        input,
+        select,
+        textarea {
+            font: 300 1em/1.8 PingFang SC, Lantinghei SC, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, Helvetica, sans-serif
+        }
+
+        button::-moz-focus-inner,
+        input::-moz-focus-inner {
+            padding: 0;
+            border: 0
+        }
+
+        table {
+            border-collapse: collapse;
+            border-spacing: 0
+        }
+
+        fieldset,
+        img {
+            border: 0
+        }
+
+        blockquote {
+            position: relative;
+            color: #999;
+            font-weight: 400;
+            border-left: 1px solid #1abc9c;
+            padding-left: 1em;
+            margin: 1em 3em 1em 2em
+        }
+
+        @media only screen and (max-width: 640px) {
+            blockquote {
+                margin: 1em 0
+            }
+        }
+
+        abbr,
+        acronym {
+            border-bottom: 1px dotted;
+            font-variant: normal
+        }
+
+        abbr {
+            cursor: help
+        }
+
+        del {
+            text-decoration: line-through
+        }
+
+        address,
+        caption,
+        cite,
+        code,
+        dfn,
+        em,
+        th,
+        var {
+            font-style: normal;
+            font-weight: 400
+        }
+
+        ol,
+        ul {
+            list-style: none
+        }
+
+        caption,
+        th {
+            text-align: left
+        }
+
+        q:after,
+        q:before {
+            content: ""
+        }
+
+        sub,
+        sup {
+            font-size: 75%;
+            line-height: 0;
+            position: relative
+        }
+
+        :root sub,
+        :root sup {
+            vertical-align: baseline
+        }
+
+        sup {
+            top: -.5em
+        }
+
+        sub {
+            bottom: -.25em
+        }
+
+        a {
+            color: #1abc9c
+        }
+
+        a:hover {
+            text-decoration: underline
+        }
+
+        .typo a {
+            border-bottom: 1px solid #1abc9c
+        }
+
+        .typo a:hover {
+            border-bottom-color: #555;
+            color: #555
+        }
+
+        .typo a:hover,
+        a,
+        ins {
+            text-decoration: none
+        }
+
+        .typo-u,
+        u {
+            text-decoration: underline
+        }
+
+        mark {
+            background: #fffdd1;
+            border-bottom: 1px solid #ffedce;
+            padding: 2px;
+            margin: 0 5px
+        }
+
+        code,
+        pre,
+        pre tt {
+            font-family: Courier, Courier New, monospace
+        }
+
+        pre {
+            background: hsla(0, 0%, 97%, .7);
+            border: 1px solid #ddd;
+            padding: 1em 1.5em;
+            display: block;
+            -webkit-overflow-scrolling: touch
+        }
+
+        hr {
+            border: none;
+            border-bottom: 1px solid #cfcfcf;
+            margin-bottom: .8em;
+            height: 10px
+        }
+
+        .typo-small,
+        figcaption,
+        small {
+            font-size: .9em;
+            color: #888
+        }
+
+        b,
+        strong {
+            font-weight: 700;
+            color: #000
+        }
+
+        [draggable] {
+            cursor: move
+        }
+
+        .clearfix:after,
+        .clearfix:before {
+            content: "";
+            display: table
+        }
+
+        .clearfix:after {
+            clear: both
+        }
+
+        .clearfix {
+            zoom: 1
+        }
+
+        .textwrap,
+        .textwrap td,
+        .textwrap th {
+            word-wrap: break-word;
+            word-break: break-all
+        }
+
+        .textwrap-table {
+            table-layout: fixed
+        }
+
+        .serif {
+            font-family: Palatino, Optima, Georgia, serif
+        }
+
+        .typo-dl,
+        .typo-form,
+        .typo-hr,
+        .typo-ol,
+        .typo-p,
+        .typo-pre,
+        .typo-table,
+        .typo-ul,
+        .typo dl,
+        .typo form,
+        .typo hr,
+        .typo ol,
+        .typo p,
+        .typo pre,
+        .typo table,
+        .typo ul,
+        blockquote {
+            margin-bottom: 1rem
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: PingFang SC, Helvetica Neue, Verdana, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif;
+            color: #000;
+            line-height: 1.35
+        }
+
+        .typo-h1,
+        .typo-h2,
+        .typo-h3,
+        .typo-h4,
+        .typo-h5,
+        .typo-h6,
+        .typo h1,
+        .typo h2,
+        .typo h3,
+        .typo h4,
+        .typo h5,
+        .typo h6 {
+            margin-top: 1.2em;
+            margin-bottom: .6em;
+            line-height: 1.35
+        }
+
+        .typo-h1,
+        .typo h1 {
+            font-size: 2em
+        }
+
+        .typo-h2,
+        .typo h2 {
+            font-size: 1.8em
+        }
+
+        .typo-h3,
+        .typo h3 {
+            font-size: 1.6em
+        }
+
+        .typo-h4,
+        .typo h4 {
+            font-size: 1.4em
+        }
+
+        .typo-h5,
+        .typo-h6,
+        .typo h5,
+        .typo h6 {
+            font-size: 1.2em
+        }
+
+        .typo-ul,
+        .typo ul {
+            margin-left: 1.3em;
+            list-style: disc
+        }
+
+        .typo-ol,
+        .typo ol {
+            list-style: decimal;
+            margin-left: 1.9em
+        }
+
+        .typo-ol ol,
+        .typo-ol ul,
+        .typo-ul ol,
+        .typo-ul ul,
+        .typo li ol,
+        .typo li ul {
+            margin-bottom: .8em;
+            margin-left: 2em
+        }
+
+        .typo-ol ul,
+        .typo-ul ul,
+        .typo li ul {
+            list-style: circle
+        }
+
+        .typo-table td,
+        .typo-table th,
+        .typo table caption,
+        .typo table td,
+        .typo table th {
+            border: 1px solid #ddd;
+            padding: .5em 1em;
+            color: #666
+        }
+
+        .typo-table th,
+        .typo table th {
+            background: #fbfbfb
+        }
+
+        .typo-table thead th,
+        .typo table thead th {
+            background: hsla(0, 0%, 95%, .7)
+        }
+
+        .typo table caption {
+            border-bottom: none
+        }
+
+        .typo-input,
+        .typo-textarea {
+            -webkit-appearance: none;
+            border-radius: 0
+        }
+
+        .typo-em,
+        .typo em,
+        caption,
+        legend {
+            color: #000;
+            font-weight: inherit
+        }
+
+        .typo-em {
+            position: relative
+        }
+
+        .typo-em:after {
+            position: absolute;
+            top: .65em;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            content: "\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB"
+        }
+
+        .typo img {
+            max-width: 100%
+        }
+
+        .common-content {
+            font-weight: 400;
+            color: #353535;
+            line-height: 1.75rem;
+            white-space: normal;
+            word-break: normal;
+            font-size: 1rem
+        }
+
+        .common-content img {
+            display: block;
+            max-width: 100%;
+            background-color: #eee
+        }
+
+        .common-content audio,
+        .common-content video {
+            width: 100%;
+            background-color: #eee
+        }
+
+        .common-content center,
+        .common-content font {
+            margin-top: 1rem;
+            display: inline-block
+        }
+
+        .common-content center {
+            width: 100%
+        }
+
+        .common-content pre {
+            margin-top: 1rem;
+            padding-left: 0;
+            padding-right: 0;
+            position: relative;
+            overflow: hidden
+        }
+
+        .common-content pre code {
+            font-size: .8rem;
+            font-family: Consolas, Liberation Mono, Menlo, monospace, Courier;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            overflow-x: auto
+        }
+
+        .common-content hr {
+            border: none;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-top: 1px solid #f5f5f5;
+            height: 1px;
+            background: none
+        }
+
+        .common-content b,
+        .common-content h1,
+        .common-content h2,
+        .common-content h3,
+        .common-content h4,
+        .common-content h5,
+        .common-content strong {
+            font-weight: 700
+        }
+
+        .common-content h1,
+        .common-content h2 {
+            font-size: 1.125rem;
+            margin-bottom: .45rem
+        }
+
+        .common-content h3,
+        .common-content h4,
+        .common-content h5 {
+            font-size: 1rem;
+            margin-bottom: .45rem
+        }
+
+        .common-content p {
+            font-weight: 400;
+            color: #353535;
+            margin-top: .15rem
+        }
+
+        .common-content .orange {
+            color: #ff5a05
+        }
+
+        .common-content .reference {
+            font-size: 1rem;
+            color: #888
+        }
+
+        .custom-rich-content h1 {
+            margin-top: 0;
+            font-weight: 400;
+            font-size: 15.25px;
+            border-bottom: 1px solid #eee;
+            line-height: 2.8
+        }
+
+        .custom-rich-content li,
+        .custom-rich-content p {
+            font-size: 14px;
+            color: #888;
+            line-height: 1.6
+        }
+
+        table.hljs-ln {
+            margin-bottom: 0;
+            border-spacing: 0;
+            border-collapse: collapse
+        }
+
+        table.hljs-ln,
+        table.hljs-ln tbody,
+        table.hljs-ln td,
+        table.hljs-ln tr {
+            box-sizing: border-box
+        }
+
+        table.hljs-ln td {
+            padding: 0;
+            border: 0
+        }
+
+        table.hljs-ln td.hljs-ln-numbers {
+            min-width: 15px;
+            color: rgba(27, 31, 35, .3);
+            text-align: right;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none
+        }
+
+        table.hljs-ln td.hljs-ln-code,
+        table.hljs-ln td.hljs-ln-numbers {
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
+            font-size: 12px;
+            line-height: 20px;
+            vertical-align: top
+        }
+
+        table.hljs-ln td.hljs-ln-code {
+            position: relative;
+            padding-right: 10px;
+            padding-left: 10px;
+            overflow: visible;
+            color: #24292e;
+            word-wrap: normal;
+            white-space: pre
+        }
+
+        video::-webkit-media-controls {
+            overflow: hidden !important
+        }
+
+        video::-webkit-media-controls-enclosure {
+            width: calc(100% + 32px);
+            margin-left: auto
+        }
+
+        ._29HP61GA_0 {
+            max-width:800px;
+            margin:0 auto;
+            margin-bottom: 20px;
+            font-weight: 400;
+            color: #353535;
+            line-height: 1.76;
+            white-space: normal;
+            word-break: normal;
+            font-size: 17px;
+            -webkit-transition: background-color .3s ease;
+            transition: background-color .3s ease
+        }
+
+        ._29HP61GA_0 .MathJax_Display {
+            overflow: auto
+        }
+
+        ._29HP61GA_0 .poster {
+            position: fixed;
+            left: -10000px;
+            top: -10000px;
+            overflow: hidden;
+            padding: 1rem;
+            background: #ececec
+        }
+
+        ._29HP61GA_0 .richcontent-pre-copy {
+            font-size: 13px;
+            color: #888;
+            position: absolute;
+            right: 1em;
+            top: .5em;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none
+        }
+
+        ._29HP61GA_0 .richcontent-pre-copy .iconfont {
+            font-size: 12px;
+            margin-right: .2em
+        }
+
+        ._29HP61GA_0 a {
+            color: #fa8919;
+            border-bottom: 1px solid #fa8919
+        }
+
+        ._29HP61GA_0 img {
+            display: block;
+            max-width: 100%;
+            position: relative;
+            left: 50%;
+            -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+            background-color: #eee;
+            vertical-align: top;
+            border-radius: 0
+        }
+
+        ._29HP61GA_0 audio,
+        ._29HP61GA_0 video {
+            width: 100%;
+            background-color: #eee
+        }
+
+        ._29HP61GA_0 pre {
+            margin-top: 16px;
+            padding: 34px 0 0;
+            margin-bottom: 30px;
+            position: relative;
+            border-radius: 6px;
+            background: rgba(246, 247, 251, .749);
+            border: 0
+        }
+
+        ._29HP61GA_0 pre code {
+            font-size: 12px;
+            font-family: Consolas, Liberation Mono, Menlo, monospace, Courier;
+            display: block;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            margin-left: 16px;
+            margin-right: 16px;
+            overflow-x: scroll
+        }
+
+        ._29HP61GA_0 pre code:after {
+            content: "";
+            height: 30px;
+            width: 100%;
+            display: block
+        }
+
+        ._29HP61GA_0 hr {
+            border: none;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-top: 1px solid #f5f5f5;
+            height: 1px;
+            background: none
+        }
+
+        ._29HP61GA_0 h1,
+        ._29HP61GA_0 h2,
+        ._29HP61GA_0 h3,
+        ._29HP61GA_0 h4,
+        ._29HP61GA_0 h5 {
+            margin-bottom: 20px;
+            margin-top: 0;
+            font-weight: 700
+        }
+
+        ._29HP61GA_0 b,
+        ._29HP61GA_0 strong {
+            font-weight: 700
+        }
+
+        ._29HP61GA_0 h1 {
+            font-size: 21px
+        }
+
+        ._29HP61GA_0 h2 {
+            font-size: 20px
+        }
+
+        ._29HP61GA_0 h3 {
+            font-size: 19px
+        }
+
+        ._29HP61GA_0 h4 {
+            font-size: 18px
+        }
+
+        ._29HP61GA_0 h5 {
+            font-size: 17px
+        }
+
+        ._29HP61GA_0 center,
+        ._29HP61GA_0 p {
+            font-weight: 400;
+            color: #353535;
+            margin-top: 0;
+            margin-bottom: 30px;
+            word-break: break-word
+        }
+
+        ._29HP61GA_0 center {
+            text-align: center
+        }
+
+        ._29HP61GA_0 blockquote {
+            margin-top: 0;
+            margin-bottom: 34px;
+            border-left: 3px solid #e8e8e8;
+            padding-left: 17px;
+            color: #353535
+        }
+
+        ._29HP61GA_0 blockquote p {
+            margin-top: 0;
+            margin-bottom: 0
+        }
+
+        ._29HP61GA_0 ol,
+        ._29HP61GA_0 ul {
+            margin-bottom: 30px
+        }
+
+        ._29HP61GA_0 ol p,
+        ._29HP61GA_0 ul p {
+            margin-top: 0;
+            margin-bottom: 0
+        }
+
+        ._29HP61GA_0 ol {
+            list-style: decimal;
+            margin-left: 20px
+        }
+
+        ._29HP61GA_0 ul li {
+            padding-left: 17px;
+            position: relative;
+            margin-bottom: 10px
+        }
+
+        ._29HP61GA_0 ul li:after {
+            content: "";
+            height: 6px;
+            width: 6px;
+            border-radius: 50%;
+            background: #353535;
+            position: absolute;
+            top: 10px;
+            left: 0
+        }
+
+        ._29HP61GA_0 .orange {
+            color: #fa8919
+        }
+
+        ._29HP61GA_0 .reference {
+            color: #888
+        }
+
+        ._29HP61GA_0 .m-right {
+            text-align: right
+        }
+
+        ._29HP61GA_0 .m-center {
+            text-align: center;
+            display: block
+        }
+
+        ._29HP61GA_0 .m-gray {
+            color: #888
+        }
+
+        ._29HP61GA_0 .m-small {
+            font-size: 15px
+        }
+
+        ._29HP61GA_0 table.hljs-ln {
+            margin-bottom: 0;
+            border-spacing: 0;
+            border-collapse: collapse
+        }
+
+        ._29HP61GA_0 table.hljs-ln,
+        ._29HP61GA_0 table.hljs-ln tbody,
+        ._29HP61GA_0 table.hljs-ln td,
+        ._29HP61GA_0 table.hljs-ln tr {
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box
+        }
+
+        ._29HP61GA_0 table.hljs-ln td {
+            padding: 0;
+            border: 0
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-numbers {
+            min-width: 15px;
+            font-size: 12px;
+            color: rgba(27, 31, 35, .3);
+            text-align: right;
+            white-space: nowrap;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-code,
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-numbers {
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
+            line-height: 20px;
+            vertical-align: top
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-code {
+            position: relative;
+            padding-right: 10px;
+            padding-left: 10px;
+            overflow: visible;
+            font-size: 13px;
+            color: #666;
+            word-wrap: normal;
+            white-space: pre
+        }
+
+    </style>
+</head>
+<body>
+<div class="_29HP61GA_0">
+<h1>01-堆、栈、RAII：C--里该如何管理资源？</h1>
+<p>你好，我是吴咏炜。</p><p>今天我们就正式开启了C++的学习之旅，作为第一讲，我想先带你把地基打牢。我们来学习一下内存管理的基本概念，大致的学习路径是：先讲堆和栈，然后讨论 C++ 的特色功能  RAII。掌握这些概念，是能够熟练运用 C++ 的基础。</p><h2>基本概念</h2><p><strong>堆</strong>，英文是 heap，在内存管理的语境下，指的是动态分配内存的区域。这个堆跟数据结构里的堆不是一回事。这里的内存，被分配之后需要手工释放，否则，就会造成内存泄漏。</p><p>C++ 标准里一个相关概念是自由存储区，英文是 free store，特指使用 <code>new</code> 和 <code>delete</code> 来分配和释放内存的区域。一般而言，这是堆的一个子集：</p><ul>
+<li><code>new</code> 和 <code>delete</code> 操作的区域是 free store</li>
+<li><code>malloc</code> 和 <code>free</code> 操作的区域是 heap</li>
+</ul><p>但 <code>new</code> 和 <code>delete</code> 通常底层使用 <code>malloc</code> 和 <code>free</code> 来实现，所以 free store 也是 heap。鉴于对其区分的实际意义并不大，在本专栏里，除非另有特殊说明，我会只使用堆这一术语。</p><p><strong>栈</strong>，英文是 stack，在内存管理的语境下，指的是函数调用过程中产生的本地变量和调用数据的区域。这个栈和数据结构里的栈高度相似，都满足“后进先出”（last-in-first-out 或 LIFO）。</p><!-- [[[read_end]]] --><p><strong>RAII</strong>，完整的英文是 Resource Acquisition Is Initialization，是 C++ 所特有的资源管理方式。有少量其他语言，如 D、Ada 和 Rust 也采纳了 RAII，但主流的编程语言中， C++ 是唯一一个依赖 RAII 来做资源管理的。</p><p>RAII 依托栈和析构函数，来对所有的资源——包括堆内存在内——进行管理。对 RAII 的使用，使得 C++ 不需要类似于 Java 那样的垃圾收集方法，也能有效地对内存进行管理。RAII 的存在，也是垃圾收集虽然理论上可以在 C++ 使用，但从来没有真正流行过的主要原因。</p><p>接下来，我将会对堆、栈和 RAII 进行深入的探讨。</p><h2>堆</h2><p>从现代编程的角度来看，使用堆，或者说使用动态内存分配，是一件再自然不过的事情了。下面这样的代码，都会导致在堆上分配内存（并构造对象）。</p><pre><code class="language-c++">// C++
+auto ptr = new std::vector&lt;int&gt;();
+</code></pre><pre><code class="language-java">// Java
+ArrayList&lt;int&gt; list = new ArrayList&lt;int&gt;();
+</code></pre><pre><code class="language-python"># Python
+lst = list()
+</code></pre><p>从历史的角度，动态内存分配实际上是较晚出现的。由于动态内存带来的不确定性——内存分配耗时需要多久？失败了怎么办？等等——至今仍有很多场合会禁用动态内存，尤其在实时性要求比较高的场合，如飞行控制器和电信设备。不过，由于大家多半对这种用法比较熟悉，特别是从 C 和 C++ 以外的其他语言开始学习编程的程序员，所以提到内存管理，我们还是先讨论一下使用堆的编程方式。</p><p>在堆上分配内存，有些语言可能使用 <code>new</code> 这样的关键字，有些语言则是在对象的构造时隐式分配，不需要特殊关键字。不管哪种情况，程序通常需要牵涉到三个可能的内存管理器的操作：</p><ol>
+<li>让内存管理器分配一个某个大小的内存块</li>
+<li>让内存管理器释放一个之前分配的内存块</li>
+<li>让内存管理器进行垃圾收集操作，寻找不再使用的内存块并予以释放</li>
+</ol><p>C++ 通常会做上面的操作 1 和 2。Java 会做上面的操作 1 和 3。而 Python 会做上面的操作 1、2、3。这是语言的特性和实现方式决定的。</p><p><strong>需要略加说明的是，上面的三个操作都不简单，并且彼此之间是相关的。</strong></p><p>第一，分配内存要考虑程序当前已经有多少未分配的内存。内存不足时要从操作系统申请新的内存。内存充足时，要从可用的内存里取出一块合适大小的内存，做簿记工作将其标记为已用，然后将其返回给要求内存的代码。</p><p>需要注意到，绝大部分情况下，可用内存都会比要求分配的内存大，所以代码只被允许使用其被分配的内存区域，而剩余的内存区域仍属于未分配状态，可以在后面的分配过程中使用。另外，如果内存管理器支持垃圾收集的话，分配内存的操作还可能会触发垃圾收集。</p><p>第二，释放内存不只是简单地把内存标记为未使用。对于连续未使用的内存块，通常内存管理器需要将其合并成一块，以便可以满足后续的较大内存分配要求。毕竟，目前的编程模式都要求申请的内存块是连续的。</p><p>第三，垃圾收集操作有很多不同的策略和实现方式，以实现性能、实时性、额外开销等各方面的平衡。由于 C++ 里通常都不使用垃圾收集，所以就不是我们专栏的重点，不再展开讲解。</p><p>下面这张图展示了一个简单的分配过程：</p><p><img src="https://static001.geekbang.org/resource/image/18/5a/1814fb6093744c64ac9d3861fb4d3a5a.png" alt=""><br>
+<img src="https://static001.geekbang.org/resource/image/a7/3b/a7b72d6062c5cd798a2de991bffd713b.png" alt=""></p><p>注意在图 1e 的状态下，内存管理器是满足不了长度大于 4 的内存分配要求的；而在图 1f 的状态，则长度小于等于 7 的单个内存要求都可以得到满足。</p><p>当然，这只是一个简单的示意，只是为了让你能够对这个过程有一个大概的感性认识。在不考虑垃圾收集的情况下，内存需要手工释放；在此过程中，内存可能有碎片化的情况。比如，在图 1d 的情况下，虽然总共剩余内存为 6，但却满足不了长度大于 4 的内存分配要求。</p><p>幸运的是，大部分软件开发人员都不需要担心这个问题。内存分配和释放的管理，是内存管理器的任务，一般情况下我们不需要介入。我们只需要正确地使用 <code>new</code> 和 <code>delete</code>。每个 <code>new</code> 出来的对象都应该用 <code>delete</code> 来释放，就是这么简单。</p><p>但真的很简单、可以高枕无忧了吗？</p><p>事实说明，漏掉 <code>delete</code> 是一种常见的情况，这叫“内存泄漏”——相信你一定听到过这个说法。为什么呢？</p><p>我们还是看一些代码例子。</p><pre><code class="language-c++">void foo()
+{
+  bar* ptr = new bar();
+  …
+  delete ptr;
+}
+</code></pre><p>这个很简单吧，但是却存在两个问题：</p><ol>
+<li>中间省略的代码部分也许会抛出异常，导致最后的 <code>delete ptr</code> 得不到执行。</li>
+<li>更重要的，这个代码不符合 C++ 的惯用法。在 C++ 里，这种情况下有 99% 的可能性不应该使用堆内存分配，而应使用栈内存分配。这样写代码的，估计可能是从 Java 转过来的（偷笑）——但我真见过这样的代码。</li>
+</ol><p>而更常见、也更合理的情况，是分配和释放不在一个函数里。比如下面这段示例代码：</p><pre><code class="language-c++">bar* make_bar(…)
+{
+  …
+  try {
+    bar* ptr = new bar();
+    …
+  }
+  catch (...) {
+    delete ptr;
+    throw;
+  }
+  return ptr;
+}
+
+void foo()
+{
+  …
+  bar* ptr = make_bar(…)
+  …
+  delete ptr;
+}
+</code></pre><p>这样的话，会漏 <code>delete</code> 的可能性是不是大多了？有关这个问题的解决方法，我们在下一讲还会提到。</p><p>好，堆我们暂时就讨论到这儿。下面，我们看看更符合 C++ 特性的栈内存分配。</p><h2>栈</h2><p>我们先来看一段示例代码，来说明 C++ 里函数调用、本地变量是如何使用栈的。当然，这一过程取决于计算机的实际架构，具体细节可能有所不同，但原理上都是相通的，都会使用一个后进先出的结构。</p><pre><code class="language-c++">void foo(int n)
+{
+  …
+}
+
+void bar(int n)
+{
+  int a = n + 1;
+  foo(a);
+}
+
+int main()
+{
+  …
+  bar(42);
+  …
+}
+</code></pre><p>这段代码执行过程中的栈变化，我画了下面这张图来表示：</p><p><img src="https://static001.geekbang.org/resource/image/ef/7a/ef5c5e6a1032006051e3347a24eab17a.png" alt=""></p><p>在我们的示例中，栈是向上增长的。在包括 x86 在内的大部分计算机体系架构中，栈的增长方向是低地址，因而上方意味着低地址。任何一个函数，根据架构的约定，只能使用进入函数时栈指针向上部分的栈空间。当函数调用另外一个函数时，会把参数也压入栈里（我们此处忽略使用寄存器传递参数的情况），然后把下一行汇编指令的地址压入栈，并跳转到新的函数。新的函数进入后，首先做一些必须的保存工作，然后会调整栈指针，<strong>分配出本地变量所需的空间</strong>，随后执行函数中的代码，并在执行完毕之后，根据调用者压入栈的地址，返回到调用者未执行的代码中继续执行。</p><p>注意到了没有，本地变量所需的内存就在栈上，跟函数执行所需的其他数据在一起。当函数执行完成之后，这些内存也就自然而然释放掉了。我们可以看到：</p><ul>
+<li>栈上的分配极为简单，移动一下栈指针而已。</li>
+<li>栈上的释放也极为简单，函数执行结束时移动一下栈指针即可。</li>
+<li>由于后进先出的执行过程，不可能出现内存碎片。</li>
+</ul><p>顺便说一句，图 2 中每种颜色都表示某个函数占用的栈空间。这部分空间有个特定的术语，叫做栈帧（stack frame）。GCC 和 Clang 的命令行参数中提到 frame 的，如 <code>-fomit-frame-pointer</code>，一般就是指栈帧。</p><p>前面例子的本地变量是简单类型，C++ 里称之为 POD 类型（Plain Old Data）。对于有构造和析构函数的非 POD 类型，栈上的内存分配也同样有效，只不过 C++ 编译器会在生成代码的合适位置，插入对构造和析构函数的调用。</p><p>这里尤其重要的是：编译器会自动调用析构函数，包括在函数执行发生异常的情况。在发生异常时对析构函数的调用，还有一个专门的术语，叫栈展开（stack unwinding）。事实上，如果你用 MSVC 编译含异常的 C++ 代码，但没有使用上一讲说过的 <code>/EHsc</code> 参数，编译器就会报告：</p><blockquote>
+<p>warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify /EHsc</p>
+</blockquote><p>下面是一段简短的代码，可以演示栈展开：</p><pre><code class="language-c++">#include &lt;stdio.h&gt;
+
+class Obj {
+public:
+  Obj() { puts("Obj()"); }
+  ~Obj() { puts("~Obj()"); }
+};
+
+void foo(int n)
+{
+  Obj obj;
+  if (n == 42)
+    throw "life, the universe and everything";
+}
+
+int main()
+{
+  try {
+    foo(41);
+    foo(42);
+  }
+  catch (const char* s) {
+    puts(s);
+  }
+}
+</code></pre><p>执行代码的结果是：</p><pre><code class="language-c++">Obj()
+~Obj()
+Obj()
+~Obj()
+life, the universe and everything
+</code></pre><p>也就是说，不管是否发生了异常，<code>obj</code> 的析构函数都会得到执行。</p><p>在 C++ 里，所有的变量缺省都是值语义——如果不使用 <code>*</code> 和 <code>&amp;</code> 的话，变量不会像 Java 或 Python 一样引用一个堆上的对象。对于像智能指针这样的类型，你写 <code>ptr-&gt;call()</code> 和 <code>ptr.get()</code>，语法上都是对的，并且 <code>-&gt;</code> 和 <code>.</code> 有着不同的语法作用。而在大部分其他语言里，访问成员只用 <code>.</code>，但在作用上实际等价于 C++ 的 <code>-&gt;</code>。这种值语义和引用语义的区别，是 C++ 的特点，也是它的复杂性的一个来源。要用好 C++，就需要理解它的值语义的特点。</p><p>对堆和栈有了基本了解之后，我们继续往下，聊一聊 C++ 的重要特性 RAII。</p><h2>RAII</h2><p>C++ 支持将对象存储在栈上面。但是，在很多情况下，对象不能，或不应该，存储在栈上。比如：</p><ul>
+<li>对象很大；</li>
+<li>对象的大小在编译时不能确定；</li>
+<li>对象是函数的返回值，但由于特殊的原因，不应使用对象的值返回。</li>
+</ul><p>常见情况之一是，在工厂方法或其他面向对象编程的情况下，返回值类型是基类。下面的例子，是对工厂方法的简单演示：</p><pre><code class="language-c++">enum class shape_type {
+  circle,
+  triangle,
+  rectangle,
+  …
+};
+
+class shape { … };
+class circle : public shape { … };
+class triangle : public shape { … };
+class rectangle : public shape { … };
+
+shape* create_shape(shape_type type)
+{
+  …
+  switch (type) {
+  case shape_type::circle:
+    return new circle(…);
+  case shape_type::triangle:
+    return new triangle(…);
+  case shape_type::rectangle:
+    return new rectangle(…);
+  …
+  }
+}
+</code></pre><p>这个 <code>create_shape</code> 方法会返回一个 <code>shape</code> 对象，对象的实际类型是某个 <code>shape</code> 的子类，圆啊，三角形啊，矩形啊，等等。这种情况下，函数的返回值只能是指针或其变体形式。如果返回类型是 <code>shape</code>，实际却返回一个 <code>circle</code>，编译器不会报错，但结果多半是错的。这种现象叫对象切片（object slicing），是 C++ 特有的一种编码错误。这种错误不是语法错误，而是一个对象复制相关的语义错误，也算是 C++ 的一个陷阱了，大家需要小心这个问题。</p><p>那么，我们怎样才能确保，在使用 <code>create_shape</code> 的返回值时不会发生内存泄漏呢？</p><p>答案就在析构函数和它的栈展开行为上。我们只需要把这个返回值放到一个本地变量里，并确保其析构函数会删除该对象即可。一个简单的实现如下所示：</p><pre><code class="language-c++">class shape_wrapper {
+public:
+  explicit shape_wrapper(
+    shape* ptr = nullptr)
+    : ptr_(ptr) {}
+  ~shape_wrapper()
+  {
+    delete ptr_;
+  }
+  shape* get() const { return ptr_; }
+private:
+  shape* ptr_;
+};
+
+void foo()
+{
+  …
+  shape_wrapper ptr_wrapper(
+    create_shape(…));
+  …
+}
+</code></pre><p>如果你好奇 <code>delete</code> 空指针会发生什么的话，那答案是，这是一个合法的空操作。在 <code>new</code> 一个对象和 <code>delete</code> 一个指针时编译器需要干不少活的，它们大致可以如下翻译：</p><pre><code class="language-c++">// new circle(…)
+{
+  void* temp = operator new(sizeof(circle));
+  try {
+    circle* ptr =
+      static_cast&lt;circle*&gt;(temp);
+    ptr-&gt;circle(…);
+    return ptr;
+  }
+  catch (...) {
+    operator delete(ptr);
+    throw;
+  }
+}
+</code></pre><pre><code class="language-c++">if (ptr != nullptr) {
+  ptr-&gt;~shape();
+  operator delete(ptr);
+}
+</code></pre><p>也就是说，<code>new</code> 的时候先分配内存（失败时整个操作失败并向外抛出异常，通常是 <code>bad_alloc</code>），然后在这个结果指针上构造对象（注意上面示意中的调用构造函数并不是合法的 C++ 代码）；构造成功则 <code>new</code> 操作整体完成，否则释放刚分配的内存并继续向外抛构造函数产生的异常。<code>delete</code> 时则判断指针是否为空，在指针不为空时调用析构函数并释放之前分配的内存。</p><p>回到 <code>shape_wrapper</code> 和它的析构行为。在析构函数里做必要的清理工作，这就是 RAII 的基本用法。这种清理并不限于释放内存，也可以是：</p><ul>
+<li>关闭文件（<code>fstream</code> 的析构就会这么做）</li>
+<li>释放同步锁</li>
+<li>释放其他重要的系统资源</li>
+</ul><p>例如，我们应该使用：</p><pre><code class="language-c++">std::mutex mtx;
+
+void some_func()
+{
+  std::lock_guard&lt;std::mutex&gt; guard(mtx);
+  // 做需要同步的工作
+}
+</code></pre><p>而不是：</p><pre><code class="language-c++">std::mutex mtx;
+
+void some_func()
+{
+  mtx.lock();
+  // 做需要同步的工作……
+  // 如果发生异常或提前返回，
+  // 下面这句不会自动执行。
+  mtx.unlock();
+}
+</code></pre><p>顺便说一句，上面的 <code>shape_wrapper</code> 差不多就是个最简单的智能指针了。至于完整的智能指针，我们留到下一讲继续学习。</p><h2>内容小结</h2><p>本讲我们讨论了 C++ 里内存管理的一些基本概念，强调栈是 C++ 里最“自然”的内存使用方式，并且，使用基于栈和析构函数的 RAII，可以有效地对包括堆内存在内的系统资源进行统一管理。</p><h2>课后思考</h2><p>最后留给你一道思考题。<code>shape_wrapper</code> 和智能指针比起来，还缺了哪些功能？欢迎留言和我分享你的观点。</p><h2><span class="reference">参考资料</span></h2><p><span class="reference">[1] Wikipedia, “Memory management”. <a href="https://en.wikipedia.org/wiki/Memory_management">https://en.wikipedia.org/wiki/Memory_management</a></span></p><p><span class="reference">[2] Wikipedia, “Stack-based memory allocation”. <a href="https://en.wikipedia.org/wiki/Stack-based_memory_allocation">https://en.wikipedia.org/wiki/Stack-based_memory_allocation</a></span></p><p><span class="reference">[3] Wikipedia, “Resource acquisition is initialization”. <a href="https://en.wikipedia.org/wiki/RAII">https://en.wikipedia.org/wiki/RAII</a></span></p><p><span class="reference">[3a] 维基百科, “RAII”. <a href="https://zh.wikipedia.org/zh-cn/RAII">https://zh.wikipedia.org/zh-cn/RAII</a></span></p><p><span class="reference">[4] Wikipedia, “Call stack”. <a href="https://en.wikipedia.org/wiki/Call_stack">https://en.wikipedia.org/wiki/Call_stack</a></span></p><p><span class="reference">[5] Wikipedia, “Object slicing”. <a href="https://en.wikipedia.org/wiki/Object_slicing">https://en.wikipedia.org/wiki/Object_slicing</a></span></p><p><span class="reference">[6] Stack Overflow, “Why does the stack address grow towards decreasing memory addresses?” <a href="https://stackoverflow.com/questions/4560720/why-does-the-stack-address-grow-towards-decreasing-memory-addresses">https://stackoverflow.com/questions/4560720/why-does-the-stack-address-grow-towards-decreasing-memory-addresses</a></span></p><p><span class="reference">注意：有些条目虽然有中文版，但内容太少；此处单独标出中文版条目的，则是内容比较全面、能够补充本专栏内容的情况。</span></p><h2>精选留言：</h2>
+        <ul>
+        
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            Milittle  2019-11-26 08:33:04
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            说实话，这个专栏对于我这个经常使用C++来做项目的人来讲，我认为不适合初学者，上车需要有过C++开发经验的。一般的小伙伴可能会有压力哒，但是如果想学，克服心里畏惧，从这个专栏出发可以迅速的深入。很好的专栏。 [3赞]
+        </div>
+        
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            hello world  2019-11-26 07:40:24
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            没有引用计数，没有拷贝和移动，没有线程安全，没有自定义delete函数，另外想请教老师一些问题.<br>1. 全局静态和局部静态的变量是存储在哪个区域？看很多书是静态存储区，但静态存储区又是什么区？堆？<br>2. thread local的变量存储在哪个区？因为线程是动态创建的，理解这个变量内存也应该动态分配的，线程结束内存自动释放？难道也是堆？<br>3. 类的大小是怎么定的呢？一般都是看类的成员变量占用字节数再根据是否虚类看是否加4字节，但是类里面有很多成员函数，这些成员函数不占空间吗，如果有静态成员变量或者静态成员函数呢？<br>谢谢老师! [2赞]
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-11-26 09:57:35</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">其他都对，不过，自定义delete似乎目前没这个必要？<br><br>1. 好问题。静态存储区既不是堆也不是栈，而是……静态的。意思是，它们是在程序编译、链接时完全确定下来的，具有固定的存储位置（暂不考虑某些系统的地址扰乱机制）。堆和栈上的变量则都是动态的，地址无法确定。<br><br>2. thread_local和静态存储区类似，只不过不是整个程序统一一块，而是每个线程单独一块。用法上还是当成全局&#47;静态变量来用，但不共享也就不需要同步了。<br><br>3. 非静态数据成员加上动态类型所需的空间。注意后者不一定是4，而一般是指针的大小，在64位系统上是8字节。还有，要考虑字节对齐的影响。静态数据成员和成员函数都不占个别对象的空间。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            frazer  2019-11-26 11:00:13
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            有点看不懂了，还得回去恶补CPP的语法知识 
+        </div>
+        
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            流浪地球  2019-11-26 10:33:56
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            老师您好，请问 “如果你好奇 delete 空指针会发生什么的话，那答案是，这是一个合法的空操作。在 new 一个对象和 delete 一个指针时编译器需要干不少活的” 这段讲述中的delete是重载过的吗？全局的::operator delete是做判空操作吗？<br>谢谢 
+        </div>
+        
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            bo  2019-11-26 10:17:21
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            老师您好！工程的时候，具体怎么考虑在栈上分配还是在堆上分配，更合理些？ 
+        </div>
+        
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            hello world  2019-11-26 07:41:40
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            话说一般delete.后需要把这个变量置成nullptr吗，我有时候这样写，不知道有没有必要 
+        </div>
+        
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            李良川  2019-11-26 00:12:32
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            智能指针还少了对*和-&gt;符号的支持，为支持所有指针，需要用类模版。 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-11-26 09:36:20</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">嗯，是的。这个也是目前这个类缺失的地方。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            小林coding  2019-11-25 23:09:40
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            老师，文稿中的这句话：<br>[ 如果返回类型是 shape，实际却返回一个 circle，编译器不会报错，但结果多半是错的。这种现象叫对象切片（object slicing），是 C++ 特有的一种编码错误 ]<br><br>这里想说明的是返回类型是普通 shape ，而不是 shape* 或 shape&amp;  是吗？<br> 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-11-26 00:04:15</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">是的。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            Para  2019-11-25 22:43:03
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            区别是赋值构造浅拷贝有可能导致double free吗？ 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-11-26 00:05:59</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">对，这是其中的一个问题。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            总统老唐  2019-11-25 22:38:27
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            关于图2c和图2d，有两个疑问：<br>1， 寄存器保留空间指的是什么，有什么作用？<br>2，“参数42”和“a=43”分别是函数调用的参数和函数局部变量，应该属于同一个栈帧，为什么这里不同？ 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-11-26 00:10:36</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">1. 看汇编会比较明白。一般进入一个函数之后，最先执行的语句就是保存一些基础的寄存器。<br>2. 同样，实际实现通常就是这个样子的。参数属于调用者而非被调用者，一般也是由调用者来释放——至少一般 x86 的实现是这个样子。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            The rustic  2019-11-25 22:27:36
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            虽然现在写go了，但是相信以后还会用到c++。c++,近两年确实受到很大的冲击。云原生很不容易有个envoy，但是由于c++的复杂性，导致项目没有那么活跃。 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-11-25 22:42:25</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">Go也有它的优点。写网络应用Go还是不错的。好的语言多了，也是C++用得少了些的原因。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            吴军旗^_^  2019-11-25 22:23:02
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            老师可推荐一下教程吗？ 从php转过来的，感觉有点难。 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-11-25 22:45:06</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">如果刚开始学的话，这个专栏可能会有点挑战。可以先看一下 C++ 之父的 A Tour of C++，国内出版叫《C++之旅英文版》。可惜似乎还没翻译……<br><br>另外，《C++ Primer》名声很响，但 848 页初学有点厚了。注意不是《C++ Primer Plus》，这本跟前者完全无关，不推荐。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            天天  2019-11-25 22:16:22
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            拷贝和赋值的功能也是相对完整智能指针差的内容 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-11-25 22:46:13</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">能拷贝和赋值的，就是结果不对。🤣</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            天天  2019-11-25 22:14:20
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            没有引用计数的功能 
+        </div>
+        
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            言念君子  2019-11-25 21:59:11
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            工厂方法那里的代码显示好像有问题。<br><br>相比于智能指针最明显的区别是没有实现引用计数的功能。 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-11-25 22:30:26</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">我检查了一下，代码似乎没问题，但在我的手机上宽度略超了点。你是不是也是这个问题？试试左右拖动一下。（代码要在手机屏幕上能适配还是很有挑战的……）<br><br>没有引用计数是一个问题。不过，不是所有的智能指针都是引用计数的哦。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            曾轼麟  2019-11-25 20:40:05
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            老师看到一个优化点，ptr_ 需要判断空，如果prt_已经创建了，才使用delete 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-11-25 21:19:13</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">是不是漏看了下面这段话？<br><br>「如果你好奇 delete 空指针会发生什么的话，那答案是，这是一个合法的空操作。」</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            叶筱  2019-11-25 20:17:40
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            边看边查，好多定义都不甚了解 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-11-25 21:12:43</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">看来我的讲述还是不够完整啊……能说说哪些地方你觉得特别有困难不？<br><br>不过，边看边查这种学习方式要得。参考资料就是让你们扩展阅读的。</div>
+</div>
+            
+    </div>
+</li>
+            </ul>
+</div>
+</body>
+</html>

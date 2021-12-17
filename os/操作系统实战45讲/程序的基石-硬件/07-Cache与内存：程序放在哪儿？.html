@@ -1,0 +1,1308 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <!--<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>-->
+    <title>07-Cache与内存：程序放在哪儿？</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <style>
+        html {
+            color: #333;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            text-rendering: optimizelegibility;
+            font-family: Helvetica Neue, PingFang SC, Verdana, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif
+        }
+
+        html.borderbox *,
+        html.borderbox :after,
+        html.borderbox :before {
+            box-sizing: border-box
+        }
+
+        article,
+        aside,
+        blockquote,
+        body,
+        button,
+        code,
+        dd,
+        details,
+        dl,
+        dt,
+        fieldset,
+        figcaption,
+        figure,
+        footer,
+        form,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        header,
+        hr,
+        input,
+        legend,
+        li,
+        menu,
+        nav,
+        ol,
+        p,
+        pre,
+        section,
+        td,
+        textarea,
+        th,
+        ul {
+            margin: 0;
+            padding: 0
+        }
+
+        article,
+        aside,
+        details,
+        figcaption,
+        figure,
+        footer,
+        header,
+        menu,
+        nav,
+        section {
+            display: block
+        }
+
+        audio,
+        canvas,
+        video {
+            display: inline-block
+        }
+
+        body,
+        button,
+        input,
+        select,
+        textarea {
+            font: 300 1em/1.8 PingFang SC, Lantinghei SC, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, Helvetica, sans-serif
+        }
+
+        button::-moz-focus-inner,
+        input::-moz-focus-inner {
+            padding: 0;
+            border: 0
+        }
+
+        table {
+            border-collapse: collapse;
+            border-spacing: 0
+        }
+
+        fieldset,
+        img {
+            border: 0
+        }
+
+        blockquote {
+            position: relative;
+            color: #999;
+            font-weight: 400;
+            border-left: 1px solid #1abc9c;
+            padding-left: 1em;
+            margin: 1em 3em 1em 2em
+        }
+
+        @media only screen and (max-width: 640px) {
+            blockquote {
+                margin: 1em 0
+            }
+        }
+
+        abbr,
+        acronym {
+            border-bottom: 1px dotted;
+            font-variant: normal
+        }
+
+        abbr {
+            cursor: help
+        }
+
+        del {
+            text-decoration: line-through
+        }
+
+        address,
+        caption,
+        cite,
+        code,
+        dfn,
+        em,
+        th,
+        var {
+            font-style: normal;
+            font-weight: 400
+        }
+
+        ol,
+        ul {
+            list-style: none
+        }
+
+        caption,
+        th {
+            text-align: left
+        }
+
+        q:after,
+        q:before {
+            content: ""
+        }
+
+        sub,
+        sup {
+            font-size: 75%;
+            line-height: 0;
+            position: relative
+        }
+
+        :root sub,
+        :root sup {
+            vertical-align: baseline
+        }
+
+        sup {
+            top: -.5em
+        }
+
+        sub {
+            bottom: -.25em
+        }
+
+        a {
+            color: #1abc9c
+        }
+
+        a:hover {
+            text-decoration: underline
+        }
+
+        .typo a {
+            border-bottom: 1px solid #1abc9c
+        }
+
+        .typo a:hover {
+            border-bottom-color: #555;
+            color: #555
+        }
+
+        .typo a:hover,
+        a,
+        ins {
+            text-decoration: none
+        }
+
+        .typo-u,
+        u {
+            text-decoration: underline
+        }
+
+        mark {
+            background: #fffdd1;
+            border-bottom: 1px solid #ffedce;
+            padding: 2px;
+            margin: 0 5px
+        }
+
+        code,
+        pre,
+        pre tt {
+            font-family: Courier, Courier New, monospace
+        }
+
+        pre {
+            background: hsla(0, 0%, 97%, .7);
+            border: 1px solid #ddd;
+            padding: 1em 1.5em;
+            display: block;
+            -webkit-overflow-scrolling: touch
+        }
+
+        hr {
+            border: none;
+            border-bottom: 1px solid #cfcfcf;
+            margin-bottom: .8em;
+            height: 10px
+        }
+
+        .typo-small,
+        figcaption,
+        small {
+            font-size: .9em;
+            color: #888
+        }
+
+        b,
+        strong {
+            font-weight: 700;
+            color: #000
+        }
+
+        [draggable] {
+            cursor: move
+        }
+
+        .clearfix:after,
+        .clearfix:before {
+            content: "";
+            display: table
+        }
+
+        .clearfix:after {
+            clear: both
+        }
+
+        .clearfix {
+            zoom: 1
+        }
+
+        .textwrap,
+        .textwrap td,
+        .textwrap th {
+            word-wrap: break-word;
+            word-break: break-all
+        }
+
+        .textwrap-table {
+            table-layout: fixed
+        }
+
+        .serif {
+            font-family: Palatino, Optima, Georgia, serif
+        }
+
+        .typo-dl,
+        .typo-form,
+        .typo-hr,
+        .typo-ol,
+        .typo-p,
+        .typo-pre,
+        .typo-table,
+        .typo-ul,
+        .typo dl,
+        .typo form,
+        .typo hr,
+        .typo ol,
+        .typo p,
+        .typo pre,
+        .typo table,
+        .typo ul,
+        blockquote {
+            margin-bottom: 1rem
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: PingFang SC, Helvetica Neue, Verdana, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif;
+            color: #000;
+            line-height: 1.35
+        }
+
+        .typo-h1,
+        .typo-h2,
+        .typo-h3,
+        .typo-h4,
+        .typo-h5,
+        .typo-h6,
+        .typo h1,
+        .typo h2,
+        .typo h3,
+        .typo h4,
+        .typo h5,
+        .typo h6 {
+            margin-top: 1.2em;
+            margin-bottom: .6em;
+            line-height: 1.35
+        }
+
+        .typo-h1,
+        .typo h1 {
+            font-size: 2em
+        }
+
+        .typo-h2,
+        .typo h2 {
+            font-size: 1.8em
+        }
+
+        .typo-h3,
+        .typo h3 {
+            font-size: 1.6em
+        }
+
+        .typo-h4,
+        .typo h4 {
+            font-size: 1.4em
+        }
+
+        .typo-h5,
+        .typo-h6,
+        .typo h5,
+        .typo h6 {
+            font-size: 1.2em
+        }
+
+        .typo-ul,
+        .typo ul {
+            margin-left: 1.3em;
+            list-style: disc
+        }
+
+        .typo-ol,
+        .typo ol {
+            list-style: decimal;
+            margin-left: 1.9em
+        }
+
+        .typo-ol ol,
+        .typo-ol ul,
+        .typo-ul ol,
+        .typo-ul ul,
+        .typo li ol,
+        .typo li ul {
+            margin-bottom: .8em;
+            margin-left: 2em
+        }
+
+        .typo-ol ul,
+        .typo-ul ul,
+        .typo li ul {
+            list-style: circle
+        }
+
+        .typo-table td,
+        .typo-table th,
+        .typo table caption,
+        .typo table td,
+        .typo table th {
+            border: 1px solid #ddd;
+            padding: .5em 1em;
+            color: #666
+        }
+
+        .typo-table th,
+        .typo table th {
+            background: #fbfbfb
+        }
+
+        .typo-table thead th,
+        .typo table thead th {
+            background: hsla(0, 0%, 95%, .7)
+        }
+
+        .typo table caption {
+            border-bottom: none
+        }
+
+        .typo-input,
+        .typo-textarea {
+            -webkit-appearance: none;
+            border-radius: 0
+        }
+
+        .typo-em,
+        .typo em,
+        caption,
+        legend {
+            color: #000;
+            font-weight: inherit
+        }
+
+        .typo-em {
+            position: relative
+        }
+
+        .typo-em:after {
+            position: absolute;
+            top: .65em;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            content: "\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB"
+        }
+
+        .typo img {
+            max-width: 100%
+        }
+
+        .common-content {
+            font-weight: 400;
+            color: #353535;
+            line-height: 1.75rem;
+            white-space: normal;
+            word-break: normal;
+            font-size: 1rem
+        }
+
+        .common-content img {
+            display: block;
+            max-width: 100%;
+            background-color: #eee
+        }
+
+        .common-content audio,
+        .common-content video {
+            width: 100%;
+            background-color: #eee
+        }
+
+        .common-content center,
+        .common-content font {
+            margin-top: 1rem;
+            display: inline-block
+        }
+
+        .common-content center {
+            width: 100%
+        }
+
+        .common-content pre {
+            margin-top: 1rem;
+            padding-left: 0;
+            padding-right: 0;
+            position: relative;
+            overflow: hidden
+        }
+
+        .common-content pre code {
+            font-size: .8rem;
+            font-family: Consolas, Liberation Mono, Menlo, monospace, Courier;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            overflow-x: auto
+        }
+
+        .common-content hr {
+            border: none;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-top: 1px solid #f5f5f5;
+            height: 1px;
+            background: none
+        }
+
+        .common-content b,
+        .common-content h1,
+        .common-content h2,
+        .common-content h3,
+        .common-content h4,
+        .common-content h5,
+        .common-content strong {
+            font-weight: 700
+        }
+
+        .common-content h1,
+        .common-content h2 {
+            font-size: 1.125rem;
+            margin-bottom: .45rem
+        }
+
+        .common-content h3,
+        .common-content h4,
+        .common-content h5 {
+            font-size: 1rem;
+            margin-bottom: .45rem
+        }
+
+        .common-content p {
+            font-weight: 400;
+            color: #353535;
+            margin-top: .15rem
+        }
+
+        .common-content .orange {
+            color: #ff5a05
+        }
+
+        .common-content .reference {
+            font-size: 1rem;
+            color: #888
+        }
+
+        .custom-rich-content h1 {
+            margin-top: 0;
+            font-weight: 400;
+            font-size: 15.25px;
+            border-bottom: 1px solid #eee;
+            line-height: 2.8
+        }
+
+        .custom-rich-content li,
+        .custom-rich-content p {
+            font-size: 14px;
+            color: #888;
+            line-height: 1.6
+        }
+
+        table.hljs-ln {
+            margin-bottom: 0;
+            border-spacing: 0;
+            border-collapse: collapse
+        }
+
+        table.hljs-ln,
+        table.hljs-ln tbody,
+        table.hljs-ln td,
+        table.hljs-ln tr {
+            box-sizing: border-box
+        }
+
+        table.hljs-ln td {
+            padding: 0;
+            border: 0
+        }
+
+        table.hljs-ln td.hljs-ln-numbers {
+            min-width: 15px;
+            color: rgba(27, 31, 35, .3);
+            text-align: right;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none
+        }
+
+        table.hljs-ln td.hljs-ln-code,
+        table.hljs-ln td.hljs-ln-numbers {
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
+            font-size: 12px;
+            line-height: 20px;
+            vertical-align: top
+        }
+
+        table.hljs-ln td.hljs-ln-code {
+            position: relative;
+            padding-right: 10px;
+            padding-left: 10px;
+            overflow: visible;
+            color: #24292e;
+            word-wrap: normal;
+            white-space: pre
+        }
+
+        video::-webkit-media-controls {
+            overflow: hidden !important
+        }
+
+        video::-webkit-media-controls-enclosure {
+            width: calc(100% + 32px);
+            margin-left: auto
+        }
+
+        ._29HP61GA_0 {
+            max-width:800px;
+            margin:0 auto;
+            margin-bottom: 20px;
+            font-weight: 400;
+            color: #353535;
+            line-height: 1.76;
+            white-space: normal;
+            word-break: normal;
+            font-size: 17px;
+            -webkit-transition: background-color .3s ease;
+            transition: background-color .3s ease
+        }
+
+        ._29HP61GA_0 .MathJax_Display {
+            overflow: auto
+        }
+
+        ._29HP61GA_0 .poster {
+            position: fixed;
+            left: -10000px;
+            top: -10000px;
+            overflow: hidden;
+            padding: 1rem;
+            background: #ececec
+        }
+
+        ._29HP61GA_0 .richcontent-pre-copy {
+            font-size: 13px;
+            color: #888;
+            position: absolute;
+            right: 1em;
+            top: .5em;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none
+        }
+
+        ._29HP61GA_0 .richcontent-pre-copy .iconfont {
+            font-size: 12px;
+            margin-right: .2em
+        }
+
+        ._29HP61GA_0 a {
+            color: #fa8919;
+            border-bottom: 1px solid #fa8919
+        }
+
+        ._29HP61GA_0 img {
+            display: block;
+            max-width: 100%;
+            position: relative;
+            left: 50%;
+            -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+            background-color: #eee;
+            vertical-align: top;
+            border-radius: 0
+        }
+
+        ._29HP61GA_0 audio,
+        ._29HP61GA_0 video {
+            width: 100%;
+            background-color: #eee
+        }
+
+        ._29HP61GA_0 pre {
+            margin-top: 16px;
+            padding: 34px 0 0;
+            margin-bottom: 30px;
+            position: relative;
+            border-radius: 6px;
+            background: rgba(246, 247, 251, .749);
+            border: 0
+        }
+
+        ._29HP61GA_0 pre code {
+            font-size: 12px;
+            font-family: Consolas, Liberation Mono, Menlo, monospace, Courier;
+            display: block;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            margin-left: 16px;
+            margin-right: 16px;
+            overflow-x: scroll
+        }
+
+        ._29HP61GA_0 pre code:after {
+            content: "";
+            height: 30px;
+            width: 100%;
+            display: block
+        }
+
+        ._29HP61GA_0 hr {
+            border: none;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-top: 1px solid #f5f5f5;
+            height: 1px;
+            background: none
+        }
+
+        ._29HP61GA_0 h1,
+        ._29HP61GA_0 h2,
+        ._29HP61GA_0 h3,
+        ._29HP61GA_0 h4,
+        ._29HP61GA_0 h5 {
+            margin-bottom: 20px;
+            margin-top: 0;
+            font-weight: 700
+        }
+
+        ._29HP61GA_0 b,
+        ._29HP61GA_0 strong {
+            font-weight: 700
+        }
+
+        ._29HP61GA_0 h1 {
+            font-size: 21px
+        }
+
+        ._29HP61GA_0 h2 {
+            font-size: 20px
+        }
+
+        ._29HP61GA_0 h3 {
+            font-size: 19px
+        }
+
+        ._29HP61GA_0 h4 {
+            font-size: 18px
+        }
+
+        ._29HP61GA_0 h5 {
+            font-size: 17px
+        }
+
+        ._29HP61GA_0 center,
+        ._29HP61GA_0 p {
+            font-weight: 400;
+            color: #353535;
+            margin-top: 0;
+            margin-bottom: 30px;
+            word-break: break-word
+        }
+
+        ._29HP61GA_0 center {
+            text-align: center
+        }
+
+        ._29HP61GA_0 blockquote {
+            margin-top: 0;
+            margin-bottom: 34px;
+            border-left: 3px solid #e8e8e8;
+            padding-left: 17px;
+            color: #353535
+        }
+
+        ._29HP61GA_0 blockquote p {
+            margin-top: 0;
+            margin-bottom: 0
+        }
+
+        ._29HP61GA_0 ol,
+        ._29HP61GA_0 ul {
+            margin-bottom: 30px
+        }
+
+        ._29HP61GA_0 ol p,
+        ._29HP61GA_0 ul p {
+            margin-top: 0;
+            margin-bottom: 0
+        }
+
+        ._29HP61GA_0 ol {
+            list-style: decimal;
+            margin-left: 20px
+        }
+
+        ._29HP61GA_0 ul li {
+            padding-left: 17px;
+            position: relative;
+            margin-bottom: 10px
+        }
+
+        ._29HP61GA_0 ul li:after {
+            content: "";
+            height: 6px;
+            width: 6px;
+            border-radius: 50%;
+            background: #353535;
+            position: absolute;
+            top: 10px;
+            left: 0
+        }
+
+        ._29HP61GA_0 .orange {
+            color: #fa8919
+        }
+
+        ._29HP61GA_0 .reference {
+            color: #888
+        }
+
+        ._29HP61GA_0 .m-right {
+            text-align: right
+        }
+
+        ._29HP61GA_0 .m-center {
+            text-align: center;
+            display: block
+        }
+
+        ._29HP61GA_0 .m-gray {
+            color: #888
+        }
+
+        ._29HP61GA_0 .m-small {
+            font-size: 15px
+        }
+
+        ._29HP61GA_0 table.hljs-ln {
+            margin-bottom: 0;
+            border-spacing: 0;
+            border-collapse: collapse
+        }
+
+        ._29HP61GA_0 table.hljs-ln,
+        ._29HP61GA_0 table.hljs-ln tbody,
+        ._29HP61GA_0 table.hljs-ln td,
+        ._29HP61GA_0 table.hljs-ln tr {
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box
+        }
+
+        ._29HP61GA_0 table.hljs-ln td {
+            padding: 0;
+            border: 0
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-numbers {
+            min-width: 15px;
+            font-size: 12px;
+            color: rgba(27, 31, 35, .3);
+            text-align: right;
+            white-space: nowrap;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-code,
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-numbers {
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
+            line-height: 20px;
+            vertical-align: top
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-code {
+            position: relative;
+            padding-right: 10px;
+            padding-left: 10px;
+            overflow: visible;
+            font-size: 13px;
+            color: #666;
+            word-wrap: normal;
+            white-space: pre
+        }
+
+    </style>
+</head>
+<body>
+<div class="_29HP61GA_0">
+<h1>07-Cache与内存：程序放在哪儿？</h1>
+<p>你好，我是LMOS。</p><p>在前面的课程里，我们已经知道了CPU是如何执行程序的，也研究了程序的地址空间，这里我们终于到了程序的存放地点——内存。</p><p>你知道什么是Cache吗？在你心中，真实的内存又是什么样子呢？今天我们就来重新认识一下Cache和内存，这对我们利用Cache写出高性能的程序代码和实现操作系统管理内存，有着巨大的帮助。</p><p>通过这节课的内容，我们一起来看看内存到底是啥，它有什么特性。有了这个认识，你就能更加深入地理解我们看似熟悉的局部性原理，从而搞清楚，为啥Cache是解决内存瓶颈的神来之笔。最后，我还会带你分析x86平台上的Cache，规避Cache引发的一致性问题，并让你掌握获取内存视图的方法。</p><p>那话不多说，带着刚才的问题，我们正式进入今天的学习吧！</p><h2>从一段“经典”代码看局部性原理</h2><p>不知道，你还记不记得C语言打印九九乘法表的代码，想不起来也没关系，下面我把它贴出来，代码很短，也很简单，就算你自己写一个也用不了一分钟，如下所示。</p><pre><code>#include &lt;stdio.h&gt;
+int main(){
+    int i,j;
+    for(i=1;i&lt;=9;i++){        
+        for(j=1;j&lt;=i;j++){
+            printf(&quot;%d*%d=%2d  &quot;,i,j,i*j);
+        }
+        printf(&quot;\n&quot;);
+    }
+    return 0;
+}
+</code></pre><p>我们当然不是为了研究代码本身，这个代码非常简单，这里我们主要是观察这个结构，代码的结构主要是<strong>顺序、分支、循环</strong>，这三种结构可以写出现存所有算法的程序。</p><!-- [[[read_end]]] --><p>我们常规情况下写的代码是顺序和循环结构居多。上面的代码中有两重循环，内层循环的次数受到外层循环变量的影响。就是这么简单，但是越简单的东西越容易看到本质。</p><p>可以看到，这个代码大数时间在执行一个乘法计算和调用一个printf函数，而程序一旦编译装载进内存中，它的地址就确定了。也就是说，CPU大多数时间在访问相同或者与此相邻的地址，换句话说就是：CPU大多数时间在执行相同的指令或者与此相邻的指令。这就是大名鼎鼎的<strong>程序局部性原理</strong>。</p><h2>内存</h2><p>明白了程序的局部性原理之后，我们再来看看内存。你或许感觉这跨越有点大，但是只有明白了内存的结构和特性，你才能明白程序局部性原理的应用场景和它的重要性。</p><p>内存也可称为主存，不管硬盘多大、里面存放了多少程序和数据，只要程序运行或者数据要进行计算处理，就必须先将它们装入内存。我们先来看看内存长什么样（你也可以上网自行搜索），如下图所示。</p><p><img src="https://static001.geekbang.org/resource/image/0d/8e/0d0d85383416f2f8841aeebe7021a88e.jpg" alt=""></p><p>从上图可以看到在PCB板上有内存颗粒芯片，主要是用来存放数据的。SPD芯片用于存放内存自身的容量、频率、厂商等信息。还有最显眼的金手指，用于连接数据总线和地址总线，电源等。</p><p>其实从专业角度讲，内存应该叫<strong>DRAM</strong>，即动态随机存储器。内存储存颗粒芯片中的存储单元是由电容和相关元件做成的，电容存储电荷的多、少代表数字信号0和1。</p><p>而随着时间的流逝，电容存在漏电现象，这导致电荷不足，就会让存储单元的数据出错，所以DRAM需要周期性刷新，以保持电荷状态。DRAM结构较简单且集成度很高，通常用于制造内存条中的储存颗粒芯片。</p><p>虽然内存技术标准不断更新，但是储存颗粒的内部结构没有本质改变，还是电容存放电荷，标准看似更多，实际上只是提升了位宽、工作频率，以及传输时预取的数据位数。</p><p>比如DDR SDRAM，即双倍速率同步动态随机存储器，它使用2.5V的工作电压，数据位宽为64位，核心频率最高为166MHz。下面简称DDR内存，它表示每一个时钟脉冲传输两次数据，分别在时钟脉冲的上升沿和下降沿各传输一次数据，因此称为双倍速率的SDRAM。</p><p>后来的DDR2、DDR3、DDR4也都在核心频率和预取位数上做了提升。最新的DDR4采用1.2V工作电压，数据位宽为64位，预取16位数据。DDR4取消了双通道机制，一条内存即为一条通道，工作频率最高可达4266MHz，单根DDR4内存的数据传输带宽最高为34GB/s。</p><p>其实我们无需过多关注内存硬件层面的技术规格标准，重点需要关注的是，<strong>内存的速度还有逻辑上内存和系统的连接方式和结构</strong>，这样你就能意识到内存有多慢，还有是什么原因导致内存慢的。</p><p>我们还是画幅图说明吧，如下图所示。</p><p><img src="https://static001.geekbang.org/resource/image/1b/ed/1b41056cce55b17a2366d7b9dd922aed.jpg" alt="" title="DDR内存逻辑结构连接图"></p><p>结合图片我们看到，控制内存刷新和内存读写的是内存控制器，而内存控制器集成在北桥芯片中。传统方式下，北桥芯片存在于系统主板上，而现在由于芯片制造工艺的升级，芯片集成度越来越高，所以北桥芯片被就集成到CPU芯片中了，同时这也大大提升了CPU访问内存的性能。</p><p>而作为软件开发人员，从逻辑上我们只需要把内存看成一个巨大的字节数组就可以，而内存地址就是这个数组的下标。</p><h2>CPU到内存的性能瓶颈</h2><p>尽管CPU和内存是同时代发展的，但CPU所使用技术工艺的材料和内存是不同的，侧重点也不同，价格也不同。如果内存使用CPU的工艺和材料制造，那内存条的昂贵程度会超乎想象，没有多少人能买得起。</p><p>由于这些不同，导致了CPU和内存条的数据吞吐量天差地别。尽管最新的DDR4内存条带宽高达34GB/s，然而这相比CPU的数据吞吐量要慢上几个数量级。再加上多核心CPU同时访问内存，会导致总线争用问题，数据吞吐量会进一步下降。</p><p>CPU要数据，内存一时给不了怎么办？CPU就得等，通常CPU会让总线插入等待时钟周期，直到内存准备好，到这里你就会发现，无论CPU的性能多高都没用，而<strong>内存才是决定系统整体性能的关键</strong>。显然依靠目前的理论直接提升内存性能，达到CPU的同等水平，这是不可行的，得想其它的办法。</p><h2>Cache</h2><p>让我们重新回到前面的场景中，回到程序的局部性原理，它告诉我们：CPU大多数时间在访问相同或者与此相邻的地址。那么，我们立马就可以想到用一块<strong>小而快</strong>的储存器，放在CPU和内存之间，就可以利用程序的局部性原理来缓解CPU和内存之间的性能瓶颈。这块<strong>小而快</strong>的储存器就是Cache，即高速缓存。</p><p>Cache中存放了内存中的一部分数据，CPU在访问内存时要先访问Cache，若Cache中有需要的数据就直接从Cache中取出，若没有则需要从内存中读取数据，并同时把这块数据放入Cache中。但是由于程序的局部性原理，在一段时间内，CPU总是能从Cache中读取到自己想要的数据。</p><p>Cache可以集成在CPU内部，也可以做成独立的芯片放在总线上，现在x86 CPU和ARM CPU都是集成在CPU内部的。其逻辑结构如下图所示。</p><p><img src="https://static001.geekbang.org/resource/image/47/56/474189597993406a01a2ae171b754756.jpg" alt="" title="Cache结构框架图"></p><p>Cache主要由高速的静态储存器、地址转换模块和Cache行替换模块组成。</p><p>Cache会把自己的高速静态储存器和内存分成大小相同的行，一行大小通常为32字节或者64字节。Cache和内存交换数据的最小单位是一行，为方便管理，在Cache内部的高速储存器中，多个行又会形成一组。</p><p>除了正常的数据空间外，Cache行中还有一些标志位，如脏位、回写位，访问位等，这些位会被Cache的替换模块所使用。</p><p>Cache大致的逻辑工作流程如下。</p><p>1.CPU发出的地址由Cache的地址转换模块分成3段：组号，行号，行内偏移。</p><p>2.Cache会根据组号、行号查找高速静态储存器中对应的行。如果找到即命中，用行内偏移读取并返回数据给CPU，否则就分配一个新行并访问内存，把内存中对应的数据加载到Cache行并返回给CPU。写入操作则比较直接，分为回写和直通写，回写是写入对应的Cache行就结束了，直通写则是在写入Cache行的同时写入内存。</p><p>3.如果没有新行了，就要进入行替换逻辑，即找出一个Cache行写回内存，腾出空间，替换行有相关的算法，<strong>替换算法是为了让替换的代价最小化</strong>。例如，找出一个没有修改的Cache行，这样就不用把它其中的数据回写到内存中了，还有找出存在时间最久远的那个Cache行，因为它大概率不会再访问了。</p><p>以上这些逻辑都由Cache硬件独立实现，软件不用做任何工作，对软件是透明的。</p><h2>Cache带来的问题</h2><p>Cache虽然带来性能方面的提升，但同时也给和硬件和软件开发带来了问题，那就是数据一致性问题。</p><p>为了搞清楚这个问题，我们必须先搞清楚Cache在硬件层面的结构，下面我画了x86 CPU的Cache结构图：</p><p><img src="https://static001.geekbang.org/resource/image/97/bd/976f5cf91bc656e2a876235a5d2efabd.jpg" alt="" title="x86 CPU的Cache结构图"></p><p>这是一颗最简单的双核心CPU，它有三级Cache，第一级Cache是指令和数据分开的，第二级Cache是独立于CPU核心的，第三级Cache是所有CPU核心共享的。</p><p>下面来看看Cache的一致性问题，主要包括这三个方面.</p><p>1.一个CPU核心中的指令Cache和数据Cache的一致性问题。<br>
+2.多个CPU核心各自的2级Cache的一致性问题。<br>
+3.CPU的3级Cache与设备内存，如DMA、网卡帧储存，显存之间的一致性问题。这里我们不需要关注这个问题。</p><p>我们先来看看CPU核心中的指令Cache和数据Cache的一致性问题，对于程序代码运行而言，指令都是经过指令Cache，而指令中涉及到的数据则会经过数据Cache。</p><p>所以，对自修改的代码（即修改运行中代码指令数据，变成新的程序）而言，比如我们修改了内存地址A这个位置的代码（典型的情况是Java运行时编译器），这个时候我们是通过储存的方式去写的地址A，所以新的指令会进入数据Cache。</p><p>但是我们接下来去执行地址A处的指令的时候，指令Cache里面可能命中的是修改之前的指令。所以，这个时候软件需要把数据Cache中的数据写入到内存中，然后让指令Cache无效，重新加载内存中的数据。</p><p>再来看看多个CPU核心各自的2级Cache的一致性问题。从上图中可以发现，两个CPU核心共享了一个3级Cache。比如第一个CPU核心读取了一个A地址处的变量，第二个CPU也读取A地址处的变量，那么第二个CPU核心是不是需要从内存里面经过第3、2、1级Cache再读一遍，这个显然是没有必要的。</p><p>在硬件上Cache相关的控制单元，可以把第一个CPU核心的A地址处Cache内容直接复制到第二个CPU的第2、1级Cache，这样两个CPU核心都得到了A地址的数据。不过如果这时第一个CPU核心改写了A地址处的数据，而第二个CPU核心的2级Cache里面还是原来的值，数据显然就不一致了。</p><p>为了解决这些问题，硬件工程师们开发了多种协议，典型的多核心Cache数据同步协议有MESI和MOESI。MOESI和MESI大同小异，下面我们就去研究一下MESI协议。</p><h2>Cache的MESI协议</h2><p>MESI协议定义了4种基本状态：M、E、S、I，即修改（Modified）、独占（Exclusive）、共享（Shared）和无效（Invalid）。下面我结合示意图，给你解释一下这四种状态。</p><p>1.M修改（Modified）：当前Cache的内容有效，数据已经被修改而且与内存中的数据不一致，数据只在当前Cache里存在。比如说，内存里面X=5，而CPU核心1的Cache中X=2，Cache与内存不一致，CPU核心2中没有X。</p><p><img src="https://static001.geekbang.org/resource/image/b1/61/b19d638e9a37290c1ea1feebce2d7e61.jpg" alt="" title="MESI协议-M"></p><ol start="2">
+<li>E独占（Exclusive）：当前Cache中的内容有效，数据与内存中的数据一致，数据只在当前Cache里存在；类似RAM里面X=5，同样CPU核心1的Cache中X=5（Cache和内存中的数据一致），CPU核心2中没有X。</li>
+</ol><p><img src="https://static001.geekbang.org/resource/image/bb/e2/bb1fc473f93089a1414a4e01f888dae2.jpg" alt="" title="MESI协议-E"></p><ol start="3">
+<li>S共享（Shared）：当前Cache中的内容有效，Cache中的数据与内存中的数据一致，数据在多个CPU核心中的Cache里面存在。例如在CPU核心1、CPU核心2里面Cache中的X=5，而内存中也是X=5保持一致。</li>
+</ol><p><img src="https://static001.geekbang.org/resource/image/03/b0/030bd3e97c93bdef900abc0c6a72b9b0.jpg" alt="" title="MESI协议-S"></p><ol start="4">
+<li>无效（Invalid）：当前Cache无效。前面三幅图Cache中没有数据的那些，都属于这个情况。</li>
+</ol><p>最后还要说一下Cache硬件，它会监控所有CPU上Cache的操作，根据相应的操作使得Cache里的数据行在上面这些状态之间切换。Cache硬件通过这些状态的变化，就能安全地控制各Cache间、各Cache与内存之间的数据一致性了。</p><p>这里不再深入探讨MESI协议了，感兴趣的话你可以自行拓展学习。这里只是为了让你明白，有了Cache虽然提升了系统性能，却也带来了很多问题，好在这些问题都由硬件自动完成，对软件而言是透明的。</p><p>不过看似对软件透明，这却是有代价的，因为硬件需要耗费时间来处理这些问题。如果我们编程的时候不注意，不能很好地规避这些问题，就会引起硬件去维护大量的Cache数据同步，这就会使程序运行的效能大大下降。</p><h2>开启Cache</h2><p>前面我们研究了大量的Cache底层细节和问题，就是为了使用Cache，目前Cache已经成为了现代计算机的标配，但是x86 CPU上默认是关闭Cache的，需要在CPU初始化时将其开启。</p><p>在x86 CPU上开启Cache非常简单，只需要将CR0寄存器中CD、NW位同时清0即可。CD=1时表示Cache关闭，NW=1时CPU不维护内存数据一致性。所以<strong>CD=0、NW=0的组合</strong>才是开启Cache的正确方法。</p><p>开启Cache只需要用四行汇编代码，代码如下：</p><pre><code>mov eax, cr0
+;开启 CACHE    
+btr eax,29 ;CR0.NW=0
+btr eax,30	;CR0.CD=0
+mov cr0, eax
+</code></pre><h2>获取内存视图</h2><p>作为系统软件开发人员，与其了解内存内部构造原理，不如了解系统内存有多大。这个作用更大。</p><p>根据前面课程所讲，给出一个物理地址并不能准确地定位到内存空间，内存空间只是映射物理地址空间中的一个子集，物理地址空间中可能有空洞，有ROM，有内存，有显存，有I/O寄存器，所以获取内存有多大没用，关键是<strong>要获取哪些物理地址空间是可以读写的内存</strong>。</p><p>物理地址空间是由北桥芯片控制管理的，那我们是不是要找北桥要内存的地址空间呢？当然不是，在x86平台上还有更方便简单的办法，那就是BIOS提供的实模式下中断服务，就是int指令后面跟着一个常数的形式。</p><p>由于PC机上电后由BIOS执行硬件初始化，中断向量表是BIOS设置的，所以执行中断自然执行BIOS服务。这个中断服务是int 15h，但是它需要一些参数，就是在执行int 15h之前，对特定寄存器设置一些值，代码如下。</p><pre><code>_getmemmap:
+	xor ebx,ebx ;ebx设为0
+	mov edi,E80MAP_ADR ;edi设为存放输出结果的1MB内的物理内存地址
+loop:
+	mov eax,0e820h ;eax必须为0e820h
+	mov ecx,20 ;输出结果数据项的大小为20字节：8字节内存基地址，8字节内存长度，4字节内存类型
+	mov edx,0534d4150h ;edx必须为0534d4150h
+	int 15h ;执行中断
+	jc error ;如果flags寄存器的C位置1，则表示出错
+	add edi,20;更新下一次输出结果的地址
+	cmp ebx,0 ;如ebx为0，则表示循环迭代结束
+	jne loop  ;还有结果项，继续迭代
+    ret
+error:;出错处理
+</code></pre><p>上面的代码是在迭代中执行中断，每次中断都输出一个20字节大小数据项，最后会形成一个该数据项（结构体）的数组，可以用C语言结构表示，如下。</p><pre><code>#define RAM_USABLE 1 //可用内存
+#define RAM_RESERV 2 //保留内存不可使用
+#define RAM_ACPIREC 3 //ACPI表相关的
+#define RAM_ACPINVS 4 //ACPI NVS空间
+#define RAM_AREACON 5 //包含坏内存
+typedef struct s_e820{
+    u64_t saddr;    /* 内存开始地址 */
+    u64_t lsize;    /* 内存大小 */
+    u32_t type;    /* 内存类型 */
+}e820map_t;
+</code></pre><h2>重点回顾</h2><p>又到了课程尾声，内存和Cache的学习就告一段落了。今天我们主要讲了四部分内容，局部性原理、内存结构特性、Cache工作原理和x86上的应用。我们一起来回顾一下这节课的重点。</p><p>首先从一个场景开始，我们了解了程序通常的结构。通过观察这种结构，我们发现CPU大多数时间在访问相同或者与此相邻的地址，执行相同的指令或者与此相邻的指令。这种现象就是程序<strong>局部性原理</strong>。</p><p>然后，我们研究了内存的结构和特性。了解它的工艺标准和内部原理，知道内存容量相对可以做得较大，程序和数据都要放在其中才能被CPU执行和处理。但是内存的速度却远远赶不上CPU的速度。</p><p>因为内存和CPU之间性能瓶颈和程序局部性原理，所以才开发出了Cache（即高速缓存），它由高速静态储存器和相应的控制逻辑组成。</p><p>Cache容量比内存小，速度却比内存高，它在CPU和内存之间，CPU访问内存首先会访问Cache，如果访问命中则会大大提升性能，然而它却带来了问题，那就是<strong>数据的一致性问题</strong>，为了解决这个问题，工程师又开发了Cache<strong>一致性协议MESI</strong>。这个协议由Cache硬件执行，对软件透明。</p><p>最后，我们掌握了x86平台上开启Cache和获取物理内存视图的方法。</p><p>因为这节课也是我们硬件模块的最后一节，可以说<strong>没有硬件平台知识，写操作系统就如同空中建楼</strong>，通过这个部分的学习，就算是为写操作系统打好了地基。为了让你更系统地认识这个模块，我给你整理了这三节课的知识导图。</p><p><img src="https://static001.geekbang.org/resource/image/d4/y0/d43c10bbb1a1159d9da7d3b14a3cfyy0.jpg" alt=""></p><h2>思考题</h2><p>请你思考一下，如何写出让CPU跑得更快的代码？由于Cache比内存快几个数量级，所以这个问题也可以转换成：如何写出提高Cache命中率的代码？</p><h2>精选留言：</h2>
+        <ul>
+        
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            pedro  2021-05-24 07:14:09
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            在CSAPP第六章对存储器层次架构有详细的探讨，感兴趣的同学可以查阅一下，这里我简单总结一下当做思考题答案。<br>一个编写良好的计算机程序尝尝具有良好的局部性，这被称为局部性原理，对硬件和软件都有极大的影响。<br>局部性可分为两种，1.程序数据引用局部性;2.指令局部性。<br>CPU对数据和指令都存在高速缓存，当缓存中的数据大面积命中时，则该代码拥有良好的空间局部性;当缓存中的指令大面积命中时，也该代码拥有良好的时间局部性。<br>别忘了，CPU对于指令和数据的操作都需要花时间，那如果二者如果都大面积的缓存命中，可以减少非常多的内存访问操作，对于CPU来说，内存访问就是性能瓶颈所在。<br>因此编写高速缓存友好的代码是必要的，高手与小白往往只有一步之遥！<br>基本方法大致如下:<br>1.让最常见的情况运行得快，核心函数中的核心部分，是影响性能的关键点，它们占据了程序的大部分运行时间，所以要把注意力放在它们身上。<br>2.尽量减少每个循环内部的缓存不命中数量，循环是缓存工作的重点，一个循环容易带来性能问题，而它恰好也容易被优化成空间、时间局部性良好的代码。<br>欢迎大家一起交流指正~ [17赞]
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">编辑回复2021-05-26 23:36:20</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">优秀，给你置顶，供大伙讨论。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            neohope  2021-05-24 23:33:00
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            如何写出让 CPU 跑得更快的代码？可以从以下几方面入手：<br>1、遵从80-20法则，程序80%的时间在运行20%或更少的代码，针对热代码进行优化，才容易产出效果；<br>2、遵从数据访问的局部性法则，按数据存放顺序访问内存效率远高于乱序访问内存效率，也就是尽量帮助CPU做好数据Cache的预测工作。同样根据Cache大小，做好数据结构的优化工作，进行数据压缩或数据填充，也是提升Cache效率的好方式；<br>3、遵从指令访问的局部性法则，减少跳转指令，同样是尽量帮助CPU做好数据Cache的预测工作；现代CPU都有一些预测功能【如分支预测】，利用好CPU的这些功能，也会提升Cache命中率；<br>4、避免计算线程在多个核心之间漂移，避免缓存重复加载，可以绑定核心【物理核即可，不用到逻辑核】，提高效率；<br>5、去除伪共享缓存：在多核环境下，减少多个核心对同一区域内存的读写并发操作，减少内存失效的情况的发生；<br>===开始跑题===<br>6、合理提高进程优先级，减少进程间切换，可以变相提供Cache提速的效果<br>7、关闭Swap，可以变相提供内存提速、Cache提速的效果；<br>8、使用Intel自家的编译器，开启性能优化，很多时候可以提速运算效率；<br>9、使用C语言，而不是更高级的语言，很多时候可以提速运算效率；<br>10、直接使用昂贵的寄存器作为变量，可以变相提供加速效果； [8赞]
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2021-05-26 22:57:19</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">大神你好，你以前是做性能优化的吧 ，这些问题说的很对</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            zhanyd  2021-05-24 13:15:32
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            我以前写过一篇关于缓存局部性原理的文章，有兴趣的同学可以看看：<br>https:&#47;&#47;blog.csdn.net&#47;zhanyd&#47;article&#47;details&#47;102631248 [4赞]
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2021-05-25 19:33:40</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">感谢分享，6666。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            undefined  2021-05-24 00:22:46
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            摩拳擦掌，跃跃欲试。 [4赞]
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2021-05-24 06:49:52</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">加油～</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            园园  2021-05-24 09:24:55
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            提高Cache的命中率可以从优化指令布局和优化数据布局两个方面开展。比如减少频繁的跳转，数据集中连续存放等。 [2赞]
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2021-05-26 23:09:30</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">你好，对，你学的很透</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            blentle  2021-05-24 08:59:29
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            回答一下思考题. 因为缓存行是固定的，32或64个字节，只能在写入内存的数据上尽量补齐，比如一个int 占4个字节(java),32位系统的对象头占8个字节，这样再多写5个int就对齐一个缓冲行了，jdk也提供了一个 annotation 即@Commented来解决，另外内存队列disruptor也用同样的方式优化了同样的问题，但是如此这数据，势必会造成资源浪费，如何权衡这2者还请老师分享一下经验 [2赞]
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2021-05-26 23:12:45</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">是，你考虑的很深刻，说够笑话加内存 加服务器  有时候时间和空间是不可以兼得的</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            springXu  2021-05-24 03:14:52
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            我认为是不是可以尽量加载cache line为单位的数据从内存中，然后进行操作和运算，再放回内存中？ 本质就是减少内存的读与写。像blowfish对一组数据操作时，就可以采取这样的方式。但有像sse,avx512这种指令也是这种理念吧。SIMD单指令多数据流。 [2赞]
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2021-05-27 13:40:32</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">你思考的很深刻 </div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            黎  2021-05-24 11:20:37
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            慢慢有点感觉了 [1赞]
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2021-05-26 23:08:31</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">会越来越有感觉的</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            郑童文  2021-05-24 04:56:43
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            请教老师一个问题：文中说：“中断向量表是由BIOS设置的”。 我理解的中断向量表类似一个包含中断处理程序入口地址的数组，但中断处理程序应该是由操作系统提供的。而BIOS在初始化硬件的时候还没有加载操作系统，那BIOS怎么知道这些中断服务程序的入口地址呢？ [1赞]
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2021-05-27 13:39:47</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">你好，在实模式下 BIOS 有 提供默认的中断处理程序</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            瑞兴  2021-05-29 11:53:10
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            迟到补卡 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">编辑回复2021-05-29 12:47:36</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">加油，也欢迎分享你的学习心得。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            LT  2021-05-28 15:52:01
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            1.如果查找一个cpu的cache line 大小？<br>2.BIOS已经设置了中断，在OS启动时，需要重置中断，对吗？在OS启动后，BIOS的中断还能用吗？ 
+        </div>
+        
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            老男孩  2021-05-25 14:58:51
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            对与老师课后提出的问题，我想了半天，脑海中只有3个字：不知道。但同时浮现出4个字：好想知道。java中好像常量或者静态方法，感觉可以提高cache的命中率？ 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2021-05-26 22:53:15</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">哈哈，别急，后面就会有所体会的 </div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            blentle  2021-05-25 08:44:34
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            一直有个疑问，三级缓存里的数据是何时刷到内存的，是不是有类似超时时间或者最大量限制或者二者都有. 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2021-05-26 22:54:47</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">一，有刷新指令，二，满就会写入内存替换的</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            Paul Shan  2021-05-25 07:55:23
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            如果写出代码对内存的使用单位是和Cache行相一致，这样可以优化Cache调度，是一种用空间换时间的思路。 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2021-05-25 19:32:59</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">666～</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            送过快递的码农  2021-05-24 14:27:29
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            1.回答思考题<br>可以参考Java 实现的高性能队列 Disruptor  框架 ，充分利用缓存行的特性，将每个对象包装成64byte的倍数，避免伪共享。尽可能按照连续内存的方式来存储，确保能被缓存加载。<br>2.我的疑问<br>1.关于超线程技术  是不是 超线程在同一个物理的核心下的两个逻辑核心，应该是用同个缓存吧？他们是不同的寄存器，对应同一个原子钟？<br>2.msei协议是不是硬件为了确保数据一致性，对我们不可知的一种行为？Java的volatile关键字是不是也依赖于此？ 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2021-05-26 23:06:05</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">问题1，是对的<br>问题2，msei是硬件层的东西，我们软件 不知道</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            宇宙的琴弦  2021-05-24 13:39:25
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            尽量让程序少跳转，比如在if else分支结构中，提高if的条件成立的可能性。在循环需要对变量操作时，应尽量考虑到这些变量的空间存储位置，还有尽量使用局部变量？ 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2021-05-26 23:06:56</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">对对对 你的学习非常认真 善于思考</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            冷板凳  2021-05-24 11:24:58
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            缓存就是加速器，内存因速度小于cpu几个数量级，所以有cache；那硬盘比内存更低，硬盘也应该有cache吧~ 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2021-05-26 23:07:55</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">你好，硬盘确实有cache</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            罗乾林  2021-05-24 08:48:11
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            想到了linux内核代码的likely&#47;unlikely 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2021-05-26 23:13:36</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">对，它可以优化分支代码</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            MacBao  2021-05-24 08:25:07
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            伪共享是不是也应该考虑一下 
+        </div>
+        
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            春华秋实  2021-05-24 08:20:01
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            必须学三遍才可以 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">编辑回复2021-05-24 10:13:00</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">好用功啊，加油～</div>
+</div>
+            
+    </div>
+</li>
+            </ul>
+</div>
+</body>
+</html>

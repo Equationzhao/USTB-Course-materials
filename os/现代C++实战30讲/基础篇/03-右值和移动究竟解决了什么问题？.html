@@ -1,0 +1,1408 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>03-右值和移动究竟解决了什么问题？</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <style>
+        html {
+            color: #333;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            text-rendering: optimizelegibility;
+            font-family: Helvetica Neue, PingFang SC, Verdana, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif
+        }
+
+        html.borderbox *,
+        html.borderbox :after,
+        html.borderbox :before {
+            box-sizing: border-box
+        }
+
+        article,
+        aside,
+        blockquote,
+        body,
+        button,
+        code,
+        dd,
+        details,
+        dl,
+        dt,
+        fieldset,
+        figcaption,
+        figure,
+        footer,
+        form,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        header,
+        hr,
+        input,
+        legend,
+        li,
+        menu,
+        nav,
+        ol,
+        p,
+        pre,
+        section,
+        td,
+        textarea,
+        th,
+        ul {
+            margin: 0;
+            padding: 0
+        }
+
+        article,
+        aside,
+        details,
+        figcaption,
+        figure,
+        footer,
+        header,
+        menu,
+        nav,
+        section {
+            display: block
+        }
+
+        audio,
+        canvas,
+        video {
+            display: inline-block
+        }
+
+        body,
+        button,
+        input,
+        select,
+        textarea {
+            font: 300 1em/1.8 PingFang SC, Lantinghei SC, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, Helvetica, sans-serif
+        }
+
+        button::-moz-focus-inner,
+        input::-moz-focus-inner {
+            padding: 0;
+            border: 0
+        }
+
+        table {
+            border-collapse: collapse;
+            border-spacing: 0
+        }
+
+        fieldset,
+        img {
+            border: 0
+        }
+
+        blockquote {
+            position: relative;
+            color: #999;
+            font-weight: 400;
+            border-left: 1px solid #1abc9c;
+            padding-left: 1em;
+            margin: 1em 3em 1em 2em
+        }
+
+        @media only screen and (max-width: 640px) {
+            blockquote {
+                margin: 1em 0
+            }
+        }
+
+        abbr,
+        acronym {
+            border-bottom: 1px dotted;
+            font-variant: normal
+        }
+
+        abbr {
+            cursor: help
+        }
+
+        del {
+            text-decoration: line-through
+        }
+
+        address,
+        caption,
+        cite,
+        code,
+        dfn,
+        em,
+        th,
+        var {
+            font-style: normal;
+            font-weight: 400
+        }
+
+        ol,
+        ul {
+            list-style: none
+        }
+
+        caption,
+        th {
+            text-align: left
+        }
+
+        q:after,
+        q:before {
+            content: ""
+        }
+
+        sub,
+        sup {
+            font-size: 75%;
+            line-height: 0;
+            position: relative
+        }
+
+        :root sub,
+        :root sup {
+            vertical-align: baseline
+        }
+
+        sup {
+            top: -.5em
+        }
+
+        sub {
+            bottom: -.25em
+        }
+
+        a {
+            color: #1abc9c
+        }
+
+        a:hover {
+            text-decoration: underline
+        }
+
+        .typo a {
+            border-bottom: 1px solid #1abc9c
+        }
+
+        .typo a:hover {
+            border-bottom-color: #555;
+            color: #555
+        }
+
+        .typo a:hover,
+        a,
+        ins {
+            text-decoration: none
+        }
+
+        .typo-u,
+        u {
+            text-decoration: underline
+        }
+
+        mark {
+            background: #fffdd1;
+            border-bottom: 1px solid #ffedce;
+            padding: 2px;
+            margin: 0 5px
+        }
+
+        code,
+        pre,
+        pre tt {
+            font-family: Courier, Courier New, monospace
+        }
+
+        pre {
+            background: hsla(0, 0%, 97%, .7);
+            border: 1px solid #ddd;
+            padding: 1em 1.5em;
+            display: block;
+            -webkit-overflow-scrolling: touch
+        }
+
+        hr {
+            border: none;
+            border-bottom: 1px solid #cfcfcf;
+            margin-bottom: .8em;
+            height: 10px
+        }
+
+        .typo-small,
+        figcaption,
+        small {
+            font-size: .9em;
+            color: #888
+        }
+
+        b,
+        strong {
+            font-weight: 700;
+            color: #000
+        }
+
+        [draggable] {
+            cursor: move
+        }
+
+        .clearfix:after,
+        .clearfix:before {
+            content: "";
+            display: table
+        }
+
+        .clearfix:after {
+            clear: both
+        }
+
+        .clearfix {
+            zoom: 1
+        }
+
+        .textwrap,
+        .textwrap td,
+        .textwrap th {
+            word-wrap: break-word;
+            word-break: break-all
+        }
+
+        .textwrap-table {
+            table-layout: fixed
+        }
+
+        .serif {
+            font-family: Palatino, Optima, Georgia, serif
+        }
+
+        .typo-dl,
+        .typo-form,
+        .typo-hr,
+        .typo-ol,
+        .typo-p,
+        .typo-pre,
+        .typo-table,
+        .typo-ul,
+        .typo dl,
+        .typo form,
+        .typo hr,
+        .typo ol,
+        .typo p,
+        .typo pre,
+        .typo table,
+        .typo ul,
+        blockquote {
+            margin-bottom: 1rem
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: PingFang SC, Helvetica Neue, Verdana, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif;
+            color: #000;
+            line-height: 1.35
+        }
+
+        .typo-h1,
+        .typo-h2,
+        .typo-h3,
+        .typo-h4,
+        .typo-h5,
+        .typo-h6,
+        .typo h1,
+        .typo h2,
+        .typo h3,
+        .typo h4,
+        .typo h5,
+        .typo h6 {
+            margin-top: 1.2em;
+            margin-bottom: .6em;
+            line-height: 1.35
+        }
+
+        .typo-h1,
+        .typo h1 {
+            font-size: 2em
+        }
+
+        .typo-h2,
+        .typo h2 {
+            font-size: 1.8em
+        }
+
+        .typo-h3,
+        .typo h3 {
+            font-size: 1.6em
+        }
+
+        .typo-h4,
+        .typo h4 {
+            font-size: 1.4em
+        }
+
+        .typo-h5,
+        .typo-h6,
+        .typo h5,
+        .typo h6 {
+            font-size: 1.2em
+        }
+
+        .typo-ul,
+        .typo ul {
+            margin-left: 1.3em;
+            list-style: disc
+        }
+
+        .typo-ol,
+        .typo ol {
+            list-style: decimal;
+            margin-left: 1.9em
+        }
+
+        .typo-ol ol,
+        .typo-ol ul,
+        .typo-ul ol,
+        .typo-ul ul,
+        .typo li ol,
+        .typo li ul {
+            margin-bottom: .8em;
+            margin-left: 2em
+        }
+
+        .typo-ol ul,
+        .typo-ul ul,
+        .typo li ul {
+            list-style: circle
+        }
+
+        .typo-table td,
+        .typo-table th,
+        .typo table caption,
+        .typo table td,
+        .typo table th {
+            border: 1px solid #ddd;
+            padding: .5em 1em;
+            color: #666
+        }
+
+        .typo-table th,
+        .typo table th {
+            background: #fbfbfb
+        }
+
+        .typo-table thead th,
+        .typo table thead th {
+            background: hsla(0, 0%, 95%, .7)
+        }
+
+        .typo table caption {
+            border-bottom: none
+        }
+
+        .typo-input,
+        .typo-textarea {
+            -webkit-appearance: none;
+            border-radius: 0
+        }
+
+        .typo-em,
+        .typo em,
+        caption,
+        legend {
+            color: #000;
+            font-weight: inherit
+        }
+
+        .typo-em {
+            position: relative
+        }
+
+        .typo-em:after {
+            position: absolute;
+            top: .65em;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            content: "\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB"
+        }
+
+        .typo img {
+            max-width: 100%
+        }
+
+        .common-content {
+            font-weight: 400;
+            color: #353535;
+            line-height: 1.75rem;
+            white-space: normal;
+            word-break: normal;
+            font-size: 1rem
+        }
+
+        .common-content img {
+            display: block;
+            max-width: 100%;
+            background-color: #eee
+        }
+
+        .common-content audio,
+        .common-content video {
+            width: 100%;
+            background-color: #eee
+        }
+
+        .common-content center,
+        .common-content font {
+            margin-top: 1rem;
+            display: inline-block
+        }
+
+        .common-content center {
+            width: 100%
+        }
+
+        .common-content pre {
+            margin-top: 1rem;
+            padding-left: 0;
+            padding-right: 0;
+            position: relative;
+            overflow: hidden
+        }
+
+        .common-content pre code {
+            font-size: .8rem;
+            font-family: Consolas, Liberation Mono, Menlo, monospace, Courier;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            overflow-x: auto
+        }
+
+        .common-content hr {
+            border: none;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-top: 1px solid #f5f5f5;
+            height: 1px;
+            background: none
+        }
+
+        .common-content b,
+        .common-content h1,
+        .common-content h2,
+        .common-content h3,
+        .common-content h4,
+        .common-content h5,
+        .common-content strong {
+            font-weight: 700
+        }
+
+        .common-content h1,
+        .common-content h2 {
+            font-size: 1.125rem;
+            margin-bottom: .45rem
+        }
+
+        .common-content h3,
+        .common-content h4,
+        .common-content h5 {
+            font-size: 1rem;
+            margin-bottom: .45rem
+        }
+
+        .common-content p {
+            font-weight: 400;
+            color: #353535;
+            margin-top: .15rem
+        }
+
+        .common-content .orange {
+            color: #ff5a05
+        }
+
+        .common-content .reference {
+            font-size: 1rem;
+            color: #888
+        }
+
+        .custom-rich-content h1 {
+            margin-top: 0;
+            font-weight: 400;
+            font-size: 15.25px;
+            border-bottom: 1px solid #eee;
+            line-height: 2.8
+        }
+
+        .custom-rich-content li,
+        .custom-rich-content p {
+            font-size: 14px;
+            color: #888;
+            line-height: 1.6
+        }
+
+        table.hljs-ln {
+            margin-bottom: 0;
+            border-spacing: 0;
+            border-collapse: collapse
+        }
+
+        table.hljs-ln,
+        table.hljs-ln tbody,
+        table.hljs-ln td,
+        table.hljs-ln tr {
+            box-sizing: border-box
+        }
+
+        table.hljs-ln td {
+            padding: 0;
+            border: 0
+        }
+
+        table.hljs-ln td.hljs-ln-numbers {
+            min-width: 15px;
+            color: rgba(27, 31, 35, .3);
+            text-align: right;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none
+        }
+
+        table.hljs-ln td.hljs-ln-code,
+        table.hljs-ln td.hljs-ln-numbers {
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
+            font-size: 12px;
+            line-height: 20px;
+            vertical-align: top
+        }
+
+        table.hljs-ln td.hljs-ln-code {
+            position: relative;
+            padding-right: 10px;
+            padding-left: 10px;
+            overflow: visible;
+            color: #24292e;
+            word-wrap: normal;
+            white-space: pre
+        }
+
+        video::-webkit-media-controls {
+            overflow: hidden !important
+        }
+
+        video::-webkit-media-controls-enclosure {
+            width: calc(100% + 32px);
+            margin-left: auto
+        }
+
+        ._29HP61GA_0 {
+            max-width:800px;
+            margin:0 auto;
+            margin-bottom: 20px;
+            font-weight: 400;
+            color: #353535;
+            line-height: 1.76;
+            white-space: normal;
+            word-break: normal;
+            font-size: 17px;
+            -webkit-transition: background-color .3s ease;
+            transition: background-color .3s ease
+        }
+
+        ._29HP61GA_0 .MathJax_Display {
+            overflow: auto
+        }
+
+        ._29HP61GA_0 .poster {
+            position: fixed;
+            left: -10000px;
+            top: -10000px;
+            overflow: hidden;
+            padding: 1rem;
+            background: #ececec
+        }
+
+        ._29HP61GA_0 .richcontent-pre-copy {
+            font-size: 13px;
+            color: #888;
+            position: absolute;
+            right: 1em;
+            top: .5em;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none
+        }
+
+        ._29HP61GA_0 .richcontent-pre-copy .iconfont {
+            font-size: 12px;
+            margin-right: .2em
+        }
+
+        ._29HP61GA_0 a {
+            color: #fa8919;
+            border-bottom: 1px solid #fa8919
+        }
+
+        ._29HP61GA_0 img {
+            display: block;
+            max-width: 100%;
+            position: relative;
+            left: 50%;
+            -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+            background-color: #eee;
+            vertical-align: top;
+            border-radius: 0
+        }
+
+        ._29HP61GA_0 audio,
+        ._29HP61GA_0 video {
+            width: 100%;
+            background-color: #eee
+        }
+
+        ._29HP61GA_0 pre {
+            margin-top: 16px;
+            padding: 34px 0 0;
+            margin-bottom: 30px;
+            position: relative;
+            border-radius: 6px;
+            background: rgba(246, 247, 251, .749);
+            border: 0
+        }
+
+        ._29HP61GA_0 pre code {
+            font-size: 12px;
+            font-family: Consolas, Liberation Mono, Menlo, monospace, Courier;
+            display: block;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            margin-left: 16px;
+            margin-right: 16px;
+            overflow-x: scroll
+        }
+
+        ._29HP61GA_0 pre code:after {
+            content: "";
+            height: 30px;
+            width: 100%;
+            display: block
+        }
+
+        ._29HP61GA_0 hr {
+            border: none;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-top: 1px solid #f5f5f5;
+            height: 1px;
+            background: none
+        }
+
+        ._29HP61GA_0 h1,
+        ._29HP61GA_0 h2,
+        ._29HP61GA_0 h3,
+        ._29HP61GA_0 h4,
+        ._29HP61GA_0 h5 {
+            margin-bottom: 20px;
+            margin-top: 0;
+            font-weight: 700
+        }
+
+        ._29HP61GA_0 b,
+        ._29HP61GA_0 strong {
+            font-weight: 700
+        }
+
+        ._29HP61GA_0 h1 {
+            font-size: 21px
+        }
+
+        ._29HP61GA_0 h2 {
+            font-size: 20px
+        }
+
+        ._29HP61GA_0 h3 {
+            font-size: 19px
+        }
+
+        ._29HP61GA_0 h4 {
+            font-size: 18px
+        }
+
+        ._29HP61GA_0 h5 {
+            font-size: 17px
+        }
+
+        ._29HP61GA_0 center,
+        ._29HP61GA_0 p {
+            font-weight: 400;
+            color: #353535;
+            margin-top: 0;
+            margin-bottom: 30px;
+            word-break: break-word
+        }
+
+        ._29HP61GA_0 center {
+            text-align: center
+        }
+
+        ._29HP61GA_0 blockquote {
+            margin-top: 0;
+            margin-bottom: 34px;
+            border-left: 3px solid #e8e8e8;
+            padding-left: 17px;
+            color: #353535
+        }
+
+        ._29HP61GA_0 blockquote p {
+            margin-top: 0;
+            margin-bottom: 0
+        }
+
+        ._29HP61GA_0 ol,
+        ._29HP61GA_0 ul {
+            margin-bottom: 30px
+        }
+
+        ._29HP61GA_0 ol p,
+        ._29HP61GA_0 ul p {
+            margin-top: 0;
+            margin-bottom: 0
+        }
+
+        ._29HP61GA_0 ol {
+            list-style: decimal;
+            margin-left: 20px
+        }
+
+        ._29HP61GA_0 ul li {
+            padding-left: 17px;
+            position: relative;
+            margin-bottom: 10px
+        }
+
+        ._29HP61GA_0 ul li:after {
+            content: "";
+            height: 6px;
+            width: 6px;
+            border-radius: 50%;
+            background: #353535;
+            position: absolute;
+            top: 10px;
+            left: 0
+        }
+
+        ._29HP61GA_0 .orange {
+            color: #fa8919
+        }
+
+        ._29HP61GA_0 .reference {
+            color: #888
+        }
+
+        ._29HP61GA_0 .m-right {
+            text-align: right
+        }
+
+        ._29HP61GA_0 .m-center {
+            text-align: center;
+            display: block
+        }
+
+        ._29HP61GA_0 .m-gray {
+            color: #888
+        }
+
+        ._29HP61GA_0 .m-small {
+            font-size: 15px
+        }
+
+        ._29HP61GA_0 table.hljs-ln {
+            margin-bottom: 0;
+            border-spacing: 0;
+            border-collapse: collapse
+        }
+
+        ._29HP61GA_0 table.hljs-ln,
+        ._29HP61GA_0 table.hljs-ln tbody,
+        ._29HP61GA_0 table.hljs-ln td,
+        ._29HP61GA_0 table.hljs-ln tr {
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box
+        }
+
+        ._29HP61GA_0 table.hljs-ln td {
+            padding: 0;
+            border: 0
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-numbers {
+            min-width: 15px;
+            font-size: 12px;
+            color: rgba(27, 31, 35, .3);
+            text-align: right;
+            white-space: nowrap;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-code,
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-numbers {
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
+            line-height: 20px;
+            vertical-align: top
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-code {
+            position: relative;
+            padding-right: 10px;
+            padding-left: 10px;
+            overflow: visible;
+            font-size: 13px;
+            color: #666;
+            word-wrap: normal;
+            white-space: pre
+        }
+
+    </style>
+</head>
+<body>
+<div class="_29HP61GA_0">
+<h1>03-右值和移动究竟解决了什么问题？</h1>
+<p>你好，我是吴咏炜。</p><p>从上一讲智能指针开始，我们已经或多或少接触了移动语义。本讲我们就完整地讨论一下移动语义和相关的概念。移动语义是 C++11 里引入的一个重要概念；理解这个概念，是理解很多现代 C++ 里的优化的基础。</p><h2>值分左右</h2><p>我们常常会说，C++ 里有左值和右值。这话不完全对。标准里的定义实际更复杂，规定了下面这些值类别（value categories）：</p><p><img src="https://static001.geekbang.org/resource/image/18/3c/18b692072537d4ce179d3857a8a0133c.png" alt=""></p><p>我们先理解一下这些名词的字面含义：</p><ul>
+<li>一个 lvalue 是通常可以放在等号左边的表达式，左值</li>
+<li>一个 rvalue 是通常只能放在等号右边的表达式，右值</li>
+<li>一个 glvalue 是 generalized lvalue，广义左值</li>
+<li>一个 xvalue 是 expiring lvalue，将亡值</li>
+<li>一个 prvalue 是 pure rvalue，纯右值</li>
+</ul><p>还是有点晕，是吧？我们暂且抛开这些概念，只看其中两个：lvalue 和 prvalue。</p><p>左值 lvalue 是有标识符、可以取地址的表达式，最常见的情况有：</p><ul>
+<li>变量、函数或数据成员的名字</li>
+<li>返回左值引用的表达式，如 <code>++x</code>、<code>x = 1</code>、<code>cout &lt;&lt; ' '</code></li>
+<li>字符串字面量如 <code>"hello world"</code></li>
+</ul><p>在函数调用时，左值可以绑定到左值引用的参数，如 <code>T&amp;</code>。一个常量只能绑定到常左值引用，如 <code>const T&amp;</code>。</p><!-- [[[read_end]]] --><p>反之，纯右值 prvalue 是没有标识符、不可以取地址的表达式，一般也称之为“临时对象”。最常见的情况有：</p><ul>
+<li>返回非引用类型的表达式，如 <code>x++</code>、<code>x + 1</code>、<code>make_shared&lt;int&gt;(42)</code></li>
+<li>除字符串字面量之外的字面量，如 <code>42</code>、<code>true</code></li>
+</ul><p>在 C++11 之前，右值可以绑定到常左值引用（const lvalue reference）的参数，如 <code>const T&amp;</code>，但不可以绑定到非常左值引用（non-const lvalue reference），如 <code>T&amp;</code>。从 C++11 开始，C++ 语言里多了一种引用类型——右值引用。右值引用的形式是 <code>T&amp;&amp;</code>，比左值引用多一个 <code>&amp;</code> 符号。跟左值引用一样，我们可以使用 <code>const</code> 和 <code>volatile</code> 来进行修饰，但最常见的情况是，我们不会用 <code>const</code> 和 <code>volatile</code> 来修饰右值。本专栏就属于这种情况。</p><p>引入一种额外的引用类型当然增加了语言的复杂性，但也带来了很多优化的可能性。由于 C++ 有重载，我们就可以根据不同的引用类型，来选择不同的重载函数，来完成不同的行为。回想一下，在上一讲中，我们就利用了重载，让 <code>smart_ptr</code> 的构造函数可以有不同的行为：</p><pre><code class="language-c++">template &lt;typename U&gt;
+smart_ptr(const smart_ptr&lt;U&gt;&amp; other) noexcept
+{
+  ptr_ = other.ptr_;
+  if (ptr_) {
+    other.shared_count_-&gt;add_count();
+    shared_count_ =
+      other.shared_count_;
+  }
+}
+template &lt;typename U&gt;
+smart_ptr(smart_ptr&lt;U&gt;&amp;&amp; other) noexcept
+{
+  ptr_ = other.ptr_;
+  if (ptr_) {
+    shared_count_ =
+      other.shared_count_;
+    other.ptr_ = nullptr;
+  }
+}
+</code></pre><p>你可能会好奇，使用右值引用的第二个重载函数中的变量 <code>other</code> 算是左值还是右值呢？根据定义，<code>other</code> 是个变量的名字，变量有标识符、有地址，所以它还是一个左值——虽然它的类型是右值引用。</p><p>尤其重要的是，拿这个 <code>other</code> 去调用函数时，它匹配的也会是左值引用。也就是说，<strong>类型是右值引用的变量是一个左值！</strong>这点可能有点反直觉，但跟 C++ 的其他方面是一致的。毕竟对于一个右值引用的变量，你是可以取地址的，这点上它和左值完全一致。稍后我们再回到这个话题上来。</p><p>再看一下下面的代码：</p><pre><code class="language-c++">smart_ptr&lt;shape&gt; ptr1{new circle()};
+smart_ptr&lt;shape&gt; ptr2 = std::move(ptr1);
+</code></pre><p>第一个表达式里的 <code>new circle()</code> 就是一个纯右值；但对于指针，我们通常使用值传递，并不关心它是左值还是右值。</p><p>第二个表达式里的 <code>std::move(ptr)</code> 就有趣点了。它的作用是把一个左值引用强制转换成一个右值引用，而并不改变其内容。从实用的角度，在我们这儿 <code>std::move(ptr1)</code> 等价于 <code>static_cast&lt;smart_ptr&lt;shape&gt;&amp;&amp;&gt;(ptr1)</code>。因此，<code>std::move(ptr1)</code> 的结果是指向 <code>ptr1</code> 的一个右值引用，这样构造 <code>ptr2</code> 时就会选择上面第二个重载。</p><p>我们可以把 <code>std::move(ptr1)</code> 看作是一个有名字的右值。为了跟无名的纯右值 prvalue 相区别，C++ 里目前就把这种表达式叫做 xvalue。跟左值 lvalue 不同，xvalue 仍然是不能取地址的——这点上，xvalue 和 prvalue 相同。所以，xvalue 和 prvalue 都被归为右值 rvalue。我们用下面的图来表示会更清楚一点：</p><p><img src="https://static001.geekbang.org/resource/image/03/5a/036cc6865a9623a48918b504e408945a.png" alt=""></p><p>另外请注意，“值类别”（value category）和“值类型”（value type）是两个看似相似、却毫不相干的术语。前者指的是上面这些左值、右值相关的概念，后者则是与引用类型（reference type）相对而言，表明一个变量是代表实际数值，还是引用另外一个数值。在 C++ 里，所有的原生类型、枚举、结构、联合、类都代表值类型，只有引用（<code>&amp;</code>）和指针（<code>*</code>）才是引用类型。在 Java 里，数字等原生类型是值类型，类则属于引用类型。在 Python 里，一切类型都是引用类型。</p><h2>生命周期和表达式类型</h2><p>一个变量的生命周期在超出作用域时结束。如果一个变量代表一个对象，当然这个对象的生命周期也在那时结束。那临时对象（prvalue）呢？在这儿，C++ 的规则是：一个临时对象会在包含这个临时对象的完整表达式估值完成后、按生成顺序的逆序被销毁，除非有生命周期延长发生。我们先看一个没有生命周期延长的基本情况：</p><pre><code class="language-c++">process_shape(circle(), triangle());
+</code></pre><p>在这儿，我们生成了临时对象，一个圆和一个三角形，它们会在 <code>process_shape</code> 执行完成并生成结果对象后被销毁。</p><p>我们插入一些实际的代码，就可以演示这一行为：</p><pre><code class="language-c++">#include &lt;stdio.h&gt;
+
+class shape {
+public:
+  virtual ~shape() {}
+};
+
+class circle : public shape {
+public:
+  circle() { puts("circle()"); }
+  ~circle() { puts("~circle()"); }
+};
+
+class triangle : public shape {
+public:
+  triangle() { puts("triangle()"); }
+  ~triangle() { puts("~triangle()"); }
+};
+
+class result {
+public:
+  result() { puts("result()"); }
+  ~result() { puts("~result()"); }
+};
+
+result
+process_shape(const shape&amp; shape1,
+              const shape&amp; shape2)
+{
+  puts("process_shape()");
+  return result();
+}
+
+int main()
+{
+  puts("main()");
+  process_shape(circle(), triangle());
+  puts("something else");
+}
+</code></pre><p>输出结果可能会是（<code>circle</code> 和 <code>triangle</code> 的顺序在标准中没有规定）：</p><blockquote>
+<p><code>main()</code><br>
+<code>circle()</code><br>
+<code>triangle()</code><br>
+<code>process_shape()</code><br>
+<code>result()</code><br>
+<code>~result()</code><br>
+<code>~triangle()</code><br>
+<code>~circle()</code><br>
+<code>something else</code></p>
+</blockquote><p>目前我让 <code>process_shape</code> 也返回了一个结果，这是为了下一步演示的需要。你可以看到结果的临时对象最后生成、最先析构。</p><p>为了方便对临时对象的使用，C++ 对临时对象有特殊的生命周期延长规则。这条规则是：</p><blockquote>
+<p>如果一个 prvalue 被绑定到一个引用上，它的生命周期则会延长到跟这个引用变量一样长。</p>
+</blockquote><p>我们对上面的代码只要改一行就能演示这个效果。把 <code>process_shape</code> 那行改成：</p><pre><code class="language-c++">result&amp;&amp; r = process_shape(
+  circle(), triangle());
+</code></pre><p>我们就能看到不同的结果了：</p><blockquote>
+<p><code>main()</code><br>
+<code>circle()</code><br>
+<code>triangle()</code><br>
+<code>process_shape()</code><br>
+<code>result()</code><br>
+<code>~triangle()</code><br>
+<code>~circle()</code><br>
+<code>something else</code><br>
+<code>~result()</code></p>
+</blockquote><p>现在 <code>result</code> 的生成还在原来的位置，但析构被延到了 <code>main</code> 的最后。</p><p>需要万分注意的是，这条生命期延长规则只对 prvalue 有效，而对 xvalue 无效。如果由于某种原因，prvalue 在绑定到引用以前已经变成了 xvalue，那生命期就不会延长。不注意这点的话，代码就可能会产生隐秘的 bug。比如，我们如果这样改一下代码，结果就不对了：</p><pre><code class="language-c++">#include &lt;utility&gt;  // std::move
+…
+result&amp;&amp; r = std::move(process_shape(
+  circle(), triangle()));
+</code></pre><p>这时的代码输出就回到了前一种情况。虽然执行到 something else 那儿我们仍然有一个有效的变量 <code>r</code>，但它指向的对象已经不存在了，对 <code>r</code> 的解引用是一个未定义行为。由于 <code>r</code> 指向的是栈空间，通常不会立即导致程序崩溃，而会在某些复杂的组合条件下才会引致问题……</p><p>对 C++ 的这条生命期延长规则，在后面讲到视图（view）的时候会十分有用。那时我们会看到，有些 C++ 的用法实际上会隐式地利用这条规则。</p><p>此外，参考资料 <span class="orange">[5]</span> 中提到了一个有趣的事实：你可以把一个没有虚析构函数的子类对象绑定到基类的引用变量上，这个子类对象的析构仍然是完全正常的——这是因为这条规则只是延后了临时对象的析构而已，不是利用引用计数等复杂的方法，因而只要引用绑定成功，其类型并没有什么影响。</p><h2>移动的意义</h2><p>上面我们谈了一些语法知识。就跟学外语的语法一样，这些内容是比较枯燥的。虽然这些知识有时有用，但往往要回过头来看的时候才觉得。初学之时，更重要的是理解为什么，和熟练掌握基本的用法。</p><p>对于 <code>smart_ptr</code>，我们使用右值引用的目的是实现移动，而实现移动的意义是减少运行的开销——在引用计数指针的场景下，这个开销并不大。移动构造和拷贝构造的差异仅在于：</p><ul>
+<li>少了一次 <code>other.shared_count_-&gt;add_count()</code> 的调用</li>
+<li>被移动的指针被清空，因而析构时也少了一次 <code>shared_count_-&gt;reduce_count()</code> 的调用</li>
+</ul><p>在使用容器类的情况下，移动更有意义。我们可以尝试分析一下下面这个假想的语句（假设 <code>name</code> 是 <code>string</code> 类型）：</p><pre><code class="language-c++">string result =
+  string("Hello, ") + name + ".";
+</code></pre><p>在 C++11 之前的年代里，这种写法是绝对不推荐的。因为它会引入很多额外开销，执行流程大致如下：</p><ol>
+<li>调用构造函数 <code>string(const char*)</code>，生成临时对象 1；<code>"Hello, "</code> 复制 1 次。</li>
+<li>调用 <code>operator+(const string&amp;, const string&amp;)</code>，生成临时对象 2；<code>"Hello, "</code> 复制 2 次，<code>name</code> 复制 1 次。</li>
+<li>调用 <code>operator+(const string&amp;, const char*)</code>，生成对象 3；<code>"Hello, "</code> 复制 3 次，<code>name</code> 复制 2 次，<code>"."</code> 复制 1 次。</li>
+<li>假设返回值优化能够生效（最佳情况），对象 3 可以直接在 <code>result</code> 里构造完成。</li>
+<li>临时对象 2 析构，释放指向 <code>string("Hello, ") + name</code> 的内存。</li>
+<li>临时对象 1 析构，释放指向 <code>string("Hello, ")</code> 的内存。</li>
+</ol><p>既然 C++ 是一门追求性能的语言，一个合格的 C++ 程序员会写：</p><pre><code class="language-c++">string result = "Hello, ";
+result += name;
+result += ".";
+</code></pre><p>这样的话，只会调用构造函数一次和 <code>string::operator+=</code> 两次，没有任何临时对象需要生成和析构，所有的字符串都只复制了一次。但显然代码就啰嗦多了——尤其如果拼接的步骤比较多的话。从 C++11 开始，这不再是必须的。同样上面那个单行的语句，执行流程大致如下：</p><ol>
+<li>调用构造函数 <code>string(const char*)</code>，生成临时对象 1；<code>"Hello, "</code> 复制 1 次。</li>
+<li>调用 <code>operator+(string&amp;&amp;, const string&amp;)</code>，直接在临时对象 1 上面执行追加操作，并把结果移动到临时对象 2；<code>name</code> 复制 1 次。</li>
+<li>调用 <code>operator+(string&amp;&amp;, const char*)</code>，直接在临时对象 2 上面执行追加操作，并把结果移动到 <code>result</code>；<code>"."</code> 复制 1 次。</li>
+<li>临时对象 2 析构，内容已经为空，不需要释放任何内存。</li>
+<li>临时对象 1 析构，内容已经为空，不需要释放任何内存。</li>
+</ol><p>性能上，所有的字符串只复制了一次；虽然比啰嗦的写法仍然要增加临时对象的构造和析构，但由于这些操作不牵涉到额外的内存分配和释放，是相当廉价的。程序员只需要牺牲一点点性能，就可以大大增加代码的可读性。而且，所谓的性能牺牲，也只是相对于优化得很好的 C 或 C++ 代码而言——这样的 C++ 代码的性能仍然完全可以超越 Python 类的语言的相应代码。</p><p>此外很关键的一点是，C++ 里的对象缺省都是值语义。在下面这样的代码里：</p><pre><code class="language-c++">class A {
+  B b_;
+  C c_;
+};
+</code></pre><p>从实际内存布局的角度，很多语言——如 Java 和 Python——会在 <code>A</code> 对象里放 <code>B</code> 和 <code>C</code> 的指针（虽然这些语言里本身没有指针的概念）。而 C++ 则会直接把 <code>B</code> 和 <code>C</code> 对象放在 <code>A</code> 的内存空间里。这种行为既是优点也是缺点。说它是优点，是因为它保证了内存访问的局域性，而局域性在现代处理器架构上是绝对具有性能优势的。说它是缺点，是因为复制对象的开销大大增加：在 Java 类语言里复制的是指针，在 C++ 里是完整的对象。这就是为什么 C++ 需要移动语义这一优化，而 Java 类语言里则根本不需要这个概念。</p><p>一句话总结，移动语义使得在 C++ 里返回大对象（如容器）的函数和运算符成为现实，因而可以提高代码的简洁性和可读性，提高程序员的生产率。</p><p>所有的现代 C++ 的标准容器都针对移动进行了优化。</p><h2>如何实现移动？</h2><p>要让你设计的对象支持移动的话，通常需要下面几步：</p><ul>
+<li>你的对象应该有分开的拷贝构造和移动构造函数（除非你只打算支持移动，不支持拷贝——如 <code>unique_ptr</code>）。</li>
+<li>你的对象应该有 <code>swap</code> 成员函数，支持和另外一个对象快速交换成员。</li>
+<li>在你的对象的名空间下，应当有一个全局的 <code>swap</code> 函数，调用成员函数 <code>swap</code> 来实现交换。支持这种用法会方便别人（包括你自己在将来）在其他对象里包含你的对象，并快速实现它们的 <code>swap</code> 函数。</li>
+<li>实现通用的 <code>operator=</code>。</li>
+<li>上面各个函数如果不抛异常的话，应当标为 <code>noexcept</code>。这对移动构造函数尤为重要。</li>
+</ul><p>具体写法可以参考我们当前已经实现的 <code>smart_ptr</code>：</p><ul>
+<li><code>smart_ptr</code> 有拷贝构造和移动构造函数（虽然此处我们的模板构造函数严格来说不算拷贝或移动构造函数）。移动构造函数应当从另一个对象获取资源，清空其资源，并将其置为一个可析构的状态。</li>
+</ul><pre><code class="language-c++">smart_ptr(const smart_ptr&amp; other) noexcept
+{
+  ptr_ = other.ptr_;
+  if (ptr_) {
+    other.shared_count_
+      -&gt;add_count();
+    shared_count_ =
+      other.shared_count_;
+  }
+}
+template &lt;typename U&gt;
+smart_ptr(const smart_ptr&lt;U&gt;&amp; other) noexcept
+{
+  ptr_ = other.ptr_;
+  if (ptr_) {
+    other.shared_count_
+      -&gt;add_count();
+    shared_count_ =
+      other.shared_count_;
+  }
+}
+template &lt;typename U&gt;
+smart_ptr(smart_ptr&lt;U&gt;&amp;&amp; other) noexcept
+{
+  ptr_ = other.ptr_;
+  if (ptr_) {
+    shared_count_ =
+      other.shared_count_;
+    other.ptr_ = nullptr;
+  }
+}
+</code></pre><ul>
+<li><code>smart_ptr</code> 有 <code>swap</code> 成员函数。</li>
+</ul><pre><code class="language-c++">void swap(smart_ptr&amp; rhs) noexcept
+{
+  using std::swap;
+  swap(ptr_, rhs.ptr_);
+  swap(shared_count_,
+       rhs.shared_count_);
+}
+</code></pre><ul>
+<li>有支持 <code>smart_ptr</code> 的全局 <code>swap</code> 函数。</li>
+</ul><pre><code class="language-c++">template &lt;typename T&gt;
+void swap(smart_ptr&lt;T&gt;&amp; lhs,
+          smart_ptr&lt;T&gt;&amp; rhs) noexcept
+{
+  lhs.swap(rhs);
+}
+</code></pre><ul>
+<li><code>smart_ptr</code> 有通用的 <code>operator=</code> 成员函数。注意为了避免让人吃惊，通常我们需要将其实现成对 <code>a = a;</code> 这样的写法安全。下面的写法算是个小技巧，对传递左值和右值都有效，而且规避了 <code>if (&amp;rhs != this)</code> 这样的判断。</li>
+</ul><pre><code class="language-c++">  smart_ptr&amp;
+  operator=(smart_ptr rhs) noexcept
+  {
+    rhs.swap(*this);
+    return *this;
+  }
+</code></pre><h2>不要返回本地变量的引用</h2><p>有一种常见的 C++ 编程错误，是在函数里返回一个本地对象的引用。由于在函数结束时本地对象即被销毁，返回一个指向本地对象的引用属于未定义行为。理论上来说，程序出任何奇怪的行为都是正常的。</p><p>在 C++11 之前，返回一个本地对象意味着这个对象会被拷贝，除非编译器发现可以做返回值优化（named return value optimization，或 NRVO），能把对象直接构造到调用者的栈上。从 C++11 开始，返回值优化仍可以发生，但在没有返回值优化的情况下，编译器将试图把本地对象移动出去，而不是拷贝出去。这一行为不需要程序员手工用 <code>std::move</code> 进行干预——使用<code>std::move</code> 对于移动行为没有帮助，反而会影响返回值优化。</p><p>下面是个例子：</p><pre><code class="language-c++">#include &lt;iostream&gt;  // std::cout/endl
+#include &lt;utility&gt;   // std::move
+
+using namespace std;
+
+class Obj {
+public:
+  Obj()
+  {
+    cout &lt;&lt; "Obj()" &lt;&lt; endl;
+  }
+  Obj(const Obj&amp;)
+  {
+    cout &lt;&lt; "Obj(const Obj&amp;)"
+       &lt;&lt; endl;
+  }
+  Obj(Obj&amp;&amp;)
+  {
+    cout &lt;&lt; "Obj(Obj&amp;&amp;)" &lt;&lt; endl;
+  }
+};
+
+Obj simple()
+{
+  Obj obj;
+  // 简单返回对象；一般有 NRVO
+  return obj;
+}
+
+Obj simple_with_move()
+{
+  Obj obj;
+  // move 会禁止 NRVO
+  return std::move(obj);
+}
+
+Obj complicated(int n)
+{
+  Obj obj1;
+  Obj obj2;
+  // 有分支，一般无 NRVO
+  if (n % 2 == 0) {
+    return obj1;
+  } else {
+    return obj2;
+  }
+}
+
+int main()
+{
+  cout &lt;&lt; "*** 1 ***" &lt;&lt; endl;
+  auto obj1 = simple();
+  cout &lt;&lt; "*** 2 ***" &lt;&lt; endl;
+  auto obj2 = simple_with_move();
+  cout &lt;&lt; "*** 3 ***" &lt;&lt; endl;
+  auto obj3 = complicated(42);
+}
+</code></pre><p>输出通常为：</p><blockquote>
+<p><code>*** 1 ***</code><br>
+<code>Obj()</code><br>
+<code>*** 2 ***</code><br>
+<code>Obj()</code><br>
+<code>Obj(Obj&amp;&amp;)</code><br>
+<code>*** 3 ***</code><br>
+<code>Obj()</code><br>
+<code>Obj()</code><br>
+<code>Obj(Obj&amp;&amp;)</code></p>
+</blockquote><p>也就是，用了 <code>std::move</code> 反而妨碍了返回值优化。</p><h2>引用坍缩和完美转发</h2><p>最后讲一个略复杂、但又不得不讲的话题，引用坍缩（又称“引用折叠”）。这个概念在泛型编程中是一定会碰到的。我们今天既然讲了左值和右值引用，也需要一起讲一下。</p><p>我们已经讲了对于一个实际的类型 <code>T</code>，它的左值引用是 <code>T&amp;</code>，右值引用是 <code>T&amp;&amp;</code>。那么：</p><ol>
+<li>是不是看到 <code>T&amp;</code>，就一定是个左值引用？</li>
+<li>是不是看到 <code>T&amp;&amp;</code>，就一定是个右值引用？</li>
+</ol><p>对于前者的回答是“是”，对于后者的回答为“否”。</p><p>关键在于，在有模板的代码里，对于类型参数的推导结果可能是引用。我们可以略过一些繁复的语法规则，要点是：</p><ul>
+<li>对于 <code>template &lt;typename T&gt; foo(T&amp;&amp;)</code> 这样的代码，如果传递过去的参数是左值，<code>T</code> 的推导结果是左值引用；如果传递过去的参数是右值，<code>T</code> 的推导结果是参数的类型本身。</li>
+<li>如果 <code>T</code> 是左值引用，那 <code>T&amp;&amp;</code> 的结果仍然是左值引用——即 <code>type&amp; &amp;&amp;</code> 坍缩成了 <code>type&amp;</code>。</li>
+<li>如果 <code>T</code> 是一个实际类型，那 <code>T&amp;&amp;</code> 的结果自然就是一个右值引用。</li>
+</ul><p>我们之前提到过，右值引用变量仍然会匹配到左值引用上去。下面的代码会验证这一行为：</p><pre><code class="language-c++">void foo(const shape&amp;)
+{
+  puts("foo(const shape&amp;)");
+}
+
+void foo(shape&amp;&amp;)
+{
+  puts("foo(shape&amp;&amp;)");
+}
+
+void bar(const shape&amp; s)
+{
+  puts("bar(const shape&amp;)");
+  foo(s);
+}
+
+void bar(shape&amp;&amp; s)
+{
+  puts("bar(shape&amp;&amp;)");
+  foo(s);
+}
+
+int main()
+{
+  bar(circle());
+}
+</code></pre><p>输出为：</p><blockquote>
+<p><code>bar(shape&amp;&amp;)</code><br>
+<code>foo(const shape&amp;)</code></p>
+</blockquote><p>如果我们要让 <code>bar</code> 调用右值引用的那个 foo 的重载，我们必须写成：</p><pre><code class="language-c++">foo(std::move(s));
+</code></pre><p>或：</p><pre><code class="language-c++">foo(static_cast&lt;shape&amp;&amp;&gt;(s));
+</code></pre><p>可如果两个 <code>bar</code> 的重载除了调用 <code>foo</code> 的方式不一样，其他都差不多的话，我们为什么要提供两个不同的 <code>bar</code> 呢？</p><p>事实上，很多标准库里的函数，连目标的参数类型都不知道，但我们仍然需要能够保持参数的值类别：左值的仍然是左值，右值的仍然是右值。这个功能在 C++ 标准库中已经提供了，叫 <code>std::forward</code>。它和 <code>std::move</code> 一样都是利用引用坍缩机制来实现。此处，我们不介绍其实现细节，而是重点展示其用法。我们可以把我们的两个 <code>bar</code> 函数简化成：</p><pre><code class="language-c++">template &lt;typename T&gt;
+void bar(T&amp;&amp; s)
+{
+  foo(std::forward&lt;T&gt;(s));
+}
+</code></pre><p>对于下面这样的代码：</p><pre><code class="language-c++">circle temp;
+bar(temp);
+bar(circle());
+</code></pre><p>现在的输出是：</p><blockquote>
+<p><code>foo(const shape&amp;)</code><br>
+<code>foo(shape&amp;&amp;)</code></p>
+</blockquote><p>一切如预期一样。</p><p>因为在 <code>T</code> 是模板参数时，<code>T&amp;&amp;</code> 的作用主要是保持值类别进行转发，它有个名字就叫“转发引用”（forwarding reference）。因为既可以是左值引用，也可以是右值引用，它也曾经被叫做“万能引用”（universal reference）。</p><h2>内容小结</h2><p>本讲介绍了 C++ 里的值类别，重点介绍了临时变量、右值引用、移动语义和实际的编程用法。由于这是 C++11 里的重点功能，你对于其基本用法需要牢牢掌握。</p><h2>课后思考</h2><p>留给你两道思考题：</p><ol>
+<li>请查看一下标准函数模板 <code>make_shared</code> 的声明，然后想一想，这个函数应该是怎样实现的。</li>
+<li>为什么 <code>smart_ptr::operator=</code> 对左值和右值都有效，而且不需要对等号两边是否引用同一对象进行判断？</li>
+</ol><p>欢迎留言和我交流你的看法，尤其是对第二个问题。</p><h2>参考资料</h2><p>[1] cppreference.com, “Value categories”. <a href="https://en.cppreference.com/w/cpp/language/value_category">https://en.cppreference.com/w/cpp/language/value_category</a></p><p>[1a] cppreference.com, “值类别”. <a href="https://zh.cppreference.com/w/cpp/language/value_category">https://zh.cppreference.com/w/cpp/language/value_category</a></p><p>[2] Anders Schau Knatten, “lvalues, rvalues, glvalues, prvalues, xvalues, help!”. <a href="https://blog.knatten.org/2018/03/09/lvalues-rvalues-glvalues-prvalues-xvalues-help/">https://blog.knatten.org/2018/03/09/lvalues-rvalues-glvalues-prvalues-xvalues-help/</a></p><p>[3] Jeaye, “Value category cheat-sheet”. <a href="https://blog.jeaye.com/2017/03/19/xvalues/">https://blog.jeaye.com/2017/03/19/xvalues/</a></p><p>[4] Thomas Becker, “C++ rvalue references explained”. <a href="http://thbecker.net/articles/rvalue_references/section_01.html">http://thbecker.net/articles/rvalue_references/section_01.html</a></p><p>[5] Herb Sutter, “GotW #88: A candidate for the ‘most important const’”. <a href="https://herbsutter.com/2008/01/01/gotw-88-a-candidate-for-the-most-important-const/">https://herbsutter.com/2008/01/01/gotw-88-a-candidate-for-the-most-important-const/</a></p><h2>精选留言：</h2>
+        <ul>
+        
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            NEVER SETTLE  2019-12-02 19:51:26
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            请教下老师，字符串字面量是左值，是不是在C++中 字符串其实是const char[N]，其实是个常量表达式，在内存中有明确的地址。 [4赞]
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-12-02 20:21:08</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">是。👍</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            糖  2019-12-02 11:28:10
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            又是看不懂的一节。。。老师讲的课程太深刻了。。。<br>1. 本来感觉自己还比较了解左右值的区别，但是，文中提到：一个 lvalue 是通常可以放在等号左边的表达式，左值，然后下面说：字符串字面量如 &quot;hello world&quot;，但字符串字面量貌似不可以放到等号左边，搞晕了。<br>2. 内存访问的局域性是指什么呢？又有何优势呢？老师能提供介绍的链接吗<br>3. 为何对于移动构造函数来讲不抛出异常尤其重要呢？<br>希望老师能指点一下 [4赞]
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-12-02 20:18:33</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">1. “通常”。字符串字面量是个继承自C的特殊情况。<br><br>2. 这个搜索一下就行。这是CPU的缓存结构决定的。<br><br>3. 其他类，尤其容器类，会期待移动构造函数无异常，甚至会在它有异常时选择拷贝构造函数，以保证强异常安全性。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            hello world  2019-12-02 13:40:44
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            一直有个问题想问老师，老师第一节也说了一些，但我还是有一些疑惑和焦虑希望老师能够解惑。<br>现在C++的应用范围貌似越来越窄，以前可能很多后台会用到，但是现在貌似后台都是go和java多一些，真正追求性能极致的貌似不多，现在也就一些人工智能方面和嵌入式方面会用到，但也是少数，真正要做一个深度学习框架的也不太多，即便是大企业也是个别几个部门，作为一个C++程序员比较迷茫，感觉这条路比较窄，未来的路怎么走呢？ [2赞]
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-12-02 21:29:48</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">把C++当作一种工具，也当作一种锻炼思维的方式，不要把它当成非用不可的圣器。把自己定位成“程序员”，而不是“C++程序员”。职业的将来方向定位成“软件架构师”、“开发主管”、“CTO”之类的角色，而不是“高级C++程序员”。<br><br>该用其他语言的时候用其他语言。要看到，即使不用C++，C++程序员在对优化的理解、对内存管理的理解等方面都是具有很大优势的。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            NEVER SETTLE  2019-12-02 20:41:45
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            “返回左值引用的表达式，，如 x++、x + 1 ”不太清楚原因，后来我就试了下：<br><br>```<br>int x = 0;<br>cout &lt;&lt; &quot;(x).addr = &quot; &lt;&lt; &amp;x &lt;&lt; endl;<br>cout &lt;&lt; &quot;(x = 1).addr = &quot; &lt;&lt; &amp;(x = 1) &lt;&lt; endl;<br>cout &lt;&lt; &quot;(++x).addr = &quot; &lt;&lt; &amp;++x &lt;&lt; endl;<br>&#47;&#47;cout &lt;&lt; &quot;(x++).addr = &quot; &lt;&lt; &amp;x++ &lt;&lt; endl;<br>```<br><br>&gt; 运行结果：  <br>(x).addr = 0x22fe4c  <br>(x = 1).addr = 0x22fe4c  <br>(++x).addr = 0x22fe4c  <br>最后一行注释掉的代码报错：表达式必须为左值或函数指示符 [1赞]
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-12-02 21:52:45</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">对，x = 1 和 ++x 返回的都是对 x 的 int&amp;。x++ 则返回的是 int。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            罗乾林  2019-12-02 11:07:23
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            平时Java是主要使用语言，也来回答一下<br>1、make_shared 创建(new)新对象根据传入的值类别调用拷贝构造或移动构造,然后将新对象的指针给shared_ptr，其中我看见了_Types&amp;&amp;和forward<br>2、smart_ptr::operator= 中参数为值传递，会先调用smart_ptr的拷贝构造函数，生成了临时对象，然后调用swap，<br>因为生成了新对象所以对等号两边是否引用同一对象进行判断，也没意义了，但是a=a也会有临时对象的产生，有性能开销<br><br>有错误的方，望老师指正 [1赞]
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-12-02 20:08:08</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">2完全正确。1再想想。🤓</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            禾桃  2019-12-03 11:45:27
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            &quot;请查看一下标准函数模板 make_shared 的声明，然后想一想，这个函数应该是怎样实现的。&quot;<br><br>template &lt;class T, class... Args&gt;<br>std::shared_ptr&lt;T&gt; make_shared (Args&amp;&amp;... args)<br>{<br>    T* ptr = new T(std::forward&lt;Args...&gt;(args...));<br>    return std::shared_ptr&lt;T&gt;(ptr);<br>}<br><br>我的考虑是：<br>make_shared声明里的（Args&amp;&amp;...） 是universal reference， 所以在函数体里用完美转发（std::forward）把参数出入T的构造函数, 以调用每个参数各自对用的构造函数（copy or move）。<br><br>肯定还有别的需要考量的地方，请指正。<br><br>谢谢！ 
+        </div>
+        
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            Alice  2019-12-03 11:28:01
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            老师您好 请问后面的学习内容会不会涉及到重载函数和重载运算符呢？感觉这两块不是很好理解呀！ 
+        </div>
+        
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            传说中的成大大  2019-12-03 11:05:30
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            刚刚看了hello world同学的担忧和考虑 然后再看老师的回答 我也想起了我自己的目标是通过努力学习怎么写代码 最后做到不写代码的目标<br>c++确实学习成本太高 也比较复杂 但是我记得当时看了个视频,最后课程结束的时候也推荐学习一下c++对于底层的理解会很有帮助, 虽然现在go语言或者是lua语言 学习成本很低 一两天就可以写代码了,那都是别人语言层面已经处理好了的,将底层与我们隔绝了<br>所以我努力学c++ 更好的理解底层 也在学go这样才有更多的工作机会  
+        </div>
+        
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            安静的雨  2019-12-03 10:13:48
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            Obj simple_with_move()<br>{ <br>    Obj obj;  <br>    &#47;&#47; move  会禁止  NRVO  <br>    return std::move(obj);<br>}<br><br>move后不是类型转换到右值引用了吗？ 为啥返回值类型还是obj？ 
+        </div>
+        
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            禾桃  2019-12-03 08:25:45
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            引用（左值或者右值）仅仅是提供给compiler的一个生成适当机器代码的“提示符号”，在内存和代码的运行过程中，不会有任何的印记，对吗？<br><br>区分左值引用，右值引用，除了用在选择重载函数上，还有用在别的地方吗？<br><br>谢谢！ 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-12-03 09:40:23</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">不完全对。内存里总得放个指针的。<br><br>区分值类别确实是为了重载。我目前没想到其他作用。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            禾桃  2019-12-02 18:31:31
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            请帮忙指正一下：<br><br>“一个表达式，返回的是左值引用，这个表达式的value category 是左值。”<br><br>一个表达式，返回的是右值引用（譬如，std::move(ptr1) 的结果是指向 ptr1 的一个右值引用），这个表达式的value category 是将亡值。 &lt;—-对吗？<br><br>引用类别<br>#1非常左值引用<br>#2常左值引用 <br>#3非常右值引用 <br>#4常右值引用（不知道是否存在）<br><br>lvalue, xvalue, prvalue,<br>分别可以绑定以上四种哪几个？（不知道这种分法是否合理）<br><br>非常感谢！ 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-12-02 21:50:33</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">“一个表达式，返回的是右值引用（譬如，std::move(ptr1) 的结果是指向 ptr1 的一个右值引用），这个表达式的value category 是将亡值。” 正确。<br><br>引用类型的绑定：<br><br>#1非常左值引用可以绑定非const lvalue<br>#2常左值引用可以绑定lvalue, xvalue, prvalue<br>#3非常右值引用可以绑定非const xvalue, prvalue<br>#4常右值引用（不知道是否存在）可以绑定xvalue, prvalue （合法，但我从来没觉得有必要用这种类型过）</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            嵇斌  2019-12-02 14:43:58
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            std::move和右值引用是当时初学C++11比较难理解的一个东西。这篇能结合rvo和std::move一起讲解，相信对大家来讲也是收益匪浅的。记得以前就对小对象，以及工厂方法返回的时候究竟该用std::move还是直接返回有过一小段的讨论。<br><br>第一个问题，我很无耻地去看了标准库的实现了……<br>关于第二个问题：为什么 smart_ptr::operator= 对左值和右值都有效，而且不需要对等号两边是否引用同一对象进行判断？<br>个人理解无论左值和右值在使用 operator=(smart_prt rhs)之前都做了隐式的转换，调用了Copy Constructor 或则 Move Constructor 得到了一个临时的 smart_prt rhs（值类型），至于是否同一对象的判断并没有关系，对于smart_ptr来说已经是一个新的了，而对于内部保存的真实对象，swap的实现保证了这只会是一次浅拷贝的实现，不会有太多的额外开销。标准库实现应该针对&amp;和&amp;&amp;分别重载了operator= 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2019-12-02 20:40:44</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">第二个问题的回答基本正确。不过值类型应当是值类别。</div>
+</div>
+            
+    </div>
+</li>
+            </ul>
+</div>
+</body>
+</html>

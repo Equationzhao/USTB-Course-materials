@@ -1,0 +1,1145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>18-应用可变模板和tuple的编译期技巧</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <style>
+        html {
+            color: #333;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            text-rendering: optimizelegibility;
+            font-family: Helvetica Neue, PingFang SC, Verdana, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif
+        }
+
+        html.borderbox *,
+        html.borderbox :after,
+        html.borderbox :before {
+            box-sizing: border-box
+        }
+
+        article,
+        aside,
+        blockquote,
+        body,
+        button,
+        code,
+        dd,
+        details,
+        dl,
+        dt,
+        fieldset,
+        figcaption,
+        figure,
+        footer,
+        form,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        header,
+        hr,
+        input,
+        legend,
+        li,
+        menu,
+        nav,
+        ol,
+        p,
+        pre,
+        section,
+        td,
+        textarea,
+        th,
+        ul {
+            margin: 0;
+            padding: 0
+        }
+
+        article,
+        aside,
+        details,
+        figcaption,
+        figure,
+        footer,
+        header,
+        menu,
+        nav,
+        section {
+            display: block
+        }
+
+        audio,
+        canvas,
+        video {
+            display: inline-block
+        }
+
+        body,
+        button,
+        input,
+        select,
+        textarea {
+            font: 300 1em/1.8 PingFang SC, Lantinghei SC, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, Helvetica, sans-serif
+        }
+
+        button::-moz-focus-inner,
+        input::-moz-focus-inner {
+            padding: 0;
+            border: 0
+        }
+
+        table {
+            border-collapse: collapse;
+            border-spacing: 0
+        }
+
+        fieldset,
+        img {
+            border: 0
+        }
+
+        blockquote {
+            position: relative;
+            color: #999;
+            font-weight: 400;
+            border-left: 1px solid #1abc9c;
+            padding-left: 1em;
+            margin: 1em 3em 1em 2em
+        }
+
+        @media only screen and (max-width: 640px) {
+            blockquote {
+                margin: 1em 0
+            }
+        }
+
+        abbr,
+        acronym {
+            border-bottom: 1px dotted;
+            font-variant: normal
+        }
+
+        abbr {
+            cursor: help
+        }
+
+        del {
+            text-decoration: line-through
+        }
+
+        address,
+        caption,
+        cite,
+        code,
+        dfn,
+        em,
+        th,
+        var {
+            font-style: normal;
+            font-weight: 400
+        }
+
+        ol,
+        ul {
+            list-style: none
+        }
+
+        caption,
+        th {
+            text-align: left
+        }
+
+        q:after,
+        q:before {
+            content: ""
+        }
+
+        sub,
+        sup {
+            font-size: 75%;
+            line-height: 0;
+            position: relative
+        }
+
+        :root sub,
+        :root sup {
+            vertical-align: baseline
+        }
+
+        sup {
+            top: -.5em
+        }
+
+        sub {
+            bottom: -.25em
+        }
+
+        a {
+            color: #1abc9c
+        }
+
+        a:hover {
+            text-decoration: underline
+        }
+
+        .typo a {
+            border-bottom: 1px solid #1abc9c
+        }
+
+        .typo a:hover {
+            border-bottom-color: #555;
+            color: #555
+        }
+
+        .typo a:hover,
+        a,
+        ins {
+            text-decoration: none
+        }
+
+        .typo-u,
+        u {
+            text-decoration: underline
+        }
+
+        mark {
+            background: #fffdd1;
+            border-bottom: 1px solid #ffedce;
+            padding: 2px;
+            margin: 0 5px
+        }
+
+        code,
+        pre,
+        pre tt {
+            font-family: Courier, Courier New, monospace
+        }
+
+        pre {
+            background: hsla(0, 0%, 97%, .7);
+            border: 1px solid #ddd;
+            padding: 1em 1.5em;
+            display: block;
+            -webkit-overflow-scrolling: touch
+        }
+
+        hr {
+            border: none;
+            border-bottom: 1px solid #cfcfcf;
+            margin-bottom: .8em;
+            height: 10px
+        }
+
+        .typo-small,
+        figcaption,
+        small {
+            font-size: .9em;
+            color: #888
+        }
+
+        b,
+        strong {
+            font-weight: 700;
+            color: #000
+        }
+
+        [draggable] {
+            cursor: move
+        }
+
+        .clearfix:after,
+        .clearfix:before {
+            content: "";
+            display: table
+        }
+
+        .clearfix:after {
+            clear: both
+        }
+
+        .clearfix {
+            zoom: 1
+        }
+
+        .textwrap,
+        .textwrap td,
+        .textwrap th {
+            word-wrap: break-word;
+            word-break: break-all
+        }
+
+        .textwrap-table {
+            table-layout: fixed
+        }
+
+        .serif {
+            font-family: Palatino, Optima, Georgia, serif
+        }
+
+        .typo-dl,
+        .typo-form,
+        .typo-hr,
+        .typo-ol,
+        .typo-p,
+        .typo-pre,
+        .typo-table,
+        .typo-ul,
+        .typo dl,
+        .typo form,
+        .typo hr,
+        .typo ol,
+        .typo p,
+        .typo pre,
+        .typo table,
+        .typo ul,
+        blockquote {
+            margin-bottom: 1rem
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: PingFang SC, Helvetica Neue, Verdana, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif;
+            color: #000;
+            line-height: 1.35
+        }
+
+        .typo-h1,
+        .typo-h2,
+        .typo-h3,
+        .typo-h4,
+        .typo-h5,
+        .typo-h6,
+        .typo h1,
+        .typo h2,
+        .typo h3,
+        .typo h4,
+        .typo h5,
+        .typo h6 {
+            margin-top: 1.2em;
+            margin-bottom: .6em;
+            line-height: 1.35
+        }
+
+        .typo-h1,
+        .typo h1 {
+            font-size: 2em
+        }
+
+        .typo-h2,
+        .typo h2 {
+            font-size: 1.8em
+        }
+
+        .typo-h3,
+        .typo h3 {
+            font-size: 1.6em
+        }
+
+        .typo-h4,
+        .typo h4 {
+            font-size: 1.4em
+        }
+
+        .typo-h5,
+        .typo-h6,
+        .typo h5,
+        .typo h6 {
+            font-size: 1.2em
+        }
+
+        .typo-ul,
+        .typo ul {
+            margin-left: 1.3em;
+            list-style: disc
+        }
+
+        .typo-ol,
+        .typo ol {
+            list-style: decimal;
+            margin-left: 1.9em
+        }
+
+        .typo-ol ol,
+        .typo-ol ul,
+        .typo-ul ol,
+        .typo-ul ul,
+        .typo li ol,
+        .typo li ul {
+            margin-bottom: .8em;
+            margin-left: 2em
+        }
+
+        .typo-ol ul,
+        .typo-ul ul,
+        .typo li ul {
+            list-style: circle
+        }
+
+        .typo-table td,
+        .typo-table th,
+        .typo table caption,
+        .typo table td,
+        .typo table th {
+            border: 1px solid #ddd;
+            padding: .5em 1em;
+            color: #666
+        }
+
+        .typo-table th,
+        .typo table th {
+            background: #fbfbfb
+        }
+
+        .typo-table thead th,
+        .typo table thead th {
+            background: hsla(0, 0%, 95%, .7)
+        }
+
+        .typo table caption {
+            border-bottom: none
+        }
+
+        .typo-input,
+        .typo-textarea {
+            -webkit-appearance: none;
+            border-radius: 0
+        }
+
+        .typo-em,
+        .typo em,
+        caption,
+        legend {
+            color: #000;
+            font-weight: inherit
+        }
+
+        .typo-em {
+            position: relative
+        }
+
+        .typo-em:after {
+            position: absolute;
+            top: .65em;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            content: "\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB"
+        }
+
+        .typo img {
+            max-width: 100%
+        }
+
+        .common-content {
+            font-weight: 400;
+            color: #353535;
+            line-height: 1.75rem;
+            white-space: normal;
+            word-break: normal;
+            font-size: 1rem
+        }
+
+        .common-content img {
+            display: block;
+            max-width: 100%;
+            background-color: #eee
+        }
+
+        .common-content audio,
+        .common-content video {
+            width: 100%;
+            background-color: #eee
+        }
+
+        .common-content center,
+        .common-content font {
+            margin-top: 1rem;
+            display: inline-block
+        }
+
+        .common-content center {
+            width: 100%
+        }
+
+        .common-content pre {
+            margin-top: 1rem;
+            padding-left: 0;
+            padding-right: 0;
+            position: relative;
+            overflow: hidden
+        }
+
+        .common-content pre code {
+            font-size: .8rem;
+            font-family: Consolas, Liberation Mono, Menlo, monospace, Courier;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            overflow-x: auto
+        }
+
+        .common-content hr {
+            border: none;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-top: 1px solid #f5f5f5;
+            height: 1px;
+            background: none
+        }
+
+        .common-content b,
+        .common-content h1,
+        .common-content h2,
+        .common-content h3,
+        .common-content h4,
+        .common-content h5,
+        .common-content strong {
+            font-weight: 700
+        }
+
+        .common-content h1,
+        .common-content h2 {
+            font-size: 1.125rem;
+            margin-bottom: .45rem
+        }
+
+        .common-content h3,
+        .common-content h4,
+        .common-content h5 {
+            font-size: 1rem;
+            margin-bottom: .45rem
+        }
+
+        .common-content p {
+            font-weight: 400;
+            color: #353535;
+            margin-top: .15rem
+        }
+
+        .common-content .orange {
+            color: #ff5a05
+        }
+
+        .common-content .reference {
+            font-size: 1rem;
+            color: #888
+        }
+
+        .custom-rich-content h1 {
+            margin-top: 0;
+            font-weight: 400;
+            font-size: 15.25px;
+            border-bottom: 1px solid #eee;
+            line-height: 2.8
+        }
+
+        .custom-rich-content li,
+        .custom-rich-content p {
+            font-size: 14px;
+            color: #888;
+            line-height: 1.6
+        }
+
+        table.hljs-ln {
+            margin-bottom: 0;
+            border-spacing: 0;
+            border-collapse: collapse
+        }
+
+        table.hljs-ln,
+        table.hljs-ln tbody,
+        table.hljs-ln td,
+        table.hljs-ln tr {
+            box-sizing: border-box
+        }
+
+        table.hljs-ln td {
+            padding: 0;
+            border: 0
+        }
+
+        table.hljs-ln td.hljs-ln-numbers {
+            min-width: 15px;
+            color: rgba(27, 31, 35, .3);
+            text-align: right;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none
+        }
+
+        table.hljs-ln td.hljs-ln-code,
+        table.hljs-ln td.hljs-ln-numbers {
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
+            font-size: 12px;
+            line-height: 20px;
+            vertical-align: top
+        }
+
+        table.hljs-ln td.hljs-ln-code {
+            position: relative;
+            padding-right: 10px;
+            padding-left: 10px;
+            overflow: visible;
+            color: #24292e;
+            word-wrap: normal;
+            white-space: pre
+        }
+
+        video::-webkit-media-controls {
+            overflow: hidden !important
+        }
+
+        video::-webkit-media-controls-enclosure {
+            width: calc(100% + 32px);
+            margin-left: auto
+        }
+
+        ._29HP61GA_0 {
+            max-width:800px;
+            margin:0 auto;
+            margin-bottom: 20px;
+            font-weight: 400;
+            color: #353535;
+            line-height: 1.76;
+            white-space: normal;
+            word-break: normal;
+            font-size: 17px;
+            -webkit-transition: background-color .3s ease;
+            transition: background-color .3s ease
+        }
+
+        ._29HP61GA_0 .MathJax_Display {
+            overflow: auto
+        }
+
+        ._29HP61GA_0 .poster {
+            position: fixed;
+            left: -10000px;
+            top: -10000px;
+            overflow: hidden;
+            padding: 1rem;
+            background: #ececec
+        }
+
+        ._29HP61GA_0 .richcontent-pre-copy {
+            font-size: 13px;
+            color: #888;
+            position: absolute;
+            right: 1em;
+            top: .5em;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none
+        }
+
+        ._29HP61GA_0 .richcontent-pre-copy .iconfont {
+            font-size: 12px;
+            margin-right: .2em
+        }
+
+        ._29HP61GA_0 a {
+            color: #fa8919;
+            border-bottom: 1px solid #fa8919
+        }
+
+        ._29HP61GA_0 img {
+            display: block;
+            max-width: 100%;
+            position: relative;
+            left: 50%;
+            -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+            background-color: #eee;
+            vertical-align: top;
+            border-radius: 0
+        }
+
+        ._29HP61GA_0 audio,
+        ._29HP61GA_0 video {
+            width: 100%;
+            background-color: #eee
+        }
+
+        ._29HP61GA_0 pre {
+            margin-top: 16px;
+            padding: 34px 0 0;
+            margin-bottom: 30px;
+            position: relative;
+            border-radius: 6px;
+            background: rgba(246, 247, 251, .749);
+            border: 0
+        }
+
+        ._29HP61GA_0 pre code {
+            font-size: 12px;
+            font-family: Consolas, Liberation Mono, Menlo, monospace, Courier;
+            display: block;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            margin-left: 16px;
+            margin-right: 16px;
+            overflow-x: scroll
+        }
+
+        ._29HP61GA_0 pre code:after {
+            content: "";
+            height: 30px;
+            width: 100%;
+            display: block
+        }
+
+        ._29HP61GA_0 hr {
+            border: none;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-top: 1px solid #f5f5f5;
+            height: 1px;
+            background: none
+        }
+
+        ._29HP61GA_0 h1,
+        ._29HP61GA_0 h2,
+        ._29HP61GA_0 h3,
+        ._29HP61GA_0 h4,
+        ._29HP61GA_0 h5 {
+            margin-bottom: 20px;
+            margin-top: 0;
+            font-weight: 700
+        }
+
+        ._29HP61GA_0 b,
+        ._29HP61GA_0 strong {
+            font-weight: 700
+        }
+
+        ._29HP61GA_0 h1 {
+            font-size: 21px
+        }
+
+        ._29HP61GA_0 h2 {
+            font-size: 20px
+        }
+
+        ._29HP61GA_0 h3 {
+            font-size: 19px
+        }
+
+        ._29HP61GA_0 h4 {
+            font-size: 18px
+        }
+
+        ._29HP61GA_0 h5 {
+            font-size: 17px
+        }
+
+        ._29HP61GA_0 center,
+        ._29HP61GA_0 p {
+            font-weight: 400;
+            color: #353535;
+            margin-top: 0;
+            margin-bottom: 30px;
+            word-break: break-word
+        }
+
+        ._29HP61GA_0 center {
+            text-align: center
+        }
+
+        ._29HP61GA_0 blockquote {
+            margin-top: 0;
+            margin-bottom: 34px;
+            border-left: 3px solid #e8e8e8;
+            padding-left: 17px;
+            color: #353535
+        }
+
+        ._29HP61GA_0 blockquote p {
+            margin-top: 0;
+            margin-bottom: 0
+        }
+
+        ._29HP61GA_0 ol,
+        ._29HP61GA_0 ul {
+            margin-bottom: 30px
+        }
+
+        ._29HP61GA_0 ol p,
+        ._29HP61GA_0 ul p {
+            margin-top: 0;
+            margin-bottom: 0
+        }
+
+        ._29HP61GA_0 ol {
+            list-style: decimal;
+            margin-left: 20px
+        }
+
+        ._29HP61GA_0 ul li {
+            padding-left: 17px;
+            position: relative;
+            margin-bottom: 10px
+        }
+
+        ._29HP61GA_0 ul li:after {
+            content: "";
+            height: 6px;
+            width: 6px;
+            border-radius: 50%;
+            background: #353535;
+            position: absolute;
+            top: 10px;
+            left: 0
+        }
+
+        ._29HP61GA_0 .orange {
+            color: #fa8919
+        }
+
+        ._29HP61GA_0 .reference {
+            color: #888
+        }
+
+        ._29HP61GA_0 .m-right {
+            text-align: right
+        }
+
+        ._29HP61GA_0 .m-center {
+            text-align: center;
+            display: block
+        }
+
+        ._29HP61GA_0 .m-gray {
+            color: #888
+        }
+
+        ._29HP61GA_0 .m-small {
+            font-size: 15px
+        }
+
+        ._29HP61GA_0 table.hljs-ln {
+            margin-bottom: 0;
+            border-spacing: 0;
+            border-collapse: collapse
+        }
+
+        ._29HP61GA_0 table.hljs-ln,
+        ._29HP61GA_0 table.hljs-ln tbody,
+        ._29HP61GA_0 table.hljs-ln td,
+        ._29HP61GA_0 table.hljs-ln tr {
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box
+        }
+
+        ._29HP61GA_0 table.hljs-ln td {
+            padding: 0;
+            border: 0
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-numbers {
+            min-width: 15px;
+            font-size: 12px;
+            color: rgba(27, 31, 35, .3);
+            text-align: right;
+            white-space: nowrap;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-code,
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-numbers {
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
+            line-height: 20px;
+            vertical-align: top
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-code {
+            position: relative;
+            padding-right: 10px;
+            padding-left: 10px;
+            overflow: visible;
+            font-size: 13px;
+            color: #666;
+            word-wrap: normal;
+            white-space: pre
+        }
+
+    </style>
+</head>
+<body>
+<div class="_29HP61GA_0">
+<h1>18-应用可变模板和tuple的编译期技巧</h1>
+<p>你好，我是吴咏炜。</p><p>今天我们讲一个特殊的专题，如何使用可变模板和 tuple 来完成一些常见的功能，尤其是编译期计算。</p><h2>可变模板</h2><p>可变模板 <span class="orange">[1]</span> 是 C++11 引入的一项新功能，使我们可以在模板参数里表达不定个数和类型的参数。从实际的角度，它有两个明显的用途：</p><ul>
+<li>用于在通用工具模板中转发参数到另外一个函数</li>
+<li>用于在递归的模板中表达通用的情况（另外会有至少一个模板特化来表达边界情况）</li>
+</ul><p>我们下面就来分开讨论一下。</p><h3>转发用法</h3><p>以标准库里的 <code>make_unique</code> 为例，它的定义差不多是下面这个样子：</p><pre><code class="language-c++">template &lt;typename T,
+          typename... Args&gt;
+inline unique_ptr&lt;T&gt;
+make_unique(Args&amp;&amp;... args)
+{
+  return unique_ptr&lt;T&gt;(
+    new T(forward&lt;Args&gt;(args)...));
+}
+</code></pre><p>这样，它就可以把传递给自己的全部参数转发到模板参数类的构造函数上去。注意，在这种情况下，我们通常会使用 <code>std::forward</code>，确保参数转发时仍然保持正确的左值或右值引用类型。</p><p>稍微解释一下上面三处出现的 <code>...</code>：</p><ul>
+<li><code>typename... Args</code> 声明了一系列的类型——<code>class...</code> 或 <code>typename...</code> 表示后面的标识符代表了一系列的类型。</li>
+<li><code>Args&amp;&amp;... args</code> 声明了一系列的形参 <code>args</code>，其类型是 <code>Args&amp;&amp;</code>。</li>
+<li><code>forward&lt;Args&gt;(args)...</code> 会在编译时实际逐项展开 <code>Args</code> 和 <code>args</code> ，参数有多少项，展开后就是多少项。</li>
+</ul><!-- [[[read_end]]] --><p>举一个例子，如果我们需要在堆上传递一个 <code>vector&lt;int&gt;</code>，假设我们希望初始构造的大小为 100，每个元素都是 <code>1</code>，那我们可以这样写：</p><pre><code class="language-c++">make_unique&lt;vector&lt;int&gt;&gt;(100, 1)
+</code></pre><p>模板实例化之后，会得到相当于下面的代码：</p><pre><code class="language-c++">template &lt;&gt;
+inline unique_ptr&lt;vector&lt;int&gt;&gt;
+make_unique(int&amp;&amp; arg1, int&amp;&amp; arg2)
+{
+  return unique_ptr&lt;vector&lt;int&gt;&gt;(
+    new vector&lt;int&gt;(
+      forward&lt;int&gt;(arg1),
+      forward&lt;int&gt;(arg2)));
+}
+</code></pre><p>如前所述，<code>forward&lt;Args&gt;(args)...</code> 为每一项可变模板参数都以同样的形式展开。项数也允许为零，那样，我们在调用构造函数时也同样没有任何参数。</p><h3>递归用法</h3><p>我们也可以用可变模板来实现编译期递归。下面就是个小例子：</p><pre><code class="language-c++">template &lt;typename T&gt;
+constexpr auto sum(T x)
+{
+  return x;
+}
+
+template &lt;typename T1, typename T2,
+          typename... Targ&gt;
+constexpr auto sum(T1 x, T2 y,
+                   Targ... args)
+{
+  return sum(x + y, args...);
+}
+</code></pre><p>在上面的定义里，如果 <code>sum</code> 得到的参数只有一个，会走到上面那个重载。如果有两个或更多参数，编译器就会选择下面那个重载，执行一次加法，随后你的参数数量就少了一个，因而递归总会终止到上面那个重载，结束计算。</p><p>要使用上面这个模板，我们就可以写出像下面这样的函数调用：</p><pre><code class="language-c++">auto result = sum(1, 2, 3.5, x);
+</code></pre><p>模板会这样依次展开：</p><pre><code class="language-c++">sum(1 + 2, 3.5, x)
+sum(3 + 3.5, x)
+sum(6.5 + x)
+6.5 + x
+</code></pre><p>注意我们都不必使用相同的数据类型：只要这些数据之间可以应用 <code>+</code>，它们的类型无关紧要……</p><p>再看另一个复杂些的例子，函数的组合 <span class="orange">[2]</span>。如果我们有函数 $f$ 和 函数 $g$，要得到函数的联用 $g \circ f$，其满足：</p><p>$$<br>
+(g \circ f)(x) = g(f(x))<br>
+$$</p><p>我们能不能用一种非常简单的方式，写不包含变量 $x$ 的表达式来表示函数组合呢？答案是肯定的。</p><p>跟上面类似，我们需要写出递归的终结情况，单个函数的“组合”：</p><pre><code class="language-c++">template &lt;typename F&gt;
+auto compose(F f)
+{
+  return [f](auto&amp;&amp;... x) {
+    return f(x...);
+  };
+}
+</code></pre><p>上面我们仅返回一个泛型 lambda 表达式，保证参数可以转发到 <code>f</code>。记得我们在 <a href="https://time.geekbang.org/column/article/184018">[第 16 讲]</a> 讲过泛型 lambda 表达式，本质上就是一个模板，所以我们按转发用法的可变模板来理解上面的 <code>...</code> 部分就对了。</p><p>下面是正常有组合的情况：</p><pre><code class="language-c++">template &lt;typename F,
+          typename... Args&gt;
+auto compose(F f, Args... args)
+{
+  return [f, args...](auto&amp;&amp;... x) {
+    return f(
+      compose(args...)(x...));
+  };
+}
+</code></pre><p>在这个模板里，我们返回一个 lambda 表达式，然后用 <code>f</code> 捕捉第一个函数对象，用 <code>args...</code> 捕捉后面的函数对象。我们用 <code>args...</code> 继续组合后面的部分，然后把结果传到 <code>f</code> 里面。</p><p>上面的模板定义我实际上已经有所简化，没有保持值类别。完整的包含完美转发的版本，请看参考资料 <span class="orange">[3]</span> 中的 functional.h 实现。</p><p>下面我们来试验一下使用这个 <code>compose</code> 函数。我们先写一个对输入范围中每一项都进行平方的函数对象：</p><pre><code class="language-c++">auto square_list =
+  [](auto&amp;&amp; container) {
+    return fmap(
+      [](int x) { return x * x; },
+      container);
+  };
+</code></pre><p>我们使用了 <a href="https://time.geekbang.org/column/article/181608">[第 13 讲]</a> 中给出的 <code>fmap</code>，而不是标准库里的 <code>transform</code>，是因为后者接口非函数式（它要求参数给出输出位置的迭代器，会修改迭代器指向的内容，返回结果也只是单个的迭代器；函数式的接口则期望不修改参数的内容，结果完全在返回值中），无法组合。我们也只能使用函数对象，而不能定义函数，因为只有函数对象才有一个明确的类型，能够用在类型推导中。反正，泛型 lambda 表达式写起来比函数模板还简单些，不会是什么问题。</p><p>我们再写一个求和的函数对象：</p><pre><code class="language-c++">auto sum_list =
+  [](auto&amp;&amp; container) {
+    return accumulate(
+      container.begin(),
+      container.end(), 0);
+  };
+</code></pre><p>那先平方再求和，就可以这样简单定义了：</p><pre><code class="language-c++">auto squared_sum =
+  compose(sum_list, square_list);
+</code></pre><p>我们可以验证这个定义是可以工作的：</p><pre><code class="language-c++">vector v{1, 2, 3, 4, 5};
+cout &lt;&lt; squared_sum(v) &lt;&lt; endl;
+</code></pre><p>我们会得到：</p><blockquote>
+<p><code>55</code></p>
+</blockquote><h2>tuple</h2><p>上面的写法虽然看起来还不错，但实际上有个缺陷：被 compose 的函数除了第一个（最右边的），其他的函数只能接收一个参数。要想进一步推进类似的技巧，我们得首先解决这个问题。</p><p>在 C++ 里，要通用地用一个变量来表达多个值，那就得看多元组——<code>tuple</code> 模板了 <span class="orange">[4]</span>。<code>tuple</code> 算是 C++98 里的 <code>pair</code> 类型的一般化，可以表达任意多个固定数量、固定类型的值的组合。下面这段代码约略地展示了其基本用法：</p><pre><code class="language-c++">#include &lt;algorithm&gt;
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;tuple&gt;
+#include &lt;vector&gt;
+
+using namespace std;
+
+// 整数、字符串、字符串的三元组
+using num_tuple =
+  tuple&lt;int, string, string&gt;;
+
+ostream&amp;
+operator&lt;&lt;(ostream&amp; os,
+           const num_tuple&amp; value)
+{
+  os &lt;&lt; get&lt;0&gt;(value) &lt;&lt; ','
+     &lt;&lt; get&lt;1&gt;(value) &lt;&lt; ','
+     &lt;&lt; get&lt;2&gt;(value);
+  return os;
+}
+
+int main()
+{
+  // 阿拉伯数字、英文、法文
+  vector&lt;num_tuple&gt; vn{
+    {1, "one",   "un"},
+    {2, "two",   "deux"},
+    {3, "three", "trois"},
+    {4, "four",  "quatre"}};
+  // 修改第 0 项的法文
+  get&lt;2&gt;(vn[0]) = "une";
+  // 按法文进行排序
+  sort(vn.begin(), vn.end(),
+       [](auto&amp;&amp; x, auto&amp;&amp; y) {
+         return get&lt;2&gt;(x) &lt;
+                get&lt;2&gt;(y);
+       });
+  // 输出内容
+  for (auto&amp;&amp; value : vn) {
+    cout &lt;&lt; value &lt;&lt; endl;
+  }
+  // 输出多元组项数
+  constexpr auto size = \
+    tuple_size_v&lt;num_tuple&gt;;
+  cout &lt;&lt; "Tuple size is " &lt;&lt; size &lt;&lt; endl;
+}
+</code></pre><p>输出是：</p><blockquote>
+<p><code>2,two,deux</code><br>
+<code>4,four,quatre</code><br>
+<code>3,three,trois</code><br>
+<code>1,one,une</code><br>
+<code>Tuple size is 3</code></p>
+</blockquote><p>我们可以看到：</p><ul>
+<li><code>tuple</code> 的成员数量由尖括号里写的类型数量决定。</li>
+<li>可以使用 <code>get</code> 函数对 <code>tuple</code> 的内容进行读和写。（当一个类型在 <code>tuple</code> 中出现正好一次时，我们也可以传类型取内容，即，对我们上面的三元组，<code>get&lt;int&gt;</code> 是合法的，<code>get&lt;string&gt;</code> 则不是。）</li>
+<li>可以用 <code>tuple_size_v</code> （在编译期）取得多元组里面的项数。</li>
+</ul><p>如果我们要用一个三项的 <code>tuple</code> 去调用一个函数，我们可以写类似这样的代码：</p><pre><code class="language-c++">template &lt;class F, class Tuple&gt;
+constexpr decltype(auto) apply(
+  F&amp;&amp; f, Tuple&amp;&amp; t)
+{
+  return f(
+    get&lt;0&gt;(forward&lt;Tuple&gt;(t)),
+    get&lt;1&gt;(forward&lt;Tuple&gt;(t)),
+    get&lt;2&gt;(forward&lt;Tuple&gt;(t)));
+}
+</code></pre><p>这似乎已经挺接近我们需要的形式了，但实际调用函数的参数项数会变啊……</p><p>我们已经有了参数的项数（使用 <code>tuple_size_v</code>），所以我们下面要做的是生成从 0 到项数减一之间的整数序列。标准库里已经定义了相关的工具，我们需要的就是其中的 <code>make_index_sequence</code> <span class="orange">[5]</span>，其简化实现如下所示：</p><pre><code class="language-c++">template &lt;class T, T... Ints&gt;
+struct integer_sequence {};
+
+template &lt;size_t... Ints&gt;
+using index_sequence =
+  integer_sequence&lt;size_t, Ints...&gt;;
+
+template &lt;size_t N, size_t... Ints&gt;
+struct index_sequence_helper {
+  typedef
+    typename index_sequence_helper&lt;
+      N - 1, N - 1, Ints...&gt;::type
+      type;
+};
+
+template &lt;size_t... Ints&gt;
+struct index_sequence_helper&lt;
+  0, Ints...&gt; {
+  typedef index_sequence&lt;Ints...&gt;
+    type;
+};
+
+template &lt;size_t N&gt;
+using make_index_sequence =
+  typename index_sequence_helper&lt;
+    N&gt;::type;
+</code></pre><p>正如一般的模板代码，它看起来还是有点绕的。其要点是，如果我们给出 <code>make_index_sequence&lt;N&gt;</code>，则结果是 <code>integer_sequence&lt;size_t, 0, 1, 2, …, N - 1&gt;</code>（一下子想不清楚的话，可以拿纸笔来模拟一下模板的展开过程）。而有了这样一个模板的帮助之后，我们就可以写出下面这样的函数（同样，这是标准库里的 <code>apply</code> 函数模板 <span class="orange">[6]</span> 的简化版本）：</p><pre><code class="language-c++">template &lt;class F, class Tuple,
+          size_t... I&gt;
+constexpr decltype(auto)
+apply_impl(F&amp;&amp; f, Tuple&amp;&amp; t,
+           index_sequence&lt;I...&gt;)
+{
+  return f(
+    get&lt;I&gt;(forward&lt;Tuple&gt;(t))...);
+}
+
+template &lt;class F, class Tuple&gt;
+constexpr decltype(auto)
+apply(F&amp;&amp; f, Tuple&amp;&amp; t)
+{
+  return apply_impl(
+    forward&lt;F&gt;(f),
+    forward&lt;Tuple&gt;(t),
+    make_index_sequence&lt;
+      tuple_size_v&lt;
+        remove_reference_t&lt;
+          Tuple&gt;&gt;&gt;{});
+}
+</code></pre><p>我们如果有一个三元组 <code>t</code>，类型为 <code>tuple&lt;int, string, string&gt;</code>，去 <code>apply</code> 到一个函数 <code>f</code>，展开后我们得到 <code>apply_impl(f, t, index_sequence&lt;0, 1, 2&gt;{})</code>，再展开后我们就得到了上面那个有 <code>get&lt;0&gt;</code>、<code>get&lt;1&gt;</code>、<code>get&lt;2&gt;</code> 的函数调用形式。换句话说，我们利用一个计数序列的类型，可以在编译时展开 <code>tuple</code> 里的各个成员，并用来调用函数。</p><h2>数值预算</h2><p>上面的代码有点复杂，而且似乎并没有完成什么很重要的功能。我们下面看一个源自实际项目的例子。需求是，我们希望快速地计算一串二进制数中 1 比特的数量。举个例子，如果我们有十进制的 31 和 254，转换成二进制是 00011111 和 11111110，那我们应该得到 5 + 7 = 12。</p><p>显然，每个数字临时去数肯定会慢，我们应该预先把每个字节的 256 种情况记录下来。因而，如何得到这些计数值是个问题。在没有编译期编程时，我们似乎只能用另外一个程序先行计算，然后把结果填进去——这就很不方便很不灵活了。有了编译期编程，我们就不用写死，而让编译器在编译时帮我们计算数值。</p><p>利用 constexpr 函数，我们计算单个数值完全没有问题。快速定义如下：</p><pre><code class="language-c++">constexpr int
+count_bits(unsigned char value)
+{
+  if (value == 0) {
+    return 0;
+  } else {
+    return (value &amp; 1) +
+           count_bits(value &gt;&gt; 1);
+  }
+}
+</code></pre><p>可 256 个，总不见得把计算语句写上 256 遍吧？这就需要用到我们上面讲到的 <code>index_sequence</code> 了。我们定义一个模板，它的参数是一个序列，在初始化时这个模板会对参数里的每一项计算比特数，并放到数组成员里。</p><pre><code class="language-c++">template &lt;size_t... V&gt;
+struct bit_count_t {
+  unsigned char
+    count[sizeof...(V)] = {
+      static_cast&lt;unsigned char&gt;(
+        count_bits(V))...};
+};
+</code></pre><p>注意上面用 <code>sizeof...(V)</code> 可以获得参数的个数（在 <code>tuple_size_v</code> 的实现里实际也用到它了）。如果我们模板参数传 <code>0, 1, 2, 3</code>，结果里面就会有个含 4 项元素的数组，数值分别是对 0、1、2、3 的比特计数。</p><p>然后，我们当然就可以利用 <code>make_index_sequence</code> 来展开计算了，想产生几项就可以产生几项。不过，要注意到 <code>make_index_sequence</code> 的结果是个类型，不能直接用在 <code>bit_count_t</code> 的构造中。我们需要用模板匹配来中转一下：</p><pre><code class="language-c++">template &lt;size_t... V&gt;
+bit_count_t&lt;V...&gt; get_bit_count(
+  index_sequence&lt;V...&gt;)
+{
+  return bit_count_t&lt;V...&gt;();
+}
+
+auto bit_count = get_bit_count(
+  make_index_sequence&lt;256&gt;());
+</code></pre><p>得到 <code>bit_count</code> 后，我们要计算一个序列里的比特数就只是轻松查表相加了，此处不再赘述。</p><h2>内容小结</h2><p>今天我们讨论了在编译期处理不确定数量的参数和类型的基本语言特性，可变模板，以及可以操控可变模板的重要工具——<code>tuple</code> 和 <code>index_sequence</code>。用好这些工具，可以让我们轻松地完成一些编译期计算的工作。</p><h2>课后思考</h2><p>请考虑一下：</p><ol>
+<li>我展示了 <code>compose</code> 带一个或更多参数的情况。你觉得 <code>compose</code> 不带任何参数该如何定义？它有意义吗？</li>
+<li>有没有可能不用 <code>index_sequence</code> 来初始化 <code>bit_count</code>？如果行，应该如何实现？</li>
+<li>作为一个挑战，你能自行实现出 <code>make_integer_sequence</code> 吗？</li>
+</ol><p>期待你的答案。</p><h2><span class="reference">参考资料</span></h2><p><span class="reference">[1] cppreference.com, “Parameter pack”. <a href="https://en.cppreference.com/w/cpp/language/parameter_pack">https://en.cppreference.com/w/cpp/language/parameter_pack</a> </span></p><p><span class="reference">[1a] cppreference.com, “形参包”. <a href="https://zh.cppreference.com/w/cpp/language/parameter_pack">https://zh.cppreference.com/w/cpp/language/parameter_pack</a> </span></p><p><span class="reference">[2] Wikipedia, “Function composition”. <a href="https://en.wikipedia.org/wiki/Function_composition">https://en.wikipedia.org/wiki/Function_composition</a> </span></p><p><span class="reference">[2a] 维基百科, “复合函数”. <a href="https://zh.wikipedia.org/zh-cn/%E5%A4%8D%E5%90%88%E5%87%BD%E6%95%B0">https://zh.wikipedia.org/zh-cn/复合函数</a> </span></p><p><span class="reference">[3] 吴咏炜, nvwa. <a href="https://github.com/adah1972/nvwa">https://github.com/adah1972/nvwa</a> </span></p><p><span class="reference">[4] cppreference.com, “std::tuple”. <a href="https://en.cppreference.com/w/cpp/utility/tuple">https://en.cppreference.com/w/cpp/utility/tuple</a> </span></p><p><span class="reference">[4a] cppreference.com, “std::tuple”. <a href="https://zh.cppreference.com/w/cpp/utility/tuple">https://zh.cppreference.com/w/cpp/utility/tuple</a> </span></p><p><span class="reference">[5] cppreference.com, “std::integer_sequence”. <a href="https://en.cppreference.com/w/cpp/utility/integer_sequence">https://en.cppreference.com/w/cpp/utility/integer_sequence</a> </span></p><p><span class="reference">[5a] cppreference.com, “std::integer_sequence”. <a href="https://zh.cppreference.com/w/cpp/utility/integer_sequence">https://zh.cppreference.com/w/cpp/utility/integer_sequence</a> </span></p><p><span class="reference">[6] cppreference.com, “std::apply”. <a href="https://en.cppreference.com/w/cpp/utility/apply">https://en.cppreference.com/w/cpp/utility/apply</a> </span></p><p><span class="reference">[6a] cppreference.com, “std::apply”. <a href="https://zh.cppreference.com/w/cpp/utility/apply">https://zh.cppreference.com/w/cpp/utility/apply</a> </span></p><h2>精选留言：</h2>
+        <ul>
+        
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            禾桃  2020-01-07 08:05:27
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            #1<br>template &lt;typename F,<br>          typename... Args&gt;<br>auto compose(F f, Args... args)<br>{<br>  return [f, args...]() {<br>    return f(<br>      compose(args...)());<br>  };<br>}<br><br><br>template &lt;typename F&gt;<br>auto compose(F f)<br>{<br>    return f；<br>}<br><br>如果这些函数都在函数体内操作一个公用的数据，而且这些函数依次执行的顺序反应了一定的工程需求，那么就是有意义的吧。 
+        </div>
+        
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            李亮亮  2020-01-06 20:57:59
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            N--&gt;(N-1, N-1)--&gt;(N-2, N-2, N-1)--&gt;(1, 1 , 2 ....N-1)--&gt;(0, 0, 1, 2...N-1) 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2020-01-06 23:43:54</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">😁 学得挺快。</div>
+</div>
+            
+    </div>
+</li>
+            </ul>
+</div>
+</body>
+</html>

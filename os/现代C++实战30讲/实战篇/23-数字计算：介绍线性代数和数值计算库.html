@@ -1,0 +1,1075 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>23-数字计算：介绍线性代数和数值计算库</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <style>
+        html {
+            color: #333;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            text-rendering: optimizelegibility;
+            font-family: Helvetica Neue, PingFang SC, Verdana, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif
+        }
+
+        html.borderbox *,
+        html.borderbox :after,
+        html.borderbox :before {
+            box-sizing: border-box
+        }
+
+        article,
+        aside,
+        blockquote,
+        body,
+        button,
+        code,
+        dd,
+        details,
+        dl,
+        dt,
+        fieldset,
+        figcaption,
+        figure,
+        footer,
+        form,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        header,
+        hr,
+        input,
+        legend,
+        li,
+        menu,
+        nav,
+        ol,
+        p,
+        pre,
+        section,
+        td,
+        textarea,
+        th,
+        ul {
+            margin: 0;
+            padding: 0
+        }
+
+        article,
+        aside,
+        details,
+        figcaption,
+        figure,
+        footer,
+        header,
+        menu,
+        nav,
+        section {
+            display: block
+        }
+
+        audio,
+        canvas,
+        video {
+            display: inline-block
+        }
+
+        body,
+        button,
+        input,
+        select,
+        textarea {
+            font: 300 1em/1.8 PingFang SC, Lantinghei SC, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, Helvetica, sans-serif
+        }
+
+        button::-moz-focus-inner,
+        input::-moz-focus-inner {
+            padding: 0;
+            border: 0
+        }
+
+        table {
+            border-collapse: collapse;
+            border-spacing: 0
+        }
+
+        fieldset,
+        img {
+            border: 0
+        }
+
+        blockquote {
+            position: relative;
+            color: #999;
+            font-weight: 400;
+            border-left: 1px solid #1abc9c;
+            padding-left: 1em;
+            margin: 1em 3em 1em 2em
+        }
+
+        @media only screen and (max-width: 640px) {
+            blockquote {
+                margin: 1em 0
+            }
+        }
+
+        abbr,
+        acronym {
+            border-bottom: 1px dotted;
+            font-variant: normal
+        }
+
+        abbr {
+            cursor: help
+        }
+
+        del {
+            text-decoration: line-through
+        }
+
+        address,
+        caption,
+        cite,
+        code,
+        dfn,
+        em,
+        th,
+        var {
+            font-style: normal;
+            font-weight: 400
+        }
+
+        ol,
+        ul {
+            list-style: none
+        }
+
+        caption,
+        th {
+            text-align: left
+        }
+
+        q:after,
+        q:before {
+            content: ""
+        }
+
+        sub,
+        sup {
+            font-size: 75%;
+            line-height: 0;
+            position: relative
+        }
+
+        :root sub,
+        :root sup {
+            vertical-align: baseline
+        }
+
+        sup {
+            top: -.5em
+        }
+
+        sub {
+            bottom: -.25em
+        }
+
+        a {
+            color: #1abc9c
+        }
+
+        a:hover {
+            text-decoration: underline
+        }
+
+        .typo a {
+            border-bottom: 1px solid #1abc9c
+        }
+
+        .typo a:hover {
+            border-bottom-color: #555;
+            color: #555
+        }
+
+        .typo a:hover,
+        a,
+        ins {
+            text-decoration: none
+        }
+
+        .typo-u,
+        u {
+            text-decoration: underline
+        }
+
+        mark {
+            background: #fffdd1;
+            border-bottom: 1px solid #ffedce;
+            padding: 2px;
+            margin: 0 5px
+        }
+
+        code,
+        pre,
+        pre tt {
+            font-family: Courier, Courier New, monospace
+        }
+
+        pre {
+            background: hsla(0, 0%, 97%, .7);
+            border: 1px solid #ddd;
+            padding: 1em 1.5em;
+            display: block;
+            -webkit-overflow-scrolling: touch
+        }
+
+        hr {
+            border: none;
+            border-bottom: 1px solid #cfcfcf;
+            margin-bottom: .8em;
+            height: 10px
+        }
+
+        .typo-small,
+        figcaption,
+        small {
+            font-size: .9em;
+            color: #888
+        }
+
+        b,
+        strong {
+            font-weight: 700;
+            color: #000
+        }
+
+        [draggable] {
+            cursor: move
+        }
+
+        .clearfix:after,
+        .clearfix:before {
+            content: "";
+            display: table
+        }
+
+        .clearfix:after {
+            clear: both
+        }
+
+        .clearfix {
+            zoom: 1
+        }
+
+        .textwrap,
+        .textwrap td,
+        .textwrap th {
+            word-wrap: break-word;
+            word-break: break-all
+        }
+
+        .textwrap-table {
+            table-layout: fixed
+        }
+
+        .serif {
+            font-family: Palatino, Optima, Georgia, serif
+        }
+
+        .typo-dl,
+        .typo-form,
+        .typo-hr,
+        .typo-ol,
+        .typo-p,
+        .typo-pre,
+        .typo-table,
+        .typo-ul,
+        .typo dl,
+        .typo form,
+        .typo hr,
+        .typo ol,
+        .typo p,
+        .typo pre,
+        .typo table,
+        .typo ul,
+        blockquote {
+            margin-bottom: 1rem
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: PingFang SC, Helvetica Neue, Verdana, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif;
+            color: #000;
+            line-height: 1.35
+        }
+
+        .typo-h1,
+        .typo-h2,
+        .typo-h3,
+        .typo-h4,
+        .typo-h5,
+        .typo-h6,
+        .typo h1,
+        .typo h2,
+        .typo h3,
+        .typo h4,
+        .typo h5,
+        .typo h6 {
+            margin-top: 1.2em;
+            margin-bottom: .6em;
+            line-height: 1.35
+        }
+
+        .typo-h1,
+        .typo h1 {
+            font-size: 2em
+        }
+
+        .typo-h2,
+        .typo h2 {
+            font-size: 1.8em
+        }
+
+        .typo-h3,
+        .typo h3 {
+            font-size: 1.6em
+        }
+
+        .typo-h4,
+        .typo h4 {
+            font-size: 1.4em
+        }
+
+        .typo-h5,
+        .typo-h6,
+        .typo h5,
+        .typo h6 {
+            font-size: 1.2em
+        }
+
+        .typo-ul,
+        .typo ul {
+            margin-left: 1.3em;
+            list-style: disc
+        }
+
+        .typo-ol,
+        .typo ol {
+            list-style: decimal;
+            margin-left: 1.9em
+        }
+
+        .typo-ol ol,
+        .typo-ol ul,
+        .typo-ul ol,
+        .typo-ul ul,
+        .typo li ol,
+        .typo li ul {
+            margin-bottom: .8em;
+            margin-left: 2em
+        }
+
+        .typo-ol ul,
+        .typo-ul ul,
+        .typo li ul {
+            list-style: circle
+        }
+
+        .typo-table td,
+        .typo-table th,
+        .typo table caption,
+        .typo table td,
+        .typo table th {
+            border: 1px solid #ddd;
+            padding: .5em 1em;
+            color: #666
+        }
+
+        .typo-table th,
+        .typo table th {
+            background: #fbfbfb
+        }
+
+        .typo-table thead th,
+        .typo table thead th {
+            background: hsla(0, 0%, 95%, .7)
+        }
+
+        .typo table caption {
+            border-bottom: none
+        }
+
+        .typo-input,
+        .typo-textarea {
+            -webkit-appearance: none;
+            border-radius: 0
+        }
+
+        .typo-em,
+        .typo em,
+        caption,
+        legend {
+            color: #000;
+            font-weight: inherit
+        }
+
+        .typo-em {
+            position: relative
+        }
+
+        .typo-em:after {
+            position: absolute;
+            top: .65em;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            content: "\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB"
+        }
+
+        .typo img {
+            max-width: 100%
+        }
+
+        .common-content {
+            font-weight: 400;
+            color: #353535;
+            line-height: 1.75rem;
+            white-space: normal;
+            word-break: normal;
+            font-size: 1rem
+        }
+
+        .common-content img {
+            display: block;
+            max-width: 100%;
+            background-color: #eee
+        }
+
+        .common-content audio,
+        .common-content video {
+            width: 100%;
+            background-color: #eee
+        }
+
+        .common-content center,
+        .common-content font {
+            margin-top: 1rem;
+            display: inline-block
+        }
+
+        .common-content center {
+            width: 100%
+        }
+
+        .common-content pre {
+            margin-top: 1rem;
+            padding-left: 0;
+            padding-right: 0;
+            position: relative;
+            overflow: hidden
+        }
+
+        .common-content pre code {
+            font-size: .8rem;
+            font-family: Consolas, Liberation Mono, Menlo, monospace, Courier;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            overflow-x: auto
+        }
+
+        .common-content hr {
+            border: none;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-top: 1px solid #f5f5f5;
+            height: 1px;
+            background: none
+        }
+
+        .common-content b,
+        .common-content h1,
+        .common-content h2,
+        .common-content h3,
+        .common-content h4,
+        .common-content h5,
+        .common-content strong {
+            font-weight: 700
+        }
+
+        .common-content h1,
+        .common-content h2 {
+            font-size: 1.125rem;
+            margin-bottom: .45rem
+        }
+
+        .common-content h3,
+        .common-content h4,
+        .common-content h5 {
+            font-size: 1rem;
+            margin-bottom: .45rem
+        }
+
+        .common-content p {
+            font-weight: 400;
+            color: #353535;
+            margin-top: .15rem
+        }
+
+        .common-content .orange {
+            color: #ff5a05
+        }
+
+        .common-content .reference {
+            font-size: 1rem;
+            color: #888
+        }
+
+        .custom-rich-content h1 {
+            margin-top: 0;
+            font-weight: 400;
+            font-size: 15.25px;
+            border-bottom: 1px solid #eee;
+            line-height: 2.8
+        }
+
+        .custom-rich-content li,
+        .custom-rich-content p {
+            font-size: 14px;
+            color: #888;
+            line-height: 1.6
+        }
+
+        table.hljs-ln {
+            margin-bottom: 0;
+            border-spacing: 0;
+            border-collapse: collapse
+        }
+
+        table.hljs-ln,
+        table.hljs-ln tbody,
+        table.hljs-ln td,
+        table.hljs-ln tr {
+            box-sizing: border-box
+        }
+
+        table.hljs-ln td {
+            padding: 0;
+            border: 0
+        }
+
+        table.hljs-ln td.hljs-ln-numbers {
+            min-width: 15px;
+            color: rgba(27, 31, 35, .3);
+            text-align: right;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none
+        }
+
+        table.hljs-ln td.hljs-ln-code,
+        table.hljs-ln td.hljs-ln-numbers {
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
+            font-size: 12px;
+            line-height: 20px;
+            vertical-align: top
+        }
+
+        table.hljs-ln td.hljs-ln-code {
+            position: relative;
+            padding-right: 10px;
+            padding-left: 10px;
+            overflow: visible;
+            color: #24292e;
+            word-wrap: normal;
+            white-space: pre
+        }
+
+        video::-webkit-media-controls {
+            overflow: hidden !important
+        }
+
+        video::-webkit-media-controls-enclosure {
+            width: calc(100% + 32px);
+            margin-left: auto
+        }
+
+        ._29HP61GA_0 {
+            max-width:800px;
+            margin:0 auto;
+            margin-bottom: 20px;
+            font-weight: 400;
+            color: #353535;
+            line-height: 1.76;
+            white-space: normal;
+            word-break: normal;
+            font-size: 17px;
+            -webkit-transition: background-color .3s ease;
+            transition: background-color .3s ease
+        }
+
+        ._29HP61GA_0 .MathJax_Display {
+            overflow: auto
+        }
+
+        ._29HP61GA_0 .poster {
+            position: fixed;
+            left: -10000px;
+            top: -10000px;
+            overflow: hidden;
+            padding: 1rem;
+            background: #ececec
+        }
+
+        ._29HP61GA_0 .richcontent-pre-copy {
+            font-size: 13px;
+            color: #888;
+            position: absolute;
+            right: 1em;
+            top: .5em;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none
+        }
+
+        ._29HP61GA_0 .richcontent-pre-copy .iconfont {
+            font-size: 12px;
+            margin-right: .2em
+        }
+
+        ._29HP61GA_0 a {
+            color: #fa8919;
+            border-bottom: 1px solid #fa8919
+        }
+
+        ._29HP61GA_0 img {
+            display: block;
+            max-width: 100%;
+            position: relative;
+            left: 50%;
+            -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+            background-color: #eee;
+            vertical-align: top;
+            border-radius: 0
+        }
+
+        ._29HP61GA_0 audio,
+        ._29HP61GA_0 video {
+            width: 100%;
+            background-color: #eee
+        }
+
+        ._29HP61GA_0 pre {
+            margin-top: 16px;
+            padding: 34px 0 0;
+            margin-bottom: 30px;
+            position: relative;
+            border-radius: 6px;
+            background: rgba(246, 247, 251, .749);
+            border: 0
+        }
+
+        ._29HP61GA_0 pre code {
+            font-size: 12px;
+            font-family: Consolas, Liberation Mono, Menlo, monospace, Courier;
+            display: block;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            margin-left: 16px;
+            margin-right: 16px;
+            overflow-x: scroll
+        }
+
+        ._29HP61GA_0 pre code:after {
+            content: "";
+            height: 30px;
+            width: 100%;
+            display: block
+        }
+
+        ._29HP61GA_0 hr {
+            border: none;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-top: 1px solid #f5f5f5;
+            height: 1px;
+            background: none
+        }
+
+        ._29HP61GA_0 h1,
+        ._29HP61GA_0 h2,
+        ._29HP61GA_0 h3,
+        ._29HP61GA_0 h4,
+        ._29HP61GA_0 h5 {
+            margin-bottom: 20px;
+            margin-top: 0;
+            font-weight: 700
+        }
+
+        ._29HP61GA_0 b,
+        ._29HP61GA_0 strong {
+            font-weight: 700
+        }
+
+        ._29HP61GA_0 h1 {
+            font-size: 21px
+        }
+
+        ._29HP61GA_0 h2 {
+            font-size: 20px
+        }
+
+        ._29HP61GA_0 h3 {
+            font-size: 19px
+        }
+
+        ._29HP61GA_0 h4 {
+            font-size: 18px
+        }
+
+        ._29HP61GA_0 h5 {
+            font-size: 17px
+        }
+
+        ._29HP61GA_0 center,
+        ._29HP61GA_0 p {
+            font-weight: 400;
+            color: #353535;
+            margin-top: 0;
+            margin-bottom: 30px;
+            word-break: break-word
+        }
+
+        ._29HP61GA_0 center {
+            text-align: center
+        }
+
+        ._29HP61GA_0 blockquote {
+            margin-top: 0;
+            margin-bottom: 34px;
+            border-left: 3px solid #e8e8e8;
+            padding-left: 17px;
+            color: #353535
+        }
+
+        ._29HP61GA_0 blockquote p {
+            margin-top: 0;
+            margin-bottom: 0
+        }
+
+        ._29HP61GA_0 ol,
+        ._29HP61GA_0 ul {
+            margin-bottom: 30px
+        }
+
+        ._29HP61GA_0 ol p,
+        ._29HP61GA_0 ul p {
+            margin-top: 0;
+            margin-bottom: 0
+        }
+
+        ._29HP61GA_0 ol {
+            list-style: decimal;
+            margin-left: 20px
+        }
+
+        ._29HP61GA_0 ul li {
+            padding-left: 17px;
+            position: relative;
+            margin-bottom: 10px
+        }
+
+        ._29HP61GA_0 ul li:after {
+            content: "";
+            height: 6px;
+            width: 6px;
+            border-radius: 50%;
+            background: #353535;
+            position: absolute;
+            top: 10px;
+            left: 0
+        }
+
+        ._29HP61GA_0 .orange {
+            color: #fa8919
+        }
+
+        ._29HP61GA_0 .reference {
+            color: #888
+        }
+
+        ._29HP61GA_0 .m-right {
+            text-align: right
+        }
+
+        ._29HP61GA_0 .m-center {
+            text-align: center;
+            display: block
+        }
+
+        ._29HP61GA_0 .m-gray {
+            color: #888
+        }
+
+        ._29HP61GA_0 .m-small {
+            font-size: 15px
+        }
+
+        ._29HP61GA_0 table.hljs-ln {
+            margin-bottom: 0;
+            border-spacing: 0;
+            border-collapse: collapse
+        }
+
+        ._29HP61GA_0 table.hljs-ln,
+        ._29HP61GA_0 table.hljs-ln tbody,
+        ._29HP61GA_0 table.hljs-ln td,
+        ._29HP61GA_0 table.hljs-ln tr {
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box
+        }
+
+        ._29HP61GA_0 table.hljs-ln td {
+            padding: 0;
+            border: 0
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-numbers {
+            min-width: 15px;
+            font-size: 12px;
+            color: rgba(27, 31, 35, .3);
+            text-align: right;
+            white-space: nowrap;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-code,
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-numbers {
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
+            line-height: 20px;
+            vertical-align: top
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-code {
+            position: relative;
+            padding-right: 10px;
+            padding-left: 10px;
+            overflow: visible;
+            font-size: 13px;
+            color: #666;
+            word-wrap: normal;
+            white-space: pre
+        }
+
+    </style>
+</head>
+<body>
+<div class="_29HP61GA_0">
+<h1>23-数字计算：介绍线性代数和数值计算库</h1>
+<p>你好，我是吴咏炜。</p><p>科学计算在今天已经完全可以使用 C++ 了。我不是从事科学计算这一领域的工作的，不过，在工作中也多多少少接触到了一些计算相关的库。今天，我就给你介绍几个有用的计算库。</p><h2>Armadillo</h2><p>说到计算，你可能首先会想到矩阵、矢量这些东西吧？这些计算，确实就是科学计算中的常见内容了。这些领域的标准，即是一些 Fortran 库定下的，如：</p><ul>
+<li>BLAS <span class="orange">[1]</span></li>
+<li>LAPACK <span class="orange">[2]</span></li>
+<li>ARPACK <span class="orange">[3]</span></li>
+</ul><p>它们的实现倒不一定用 Fortran，尤其是 BLAS：</p><ul>
+<li>OpenBLAS <span class="orange">[4]</span> 是用汇编和 C 语言写的</li>
+<li>Intel MKL <span class="orange">[5]</span> 有针对 Intel 的特定 CPU 指令集进行优化的汇编代码</li>
+<li>Mir GLAS <span class="orange">[6]</span> 是用 D 语言写的</li>
+</ul><p>不管实现的方法是哪一种，暴露出来的函数名字是这个样子的：</p><ul>
+<li><code>ddot</code></li>
+<li><code>dgemv</code></li>
+<li><code>dsyrk</code></li>
+<li><code>sgemm</code></li>
+<li>……</li>
+</ul><p>这个接口的唯一好处，应该就是，它是跨语言并且跨实现的😅。所以，使用这些函数时，你可以切换不同的实现，而不需要更改代码。唯一需要修改的，通常就是链接库的名字或位置而已。</p><p>假设我们需要做一个简单的矩阵运算，对一个矢量进行旋转：</p><p>$$<br>
+\begin{aligned}<br>
+\mathbf{P} &amp;= \begin{bmatrix} 1 \\\ 0 \end{bmatrix}\\\<br>
+\mathbf{R} &amp;= \begin{bmatrix}<br>
+\cos(\theta) &amp; -\sin(\theta) \\\<br>
+\sin(\theta) &amp; \cos(\theta)\end{bmatrix}\\\<br>
+\mathbf{P^\prime} &amp;= \mathbf{R} \cdot \mathbf{P}<br>
+\end{aligned}<br>
+$$</p><!-- [[[read_end]]] --><p>这么一个简单的操作，用纯 C 接口的 BLAS 来表达，有点痛苦：你需要使用的大概是 <code>dgemv_</code> 函数，而这个函数需要 11 个参数！我查阅了一下资料之后，也就放弃了给你展示一下如何调用 <code>dgemv_</code> 的企图，我们还是老老实实地看一下在现代 C++ 里的写法吧：</p><pre><code class="language-c++">#include &lt;armadillo&gt;
+#include &lt;cmath&gt;
+#include &lt;iostream&gt;
+
+using namespace std;
+
+int main()
+{
+  // 代表位置的向量
+  arma::vec pos{1.0, 0.0};
+
+  // 旋转矩阵
+  auto&amp; pi = arma::datum::pi;
+  double angle = pi / 2;
+  arma::mat rot = {
+    {cos(angle), -sin(angle)},
+    {sin(angle), cos(angle)}};
+
+  cout &lt;&lt; "Current position:\n"
+       &lt;&lt; pos;
+  cout &lt;&lt; "Rotating "
+       &lt;&lt; angle * 180 / pi
+       &lt;&lt; " deg\n";
+
+  arma::vec new_pos = rot * pos;
+  cout &lt;&lt; "New position:\n"
+       &lt;&lt; new_pos;
+}
+</code></pre><p>这就是使用 Armadillo <span class="orange">[7]</span> 库来实现矢量旋转的代码。这个代码，基本就是上面的数学公式的一一对应了。代码相当直白，我只需要稍稍说明一下：</p><ul>
+<li>所有的 Armadillo 的类型和函数都定义在 <code>arma</code> 名空间下。</li>
+<li>Armadillo 在 <code>arma::datum</code> 下定义了包括 pi 和 e 在内的一些数学常量。</li>
+<li><code>vec</code> 是矢量类型，<code>mat</code> 是矩阵类型，这两个类型实际上是 <code>Col&lt;double&gt;</code> 和 <code>Mat&lt;double&gt;</code> 的缩写别名。</li>
+<li>Armadillo 支持使用 C++11 的列表初始化语法来初始化对象。</li>
+<li>Armadillo 支持使用流来输出对象。</li>
+</ul><p>上面代码的输出为：</p><blockquote>
+<p><code>Current position:</code><br>
+<code>1.0000</code><br>
+<code>0</code><br>
+<code>Rotating 90 deg</code><br>
+<code>New position:</code><br>
+<code>6.1232e-17</code><br>
+<code>1.0000e+00</code></p>
+</blockquote><p>输出里面的 <code>6.1232e-17</code> 是浮点数表示不精确的后果，把它理解成 0 就对了。</p><p>我们上面已经提到了 <code>vec</code> 实际上是 <code>Col&lt;double&gt;</code>，双精度浮点数类型的列矢量。自然，Armadillo 也有行矢量 <code>rowvec</code>（即 <code>Row&lt;double&gt;</code>），也可以使用其他的数字类型，如 <code>int</code>、 <code>float</code> 和 <code>complex&lt;float&gt;</code>。此外，除了大小不确定的线性代数对象之外，Armadillo 也提供了固定大小的子类型，如 <code>vec::fixed&lt;2&gt;</code> 和 <code>mat::fixed&lt;2, 2&gt;</code>；为方便使用，还提供了不少别名，如 <code>imat22</code> 代表 <code>Mat&lt;int&gt;::fixed&lt;2, 2&gt;</code> 等。固定大小的对象不需要动态内存分配，使用上有一定的性能优势。</p><p>Armadillo 是一个非常复杂的库，它的头文件数量超过了 500 个。我们今天不可能、也不必要描述它的所有功能，只能稍稍部分列举一下：</p><ul>
+<li>除了目前提到的列矢量、行矢量和矩阵外，Armadillo 也支持三维的数据立方体，<code>Cube</code> 模板。</li>
+<li>Armadillo 支持稀疏矩阵，<code>SpMat</code> 模板。</li>
+<li>除了数学上的加、减、乘运算，Armadillo 支持按元素的乘法、除法、相等、不等、小于比较等（使用 <code>%</code>、<code>/</code>、<code>==</code>、<code>!=</code>、<code>&lt;</code> 等）运算，结果的大小跟参数相同，每个元素是相应运算的结果。某些运算符可能不太直观，尤其是 <code>%</code>（不是取模）和 <code>==</code>（返回不是单个布尔值，而是矩阵）。</li>
+<li>Armadillo 支持对非固定大小的矢量、矩阵和立方体，改变其大小（<code>.reshape()</code> 和 <code>resize()</code>）。</li>
+<li>Armadillo 可以方便地按行（<code>.col()</code>）、列（<code>.row()</code>）、对角线（<code>.diag()</code>）读写矩阵的内容，包括用一个矢量去改写矩阵的对角线。</li>
+<li>Armadillo 可以方便地对矩阵进行转置（<code>.t()</code>）、求反（<code>.inv()</code>）。</li>
+<li>Armadillo 可以对矩阵进行特征分解（<code>eigen_sym()</code>、<code>eigen_gen()</code> 等）。</li>
+<li>Armadillo 支持傅立叶变换（<code>fft()</code>、<code>fft2()</code> 等）。</li>
+<li>Armadillo 支持常见的统计计算，如平均值、中位值、标准偏差等（<code>mean()</code>、<code>median()</code>、<code>stddev()</code> 等）。</li>
+<li>Armadillo 支持多项式方程求根（<code>roots</code>）。</li>
+<li>Armadillo 支持 k‐平均聚类（<em>k</em>-means clustering）算法（<code>kmeans</code>）。</li>
+<li>等等。</li>
+</ul><p>如果你需要用到这些功能，你可以自己去查看一下具体的细节，我们这儿只提几个与编程有关的细节。</p><h3>对象的输出</h3><p>我们上面已经展示了直接把对象输出到一个流。我们的写法是：</p><pre><code class="language-c++">cout &lt;&lt; "Current position:\n"
+     &lt;&lt; pos;
+</code></pre><p>实际上基本等价于调用 <code>print</code> 成员函数：</p><pre><code class="language-c++">pos.print("Current position:");
+</code></pre><p>这个写法可能会更简单些。此外，在这两种情况，输出的格式都是 Armadillo 自动控制的。如果你希望自己控制的话，可以使用 <code>raw_print</code> 成员函数。比如，对于上面代码里对 <code>new_pos</code> 的输出，我们可以写成（需要包含 &lt;iomanip&gt;）：</p><pre><code class="language-c++">cout &lt;&lt; fixed &lt;&lt; setw(9)
+     &lt;&lt; setprecision(4);
+new_pos.raw_print(
+  cout, "New position:");
+</code></pre><p>这种情况下，你可以有效地对格式、宽度和精度进行设置，能得到：</p><blockquote>
+<p><code>New position:</code><br>
+<code>0.0000</code><br>
+<code>1.0000</code></p>
+</blockquote><p>记得我们说过 <code>vec</code> 是 <code>Col&lt;double&gt;</code> 的别名，因此输出是多行的。我们要输出成单行的话，转置（transpose）一下就可以了：</p><pre><code class="language-c++">cout &lt;&lt; fixed &lt;&lt; setw(9)
+     &lt;&lt; setprecision(4);
+new_pos.t().raw_print(
+  cout, "New position:");
+</code></pre><p>输出为：</p><blockquote>
+<p><code>New position:</code><br>
+<code>0.0000 1.0000</code></p>
+</blockquote><h3>表达式模板</h3><p>如果你奇怪前面 <code>dgemv_</code> 为什么有 11 个参数，这里有个我没有提的细节是，它执行的实际上是个复合操作：</p><p>$$<br>
+\mathbf{y} \gets \alpha\mathbf{A}\cdot\mathbf{x} + \beta\mathbf{y}<br>
+$$</p><p>如果你只是简单地做乘法的话，就相当于 $\alpha$ 为 1、$\beta$ 为 0 的特殊情况。那么问题来了，如果你真的写了类似于上面这样的公式的话，编译器和线性代数库能不能转成合适的调用、而没有额外的开销呢？</p><p>答案是，至少在某些情况下是可以的。秘诀就是表达式模板（expression template）<span class="orange">[8]</span>。</p><p>那什么是表达式模板呢？我们先回过去看我上面的例子。有没有注意到我写的是：</p><pre><code class="language-c++">arma::vec new_pos = rot * pos;
+</code></pre><p>而没有使用 <code>auto</code> 来声明？</p><p>其中部分的原因是，<code>rot * pos</code> 的类型并不是 <code>vec</code>，而是：</p><pre><code class="language-c++">const Glue&lt;Mat&lt;double&gt;, Col&lt;double&gt;, glue_times&gt;
+</code></pre><p>换句话说，结果是一个表达式，而并没有实际进行计算。如果我用 <code>auto</code> 的话，行为上似乎一切都正常，但我每次输出这个结果时，都会重新进行一次矩阵的乘法！而我用 <code>arma::vec</code> 接收的话，构造时就直接进行了计算，存储了表达式的结果。</p><p>上面的简单例子不能实际触发对 <code>dgemv_</code> 的调用，我用下面的代码实际验证出了表达式模板产生的优化（<code>fill::randu</code> 表示对矢量和矩阵的内容进行随机填充）：</p><pre><code class="language-c++">#include &lt;armadillo&gt;
+#include &lt;iostream&gt;
+
+using namespace std;
+using namespace arma;
+
+int main()
+{
+  vec x(8, fill::randu);
+  mat r(8, 8, fill::randu);
+  vec result = 2.5 * r * x;
+  cout &lt;&lt; result;
+}
+</code></pre><p>赋值语句右边的类型是：</p><pre><code class="language-c++">const Glue&lt;eOp&lt;Mat&lt;double&gt;,
+               eop_scalar_times&gt;,
+           Col&lt;double&gt;, glue_times&gt;
+</code></pre><p>当使用这个表达式构造 <code>vec</code> 时，就会实际发生对 <code>dgemv_</code> 的调用。我也确实跟踪到了，在将要调用 <code>dgemv_</code> 时，标量值 2.5 确实在参数 <code>alpha</code> 指向的位置上（这个接口的参数都是指针）。</p><p>从上面的描述可以看到，表达式模板是把双刃剑：既可以提高代码的性能，又能增加代码被误用的可能性。在可能用到表达式模板的地方，你需要注意这些问题。</p><h3>平台细节</h3><p>Armadillo 的文档里说明了如何从源代码进行安装，但在 Linux 和 macOS 下通过包管理器安装可能是更快的方式。在 CentOS 下可使用 <code>sudo yum install armadillo-devel</code>，在 macOS 下可使用 <code>brew install armadillo</code>。使用包管理器一般也会同时安装常见的依赖软件，如 ARPACK 和 OpenBLAS。</p><p>在 Windows 上，Armadillo 的安装包里自带了一个基本版本的 64 位 BLAS 和 LAPACK 库。如果需要更高性能或 32 位版本的话，就需要自己另外去安装了。除非你只是做一些非常简单的线性代数计算（就像我今天的例子），那直接告诉 Armadillo 不要使用第三方库也行。</p><blockquote>
+<p><code>cl /EHsc /DARMA_DONT_USE_BLAS /DARMA_DONT_USE_LAPACK …</code></p>
+</blockquote><h2>Boost.Multiprecision</h2><p>众所周知，C 和 C++（甚至推而广之到大部分的常用编程语言）里的数值类型是有精度限制的。比如，上一讲的代码里我们就用到了 <code>INT_MIN</code>，最小的整数。很多情况下，使用目前这些类型是够用的（最高一般是 64 位整数和 80 位浮点数）。但也有很多情况，这些标准的类型远远不能满足需要。这时你就需要一个高精度的数值类型了。</p><p>有一次我需要找一个高精度整数类型和计算库，最后找到的就是 Boost.Multiprecision <span class="orange">[9]</span>。它基本满足我的需求，以及一般意义上对库的期望：</p><ul>
+<li>正确实现我需要的功能</li>
+<li>接口符合直觉、易用</li>
+<li>有良好的性能</li>
+</ul><p>正确实现功能这点我就不多讲了。这是一个基本出发点，没有太多可讨论的地方。在我上次的需求里，对性能其实也没有很高的要求。让我对 Boost.Multiprecision 满意的主要原因，就是它的接口了。</p><h3>接口易用性</h3><p>我在 <a href="https://time.geekbang.org/column/article/179363">[第 12 讲]</a> 提到了 CLN。它对我来讲就是个反面教材。它的整数类型不仅不提供 <code>%</code> 运算符，居然还不提供 <code>/</code> 运算符！它强迫用户在下面两个方案中做出选择：</p><ul>
+<li>使用 <code>truncate2</code> 函数，得到一个商数和余数</li>
+<li>使用 <code>exquo</code> 函数，当且仅当可以整除的时候</li>
+</ul><p>不管作者的设计原则是什么，这简直就是易用性方面的灾难了——不仅这些函数要查文档才能知晓，而且有的地方我真的只需要简单的除法呀……</p><p>哦，对了，它在 Windows 编译还很不方便，而我那时用的正是 Windows。</p><p>Boost.Multiprecision 的情况则恰恰相反，让我当即大为满意：</p><ul>
+<li>使用基本的 <code>cpp_int</code> 对象不需要预先编译库，只需要 Boost 的头文件和一个好的编译器。</li>
+<li>常用运算符 <code>+</code>、<code>-</code>、<code>*</code>、<code>/</code>、<code>%</code> 一个不缺，全部都有。</li>
+<li>可以自然地通过整数和字符串来进行构造。</li>
+<li>提供了用户自定义字面量来高效地进行初始化。</li>
+<li>在使用 IO 流时，输入输出既可以使用十进制，也可以通过 <code>hex</code> 来切换到十六进制。</li>
+</ul><p>下面的代码展示了它的基本功能：</p><pre><code class="language-c++">#include &lt;iomanip&gt;
+#include &lt;iostream&gt;
+#include &lt;boost/multiprecision/cpp_int.hpp&gt;
+
+using namespace std;
+
+int main()
+{
+  using namespace boost::
+    multiprecision::literals;
+  using boost::multiprecision::
+    cpp_int;
+
+  cpp_int a =
+    0x123456789abcdef0_cppi;
+  cpp_int b = 16;
+  cpp_int c{"0400"};
+  cpp_int result = a * b / c;
+  cout &lt;&lt; hex &lt;&lt; result &lt;&lt; endl;
+  cout &lt;&lt; dec &lt;&lt; result &lt;&lt; endl;
+}
+</code></pre><p>输出是：</p><blockquote>
+<p><code>123456789abcdef</code><br>
+<code>81985529216486895</code></p>
+</blockquote><p>我们可以看到，<code>cpp_int</code> 可以通过自定义字面量（后缀 <code>_cppi</code>；只能十六进制）来初始化，可以通过一个普通整数来初始化，也可以通过字符串来初始化（并可以使用 <code>0x</code> 和 <code>0</code> 前缀来选择十六进制和八进制）。拿它可以正常地进行加减乘除操作，也可以通过 IO 流来输入输出。</p><h3>性能</h3><p>Boost.Multiprecision 使用了表达式模板和 C++11 的移动来避免不必要的拷贝。后者当然是件好事，而前者曾经坑了我一下——我第一次使用 Boost.Multiprecision 时非常困惑为什么我使用 <code>half(n - 1)</code> 调用下面的简单函数居然会编译不过：</p><pre><code class="language-c++">template &lt;typename N&gt;
+inline N half(N n)
+{
+  return n / 2;
+}
+</code></pre><p>我的意图当然是 <code>N</code> 应当被推导为 <code>cpp_int</code>，<code>half</code> 的结果也是 <code>cpp_int</code>。可实际上，<code>n - 1</code> 的结果跟上面的 Armadillo 展示的情况类似，是另外一个单独的类型。我需要把 <code>half(n - 1)</code> 改写成 <code>half(N(n - 1))</code> 才能得到期望的结果。</p><p>我做的计算挺简单，并不觉得表达式模板对我的计算有啥帮助，所以我最后是禁用了表达式模板：</p><pre><code class="language-c++">typedef boost::multiprecision::
+  number&lt;
+    boost::multiprecision::
+      cpp_int_backend&lt;&gt;,
+    boost::multiprecision::et_off&gt;
+    int_type;
+</code></pre><p>类似于 Armadillo 可以换不同的 BLAS 和 LAPACK 实现，Boost.Multiprecision 也可以改换不同的后端。比如，如果我们打算使用 GMP <span class="orange">[10]</span> 的话，我们需要包含利用 GMP 的头文件，并把上面的 <code>int_type</code> 的定义修正一下：</p><pre><code class="language-c++">#include &lt;boost/multiprecision/gmp.hpp&gt;
+
+typedef boost::multiprecision::
+  number&lt;
+    boost::multiprecision::gmp_int,
+    boost::multiprecision::et_off&gt;
+    int_type;
+</code></pre><p>注意，我并不是推荐你换用 GMP。如果你真的对性能非常渴求的话，应当进行测试来选择合适的后端。否则缺省的后端易用性最好——比如，使用 GMP 后端就不能使用自定义字面量了。</p><p>我当时寻找高精度算术库是为了做 RSA 加解密。计算本身不复杂，属于编程几小时、运行几毫秒的情况。如果你有兴趣的话，可以看一下我那时的挑选过程和最终代码 <span class="orange">[11]</span>。</p><p>Boost 里好东西很多，远远不止这一样。下一讲我们就来专门聊聊 Boost。</p><h2>内容小结</h2><p>本讲我们讨论了两个进行计算的模板库，Armadillo 和 Boost.Multiprecision，并讨论了它们用到的表达式模板技巧和相关的计算库，如 BLAS、LAPACK 和 GMP。可以看到，使用 C++ 你可以站到巨人肩上，轻松写出高性能的计算代码。</p><h2>课后思考</h2><p>性能和易用性往往是有矛盾的。你对性能和易用性有什么样的偏好呢？欢迎留言与我分享。</p><h2><span class="reference">参考资料</span></h2><p><span class="reference">[1] Wikipedia, “Basic Linear Algebra Subprograms”. <a href="https://en.wikipedia.org/wiki/Basic_Linear_Algebra_Subprograms">https://en.wikipedia.org/wiki/Basic_Linear_Algebra_Subprograms</a> </span></p><p><span class="reference">[2] Wikipedia, “LAPACK”. <a href="https://en.wikipedia.org/wiki/LAPACK">https://en.wikipedia.org/wiki/LAPACK</a> </span></p><p><span class="reference">[3] Wikipedia, “ARPACK”. <a href="https://en.wikipedia.org/wiki/ARPACK">https://en.wikipedia.org/wiki/ARPACK</a> </span></p><p><span class="reference">[4] Zhang Xianyi et al., OpenBLAS. <a href="https://github.com/xianyi/OpenBLAS">https://github.com/xianyi/OpenBLAS</a> </span></p><p><span class="reference">[5] Intel, Math Kernel Library. <a href="https://software.intel.com/mkl">https://software.intel.com/mkl</a> </span></p><p><span class="reference">[6] Ilya Yaroshenko, mir-glas. <a href="https://github.com/libmir/mir-glas">https://github.com/libmir/mir-glas</a> </span></p><p><span class="reference">[7] Conrad Sanderson and Ryan Curtin, “Armadillo: C++ library for linear algebra &amp; scientific computing”. <a href="http://arma.sourceforge.net/">http://arma.sourceforge.net/</a> </span></p><p><span class="reference">[8] Wikipedia, “Expression templates”. <a href="https://en.wikipedia.org/wiki/Expression_templates">https://en.wikipedia.org/wiki/Expression_templates</a> </span></p><p><span class="reference">[9] John Maddock, Boost.Multiprecision. <a href="https://www.boost.org/doc/libs/release/libs/multiprecision/doc/html/index.html">https://www.boost.org/doc/libs/release/libs/multiprecision/doc/html/index.html</a> </span></p><p><span class="reference">[10] The GNU MP bignum library. <a href="https://gmplib.org/">https://gmplib.org/</a> </span></p><p><span class="reference">[11] 吴咏炜, “Choosing a multi-precision library for C++—a critique”. <a href="https://yongweiwu.wordpress.com/2016/06/04/choosing-a-multi-precision-library-for-c-a-critique/">https://yongweiwu.wordpress.com/2016/06/04/choosing-a-multi-precision-library-for-c-a-critique/</a> </span></p><h2>精选留言：</h2>
+        <ul>
+        
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            廖熊猫  2020-01-17 08:48:12
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            易用的东西灵活性就稍微弱一些，在能快速完成业务的时候，我还是比较偏向易用性，一查文档马上就可以用起来，真的出现性能瓶颈的时候再去折腾复杂性能好的东西。<br>给需要学习线性代数的小伙伴推荐一个教材：http:&#47;&#47;textbooks.math.gatech.edu&#47;ila&#47;index.html<br>需要点英语基础才行。 
+        </div>
+        
+    </div>
+</li>
+            </ul>
+</div>
+</body>
+</html>

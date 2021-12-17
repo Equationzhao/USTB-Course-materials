@@ -1,0 +1,1267 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>16-函数对象和lambda：进入函数式编程</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <style>
+        html {
+            color: #333;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            text-rendering: optimizelegibility;
+            font-family: Helvetica Neue, PingFang SC, Verdana, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif
+        }
+
+        html.borderbox *,
+        html.borderbox :after,
+        html.borderbox :before {
+            box-sizing: border-box
+        }
+
+        article,
+        aside,
+        blockquote,
+        body,
+        button,
+        code,
+        dd,
+        details,
+        dl,
+        dt,
+        fieldset,
+        figcaption,
+        figure,
+        footer,
+        form,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        header,
+        hr,
+        input,
+        legend,
+        li,
+        menu,
+        nav,
+        ol,
+        p,
+        pre,
+        section,
+        td,
+        textarea,
+        th,
+        ul {
+            margin: 0;
+            padding: 0
+        }
+
+        article,
+        aside,
+        details,
+        figcaption,
+        figure,
+        footer,
+        header,
+        menu,
+        nav,
+        section {
+            display: block
+        }
+
+        audio,
+        canvas,
+        video {
+            display: inline-block
+        }
+
+        body,
+        button,
+        input,
+        select,
+        textarea {
+            font: 300 1em/1.8 PingFang SC, Lantinghei SC, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, Helvetica, sans-serif
+        }
+
+        button::-moz-focus-inner,
+        input::-moz-focus-inner {
+            padding: 0;
+            border: 0
+        }
+
+        table {
+            border-collapse: collapse;
+            border-spacing: 0
+        }
+
+        fieldset,
+        img {
+            border: 0
+        }
+
+        blockquote {
+            position: relative;
+            color: #999;
+            font-weight: 400;
+            border-left: 1px solid #1abc9c;
+            padding-left: 1em;
+            margin: 1em 3em 1em 2em
+        }
+
+        @media only screen and (max-width: 640px) {
+            blockquote {
+                margin: 1em 0
+            }
+        }
+
+        abbr,
+        acronym {
+            border-bottom: 1px dotted;
+            font-variant: normal
+        }
+
+        abbr {
+            cursor: help
+        }
+
+        del {
+            text-decoration: line-through
+        }
+
+        address,
+        caption,
+        cite,
+        code,
+        dfn,
+        em,
+        th,
+        var {
+            font-style: normal;
+            font-weight: 400
+        }
+
+        ol,
+        ul {
+            list-style: none
+        }
+
+        caption,
+        th {
+            text-align: left
+        }
+
+        q:after,
+        q:before {
+            content: ""
+        }
+
+        sub,
+        sup {
+            font-size: 75%;
+            line-height: 0;
+            position: relative
+        }
+
+        :root sub,
+        :root sup {
+            vertical-align: baseline
+        }
+
+        sup {
+            top: -.5em
+        }
+
+        sub {
+            bottom: -.25em
+        }
+
+        a {
+            color: #1abc9c
+        }
+
+        a:hover {
+            text-decoration: underline
+        }
+
+        .typo a {
+            border-bottom: 1px solid #1abc9c
+        }
+
+        .typo a:hover {
+            border-bottom-color: #555;
+            color: #555
+        }
+
+        .typo a:hover,
+        a,
+        ins {
+            text-decoration: none
+        }
+
+        .typo-u,
+        u {
+            text-decoration: underline
+        }
+
+        mark {
+            background: #fffdd1;
+            border-bottom: 1px solid #ffedce;
+            padding: 2px;
+            margin: 0 5px
+        }
+
+        code,
+        pre,
+        pre tt {
+            font-family: Courier, Courier New, monospace
+        }
+
+        pre {
+            background: hsla(0, 0%, 97%, .7);
+            border: 1px solid #ddd;
+            padding: 1em 1.5em;
+            display: block;
+            -webkit-overflow-scrolling: touch
+        }
+
+        hr {
+            border: none;
+            border-bottom: 1px solid #cfcfcf;
+            margin-bottom: .8em;
+            height: 10px
+        }
+
+        .typo-small,
+        figcaption,
+        small {
+            font-size: .9em;
+            color: #888
+        }
+
+        b,
+        strong {
+            font-weight: 700;
+            color: #000
+        }
+
+        [draggable] {
+            cursor: move
+        }
+
+        .clearfix:after,
+        .clearfix:before {
+            content: "";
+            display: table
+        }
+
+        .clearfix:after {
+            clear: both
+        }
+
+        .clearfix {
+            zoom: 1
+        }
+
+        .textwrap,
+        .textwrap td,
+        .textwrap th {
+            word-wrap: break-word;
+            word-break: break-all
+        }
+
+        .textwrap-table {
+            table-layout: fixed
+        }
+
+        .serif {
+            font-family: Palatino, Optima, Georgia, serif
+        }
+
+        .typo-dl,
+        .typo-form,
+        .typo-hr,
+        .typo-ol,
+        .typo-p,
+        .typo-pre,
+        .typo-table,
+        .typo-ul,
+        .typo dl,
+        .typo form,
+        .typo hr,
+        .typo ol,
+        .typo p,
+        .typo pre,
+        .typo table,
+        .typo ul,
+        blockquote {
+            margin-bottom: 1rem
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: PingFang SC, Helvetica Neue, Verdana, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans-serif;
+            color: #000;
+            line-height: 1.35
+        }
+
+        .typo-h1,
+        .typo-h2,
+        .typo-h3,
+        .typo-h4,
+        .typo-h5,
+        .typo-h6,
+        .typo h1,
+        .typo h2,
+        .typo h3,
+        .typo h4,
+        .typo h5,
+        .typo h6 {
+            margin-top: 1.2em;
+            margin-bottom: .6em;
+            line-height: 1.35
+        }
+
+        .typo-h1,
+        .typo h1 {
+            font-size: 2em
+        }
+
+        .typo-h2,
+        .typo h2 {
+            font-size: 1.8em
+        }
+
+        .typo-h3,
+        .typo h3 {
+            font-size: 1.6em
+        }
+
+        .typo-h4,
+        .typo h4 {
+            font-size: 1.4em
+        }
+
+        .typo-h5,
+        .typo-h6,
+        .typo h5,
+        .typo h6 {
+            font-size: 1.2em
+        }
+
+        .typo-ul,
+        .typo ul {
+            margin-left: 1.3em;
+            list-style: disc
+        }
+
+        .typo-ol,
+        .typo ol {
+            list-style: decimal;
+            margin-left: 1.9em
+        }
+
+        .typo-ol ol,
+        .typo-ol ul,
+        .typo-ul ol,
+        .typo-ul ul,
+        .typo li ol,
+        .typo li ul {
+            margin-bottom: .8em;
+            margin-left: 2em
+        }
+
+        .typo-ol ul,
+        .typo-ul ul,
+        .typo li ul {
+            list-style: circle
+        }
+
+        .typo-table td,
+        .typo-table th,
+        .typo table caption,
+        .typo table td,
+        .typo table th {
+            border: 1px solid #ddd;
+            padding: .5em 1em;
+            color: #666
+        }
+
+        .typo-table th,
+        .typo table th {
+            background: #fbfbfb
+        }
+
+        .typo-table thead th,
+        .typo table thead th {
+            background: hsla(0, 0%, 95%, .7)
+        }
+
+        .typo table caption {
+            border-bottom: none
+        }
+
+        .typo-input,
+        .typo-textarea {
+            -webkit-appearance: none;
+            border-radius: 0
+        }
+
+        .typo-em,
+        .typo em,
+        caption,
+        legend {
+            color: #000;
+            font-weight: inherit
+        }
+
+        .typo-em {
+            position: relative
+        }
+
+        .typo-em:after {
+            position: absolute;
+            top: .65em;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            content: "\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB\30FB"
+        }
+
+        .typo img {
+            max-width: 100%
+        }
+
+        .common-content {
+            font-weight: 400;
+            color: #353535;
+            line-height: 1.75rem;
+            white-space: normal;
+            word-break: normal;
+            font-size: 1rem
+        }
+
+        .common-content img {
+            display: block;
+            max-width: 100%;
+            background-color: #eee
+        }
+
+        .common-content audio,
+        .common-content video {
+            width: 100%;
+            background-color: #eee
+        }
+
+        .common-content center,
+        .common-content font {
+            margin-top: 1rem;
+            display: inline-block
+        }
+
+        .common-content center {
+            width: 100%
+        }
+
+        .common-content pre {
+            margin-top: 1rem;
+            padding-left: 0;
+            padding-right: 0;
+            position: relative;
+            overflow: hidden
+        }
+
+        .common-content pre code {
+            font-size: .8rem;
+            font-family: Consolas, Liberation Mono, Menlo, monospace, Courier;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            overflow-x: auto
+        }
+
+        .common-content hr {
+            border: none;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-top: 1px solid #f5f5f5;
+            height: 1px;
+            background: none
+        }
+
+        .common-content b,
+        .common-content h1,
+        .common-content h2,
+        .common-content h3,
+        .common-content h4,
+        .common-content h5,
+        .common-content strong {
+            font-weight: 700
+        }
+
+        .common-content h1,
+        .common-content h2 {
+            font-size: 1.125rem;
+            margin-bottom: .45rem
+        }
+
+        .common-content h3,
+        .common-content h4,
+        .common-content h5 {
+            font-size: 1rem;
+            margin-bottom: .45rem
+        }
+
+        .common-content p {
+            font-weight: 400;
+            color: #353535;
+            margin-top: .15rem
+        }
+
+        .common-content .orange {
+            color: #ff5a05
+        }
+
+        .common-content .reference {
+            font-size: 1rem;
+            color: #888
+        }
+
+        .custom-rich-content h1 {
+            margin-top: 0;
+            font-weight: 400;
+            font-size: 15.25px;
+            border-bottom: 1px solid #eee;
+            line-height: 2.8
+        }
+
+        .custom-rich-content li,
+        .custom-rich-content p {
+            font-size: 14px;
+            color: #888;
+            line-height: 1.6
+        }
+
+        table.hljs-ln {
+            margin-bottom: 0;
+            border-spacing: 0;
+            border-collapse: collapse
+        }
+
+        table.hljs-ln,
+        table.hljs-ln tbody,
+        table.hljs-ln td,
+        table.hljs-ln tr {
+            box-sizing: border-box
+        }
+
+        table.hljs-ln td {
+            padding: 0;
+            border: 0
+        }
+
+        table.hljs-ln td.hljs-ln-numbers {
+            min-width: 15px;
+            color: rgba(27, 31, 35, .3);
+            text-align: right;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none
+        }
+
+        table.hljs-ln td.hljs-ln-code,
+        table.hljs-ln td.hljs-ln-numbers {
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
+            font-size: 12px;
+            line-height: 20px;
+            vertical-align: top
+        }
+
+        table.hljs-ln td.hljs-ln-code {
+            position: relative;
+            padding-right: 10px;
+            padding-left: 10px;
+            overflow: visible;
+            color: #24292e;
+            word-wrap: normal;
+            white-space: pre
+        }
+
+        video::-webkit-media-controls {
+            overflow: hidden !important
+        }
+
+        video::-webkit-media-controls-enclosure {
+            width: calc(100% + 32px);
+            margin-left: auto
+        }
+
+        ._29HP61GA_0 {
+            max-width:800px;
+            margin:0 auto;
+            margin-bottom: 20px;
+            font-weight: 400;
+            color: #353535;
+            line-height: 1.76;
+            white-space: normal;
+            word-break: normal;
+            font-size: 17px;
+            -webkit-transition: background-color .3s ease;
+            transition: background-color .3s ease
+        }
+
+        ._29HP61GA_0 .MathJax_Display {
+            overflow: auto
+        }
+
+        ._29HP61GA_0 .poster {
+            position: fixed;
+            left: -10000px;
+            top: -10000px;
+            overflow: hidden;
+            padding: 1rem;
+            background: #ececec
+        }
+
+        ._29HP61GA_0 .richcontent-pre-copy {
+            font-size: 13px;
+            color: #888;
+            position: absolute;
+            right: 1em;
+            top: .5em;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none
+        }
+
+        ._29HP61GA_0 .richcontent-pre-copy .iconfont {
+            font-size: 12px;
+            margin-right: .2em
+        }
+
+        ._29HP61GA_0 a {
+            color: #fa8919;
+            border-bottom: 1px solid #fa8919
+        }
+
+        ._29HP61GA_0 img {
+            display: block;
+            max-width: 100%;
+            position: relative;
+            left: 50%;
+            -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+            background-color: #eee;
+            vertical-align: top;
+            border-radius: 0
+        }
+
+        ._29HP61GA_0 audio,
+        ._29HP61GA_0 video {
+            width: 100%;
+            background-color: #eee
+        }
+
+        ._29HP61GA_0 pre {
+            margin-top: 16px;
+            padding: 34px 0 0;
+            margin-bottom: 30px;
+            position: relative;
+            border-radius: 6px;
+            background: rgba(246, 247, 251, .749);
+            border: 0
+        }
+
+        ._29HP61GA_0 pre code {
+            font-size: 12px;
+            font-family: Consolas, Liberation Mono, Menlo, monospace, Courier;
+            display: block;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            margin-left: 16px;
+            margin-right: 16px;
+            overflow-x: scroll
+        }
+
+        ._29HP61GA_0 pre code:after {
+            content: "";
+            height: 30px;
+            width: 100%;
+            display: block
+        }
+
+        ._29HP61GA_0 hr {
+            border: none;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-top: 1px solid #f5f5f5;
+            height: 1px;
+            background: none
+        }
+
+        ._29HP61GA_0 h1,
+        ._29HP61GA_0 h2,
+        ._29HP61GA_0 h3,
+        ._29HP61GA_0 h4,
+        ._29HP61GA_0 h5 {
+            margin-bottom: 20px;
+            margin-top: 0;
+            font-weight: 700
+        }
+
+        ._29HP61GA_0 b,
+        ._29HP61GA_0 strong {
+            font-weight: 700
+        }
+
+        ._29HP61GA_0 h1 {
+            font-size: 21px
+        }
+
+        ._29HP61GA_0 h2 {
+            font-size: 20px
+        }
+
+        ._29HP61GA_0 h3 {
+            font-size: 19px
+        }
+
+        ._29HP61GA_0 h4 {
+            font-size: 18px
+        }
+
+        ._29HP61GA_0 h5 {
+            font-size: 17px
+        }
+
+        ._29HP61GA_0 center,
+        ._29HP61GA_0 p {
+            font-weight: 400;
+            color: #353535;
+            margin-top: 0;
+            margin-bottom: 30px;
+            word-break: break-word
+        }
+
+        ._29HP61GA_0 center {
+            text-align: center
+        }
+
+        ._29HP61GA_0 blockquote {
+            margin-top: 0;
+            margin-bottom: 34px;
+            border-left: 3px solid #e8e8e8;
+            padding-left: 17px;
+            color: #353535
+        }
+
+        ._29HP61GA_0 blockquote p {
+            margin-top: 0;
+            margin-bottom: 0
+        }
+
+        ._29HP61GA_0 ol,
+        ._29HP61GA_0 ul {
+            margin-bottom: 30px
+        }
+
+        ._29HP61GA_0 ol p,
+        ._29HP61GA_0 ul p {
+            margin-top: 0;
+            margin-bottom: 0
+        }
+
+        ._29HP61GA_0 ol {
+            list-style: decimal;
+            margin-left: 20px
+        }
+
+        ._29HP61GA_0 ul li {
+            padding-left: 17px;
+            position: relative;
+            margin-bottom: 10px
+        }
+
+        ._29HP61GA_0 ul li:after {
+            content: "";
+            height: 6px;
+            width: 6px;
+            border-radius: 50%;
+            background: #353535;
+            position: absolute;
+            top: 10px;
+            left: 0
+        }
+
+        ._29HP61GA_0 .orange {
+            color: #fa8919
+        }
+
+        ._29HP61GA_0 .reference {
+            color: #888
+        }
+
+        ._29HP61GA_0 .m-right {
+            text-align: right
+        }
+
+        ._29HP61GA_0 .m-center {
+            text-align: center;
+            display: block
+        }
+
+        ._29HP61GA_0 .m-gray {
+            color: #888
+        }
+
+        ._29HP61GA_0 .m-small {
+            font-size: 15px
+        }
+
+        ._29HP61GA_0 table.hljs-ln {
+            margin-bottom: 0;
+            border-spacing: 0;
+            border-collapse: collapse
+        }
+
+        ._29HP61GA_0 table.hljs-ln,
+        ._29HP61GA_0 table.hljs-ln tbody,
+        ._29HP61GA_0 table.hljs-ln td,
+        ._29HP61GA_0 table.hljs-ln tr {
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box
+        }
+
+        ._29HP61GA_0 table.hljs-ln td {
+            padding: 0;
+            border: 0
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-numbers {
+            min-width: 15px;
+            font-size: 12px;
+            color: rgba(27, 31, 35, .3);
+            text-align: right;
+            white-space: nowrap;
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-code,
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-numbers {
+            font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
+            line-height: 20px;
+            vertical-align: top
+        }
+
+        ._29HP61GA_0 table.hljs-ln td.hljs-ln-code {
+            position: relative;
+            padding-right: 10px;
+            padding-left: 10px;
+            overflow: visible;
+            font-size: 13px;
+            color: #666;
+            word-wrap: normal;
+            white-space: pre
+        }
+
+    </style>
+</head>
+<body>
+<div class="_29HP61GA_0">
+<h1>16-函数对象和lambda：进入函数式编程</h1>
+<p>你好，我是吴咏炜。</p><p>本讲我们将介绍函数对象，尤其是匿名函数对象——lambda 表达式。今天的内容说难不难，但可能跟你的日常思维方式有较大的区别，建议你一定要试验一下文中的代码（使用 xeus-cling 的同学要注意：xeus-cling 似乎不太喜欢有 lambda 的代码😓；遇到有问题时，还是只能回到普通的编译执行方式了）。</p><h2>C++98 的函数对象</h2><p>函数对象（function object）<span class="orange">[1]</span> 自 C++98 开始就已经被标准化了。从概念上来说，函数对象是一个可以被当作函数来用的对象。它有时也会被叫做 functor，但这个术语在范畴论里有着完全不同的含义，还是不用为妙——否则玩函数式编程的人可能会朝着你大皱眉头的。</p><p>下面的代码定义了一个简单的加 <em>n</em> 的函数对象类（根据一般的惯例，我们使用了 <code>struct</code> 关键字而不是 <code>class</code> 关键字）：</p><pre><code class="language-c++">struct adder {
+  adder(int n) : n_(n) {}
+  int operator()(int x) const
+  {
+    return x + n_;
+  }
+private:
+  int n_;
+};
+</code></pre><p>它看起来相当普通，唯一有点特别的地方就是定义了一个 <code>operator()</code>，这个运算符允许我们像调用函数一样使用小括号的语法。随后，我们可以定义一个实际的函数对象，如 C++11 形式的：</p><!-- [[[read_end]]] --><pre><code class="language-c++">auto add_2 = adder(2);
+</code></pre><p>或 C++98 形式的：</p><pre><code class="language-c++">adder add_2(2);
+</code></pre><p>得到的结果 <code>add_2</code> 就可以当作一个函数来用了。你如果写下 <code>add_2(5)</code> 的话，就会得到结果 7。</p><p>C++98 里也定义了少数高阶函数：你可以传递一个函数对象过去，结果得到一个新的函数对象。最典型的也许是目前已经从 C++17 标准里移除的 <code>bind1st</code> 和 <code>bind2nd</code> 了（在 &lt;functional&gt; 头文件中提供）：</p><pre><code class="language-c++">auto add_2 = bind2nd(plus&lt;int&gt;(), 2);
+</code></pre><p>这样产生的 <code>add_2</code> 功能和前面相同，是把参数 <code>2</code> 当作第二个参数绑定到函数对象 <code>plus&lt;int&gt;</code>（它的 <code>operator()</code> 需要两个参数）上的结果。当然，<code>auto</code> 在 C++98 里是没有的，结果要赋给一个变量就有点别扭了，得写成：</p><pre><code class="language-c++">binder2nd&lt;plus&lt;int&gt; &gt; add_2(
+  plus&lt;int&gt;(), 2);
+</code></pre><p>因此，在 C++98 里我们通常会直接使用绑定的结果：</p><pre><code class="language-c++">#include &lt;algorithm&gt;
+#include &lt;functional&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+vector v{1, 2, 3, 4, 5};
+transform(v.begin(), v.end(),
+          v.begin(),
+          bind2nd(plus&lt;int&gt;(), 2));
+</code></pre><p>上面的代码会将容器里的每一项数值都加上 2（<code>transform</code> 函数模板在 &lt;algorithm&gt; 头文件中提供）。可以验证结果：</p><pre><code class="language-c++">v
+</code></pre><blockquote>
+<p><code>{ 3, 4, 5, 6, 7 }</code></p>
+</blockquote><h3>函数的指针和引用</h3><p>除非你用一个引用模板参数来捕捉函数类型，传递给一个函数的函数实参会退化成为一个函数指针。不管是函数指针还是函数引用，你也都可以当成函数对象来用。</p><p>假设我们有下面的函数定义：</p><pre><code class="language-c++">int add_2(int x)
+{
+  return x + 2;
+};
+</code></pre><p>如果我们有下面的模板声明：</p><pre><code class="language-c++">template &lt;typename T&gt;
+auto test1(T fn)
+{
+    return fn(2);
+}
+
+template &lt;typename T&gt;
+auto test2(T&amp; fn)
+{
+    return fn(2);
+}
+
+template &lt;typename T&gt;
+auto test3(T* fn)
+{
+    return (*fn)(2);
+}
+</code></pre><p>当我们拿 <code>add_2</code> 去调用这三个函数模板时，<code>fn</code> 的类型将分别被推导为 <code>int (*)(int)</code>、<code>int (&amp;)(int)</code> 和 <code>int (*)(int)</code>。不管我们得到的是指针还是引用，我们都可以直接拿它当普通的函数用。当然，在函数指针的情况下，我们直接写 <code>*value</code> 也可以。因而上面三个函数拿 <code>add_2</code> 作为实参调用的结果都是 <code>4</code>。</p><p>很多接收函数对象的地方，也可以接收函数的指针或引用。但在个别情况下，需要通过函数对象的类型来区分函数对象的时候，就不能使用函数指针或引用了——原型相同的函数，它们的类型也是相同的。</p><h2>Lambda 表达式</h2><p>Lambda 表达式 <span class="orange">[2]</span> 是一个源自阿隆佐·邱奇（Alonzo Church）——艾伦·图灵（Alan Turing）的老师——的术语。邱奇创立了 λ 演算 <span class="orange">[3]</span>，后来被证明和图灵机是等价的。</p><p>我们先不看数学上的 λ 表达式，看一下上一节给出的代码在使用 lambda 表达式时可以如何简化。</p><pre><code class="language-c++">auto add_2 = <a href="int x"></a> {
+  return x + 2;
+};
+</code></pre><p>显然，定义 <code>add_2</code> 不再需要定义一个额外的类型了，我们可以直接写出它的定义。理解它只需要注意下面几点：</p><ul>
+<li>Lambda 表达式以一对中括号开始（中括号中是可以有内容的；稍后我们再说）</li>
+<li>跟函数定义一样，我们有参数列表</li>
+<li>跟正常的函数定义一样，我们会有一个函数体，里面会有 <code>return</code> 语句</li>
+<li>Lambda 表达式一般不需要说明返回值（相当于 <code>auto</code>）；有特殊情况需要说明时，则应使用箭头语法的方式（参见<a href="https://time.geekbang.org/column/article/176850">[第 8 讲]</a>）：<code>[]​(int x) -&gt; int { … }</code></li>
+<li>每个 lambda 表达式都有一个全局唯一的类型，要精确捕捉 lambda 表达式到一个变量中，只能通过 <code>auto</code> 声明的方式</li>
+</ul><p>当然，我们想要定义一个通用的 <code>adder</code> 也不难：</p><pre><code class="language-c++">auto adder = <a href="int n"></a> {
+  return [n]​(int x) {
+    return x + n;
+  };
+};
+</code></pre><p>这次我们直接返回了一个 lambda 表达式，并且中括号中写了 <code>n</code> 来捕获变量 <code>n</code> 的数值。这个函数的实际效果和前面的 <code>adder</code> 函数对象完全一致。也就是说，捕获 <code>n</code> 的效果相当于在一个函数对象中用成员变量存储其数值。</p><p>纯粹为了满足你可能有的好奇心，上面的 <code>adder</code> 相当于这样一个 λ 表达式：</p><p>$$<br>
+\mathrm{adder} = \lambda n.(\lambda x.(+ \ x \ n))<br>
+$$</p><p>如果你去学 Lisp 或 Scheme 的话，你就会发现这些语言和 λ 表达式几乎是一一映射了。在 C++ 里，表达虽然稍微啰嗦一点，但也比较接近了。用我上面的 <code>adder</code> ，就可以得到类似于函数式编程语言里的 currying <span class="orange">[4]</span> 的效果——把一个操作（此处是加法）分成几步来完成。没见过函数式编程的，可能对下面的表达式感到奇怪吧：</p><pre><code class="language-c++">auto seven = adder(2)(5);
+</code></pre><p>不过，最常见的情况是，写匿名函数就是希望不需要起名字。以前面的把所有容器元素值加 2 的操作为例，使用匿名函数可以得到更简洁可读的代码：</p><pre><code class="language-c++">transform(v.begin(), v.end(),
+          v.begin(),
+          <a href="int x"></a> {
+            return x + 2;
+          });
+</code></pre><p>到了可以使用 ranges（已在 C++20 标准化）的时候，代码可以更短、更灵活。这个我们就留到后面再说了。</p><p>一个 lambda 表达式除了没有名字之外，还有一个特点是你可以立即进行求值。这就使得我们可以把一段独立的代码封装起来，达到更干净、表意的效果。</p><p>先看一个简单的例子：</p><pre><code class="language-c++"><a href="int x"></a> { return x * x; }(3)
+</code></pre><p>这个表达式的结果是 3 的平方 9。即使这个看似无聊的例子，都是有意义的，因为它免去了我们定义一个 constexpr 函数的必要。只要能满足 constexpr 函数的条件，一个 lambda 表达式默认就是 constexpr 函数。</p><p>另外一种用途是解决多重初始化路径的问题。假设你有这样的代码：</p><pre><code class="language-c++">Obj obj;
+switch (init_mode) {
+case init_mode1:
+  obj = Obj(…);
+  break;
+case init_mode2;
+  obj = Obj(…);
+  break;
+…
+}
+</code></pre><p>这样的代码，实际上是调用了默认构造函数、带参数的构造函数和（移动）赋值函数：既可能有性能损失，也对 <code>Obj</code> 提出了有默认构造函数的额外要求。对于这样的代码，有一种重构意见是把这样的代码分离成独立的函数。不过，有时候更直截了当的做法是用一个 lambda 表达式来进行改造，既可以提升性能（不需要默认函数或拷贝/移动），又让初始化部分显得更清晰：</p><pre><code class="language-c++">auto obj = [init_mode]​() {
+  switch (init_mode) {
+  case init_mode1:
+    return Obj(…);
+    break;
+  case init_mode2:
+    return Obj(…);
+    break;
+  …
+  }
+}();
+</code></pre><h3>变量捕获</h3><p>现在我们来细看一下 lambda 表达式中变量捕获的细节。</p><p>变量捕获的开头是可选的默认捕获符 <code>=</code> 或 <code>&amp;</code>，表示会自动按值或按引用捕获用到的本地变量，然后后面可以跟（逗号分隔）：</p><ul>
+<li>本地变量名标明对其按值捕获（不能在默认捕获符 <code>=</code> 后出现；因其已自动按值捕获所有本地变量）</li>
+<li><code>&amp;</code> 加本地变量名标明对其按引用捕获（不能在默认捕获符 <code>&amp;</code> 后出现；因其已自动按引用捕获所有本地变量）</li>
+<li><code>this</code> 标明按引用捕获外围对象（针对 lambda 表达式定义出现在一个非静态类成员内的情况）；注意默认捕获符 <code>=</code> 和 <code>&amp;</code> 号可以自动捕获 <code>this</code>（并且在 C++20 之前，在 <code>=</code> 后写 <code>this</code> 会导致出错）</li>
+<li><code>*this</code> 标明按值捕获外围对象（针对 lambda 表达式定义出现在一个非静态类成员内的情况；C++17 新增语法）</li>
+<li><code>变量名 = 表达式</code> 标明按值捕获表达式的结果（可理解为 <code>auto 变量名 = 表达式</code>）</li>
+<li><code>&amp;变量名 = 表达式</code> 标明按引用捕获表达式的结果（可理解为 <code>auto&amp; 变量名 = 表达式</code>）</li>
+</ul><p>从工程的角度，大部分情况不推荐使用默认捕获符。更一般化的一条工程原则是：<strong>显式的代码比隐式的代码更容易维护。</strong>当然，在这条原则上走多远是需要权衡的，你也不愿意写出非常啰嗦的代码吧？否则的话，大家就全部去写 C 了。</p><p>一般而言，按值捕获是比较安全的做法。按引用捕获时则需要更小心些，必须能够确保被捕获的变量和 lambda 表达式的生命期至少一样长，并在有下面需求之一时才使用：</p><ul>
+<li>需要在 lambda 表达式中修改这个变量并让外部观察到</li>
+<li>需要看到这个变量在外部被修改的结果</li>
+<li>这个变量的复制代价比较高</li>
+</ul><p>如果希望以移动的方式来捕获某个变量的话，则应考虑 <code>变量名 = 表达式</code> 的形式。表达式可以返回一个 prvalue 或 xvalue，比如可以是 <code>std::move(需移动捕获的变量)</code>。</p><p>上一节我们已经见过简单的按值捕获。下面是一些更多的演示变量捕获的例子。</p><p>按引用捕获：</p><pre><code class="language-c++">vector&lt;int&gt; v1;
+vector&lt;int&gt; v2;
+…
+auto push_data = <a href="int n">&amp;</a> {
+  // 或使用 [&amp;v1, &amp;v2] 捕捉
+  v1.push_back(n);
+  v2.push_back(n)
+};
+
+push_data(2);
+push_data(3);
+</code></pre><p>这个例子很简单。我们按引用捕获 <code>v1</code> 和 <code>v2</code>，因为我们需要修改它们的内容。</p><p>按值捕获外围对象：</p><pre><code class="language-c++">#include &lt;chrono&gt;
+#include &lt;iostream&gt;
+#include &lt;sstream&gt;
+#include &lt;thread&gt;
+
+using namespace std;
+
+int get_count()
+{
+  static int count = 0;
+  return ++count;
+}
+
+class task {
+public:
+  task(int data) : data_(data) {}
+  auto lazy_launch()
+  {
+    return
+      [*this, count = get_count()]​()
+      mutable {
+        ostringstream oss;
+        oss &lt;&lt; "Done work " &lt;&lt; data_
+            &lt;&lt; " (No. " &lt;&lt; count
+            &lt;&lt; ") in thread "
+            &lt;&lt; this_thread::get_id()
+            &lt;&lt; '\n';
+        msg_ = oss.str();
+        calculate();
+      };
+  }
+  void calculate()
+  {
+    this_thread::sleep_for(100ms);
+    cout &lt;&lt; msg_;
+  }
+
+private:
+  int data_;
+  string msg_;
+};
+
+int main()
+{
+  auto t = task{37};
+  thread t1{t.lazy_launch()};
+  thread t2{t.lazy_launch()};
+  t1.join();
+  t2.join();
+}
+</code></pre><p>这个例子稍复杂，演示了好几个 lambda 表达式的特性：</p><ul>
+<li><code>mutable</code> 标记使捕获的内容可更改（缺省不可更改捕获的值，相当于定义了 <code>operator()(…) const</code>）；</li>
+<li><code>[*this]</code> 按值捕获外围对象（<code>task</code>）；</li>
+<li><code>[count = get_count()]</code> 捕获表达式可以在生成 lambda 表达式时计算并存储等号后表达式的结果。</li>
+</ul><p>这样，多个线程复制了任务对象，可以独立地进行计算。请自行运行一下代码，并把 <code>*this</code> 改成 <code>this</code>，看看输出会有什么不同。</p><h2>泛型 lambda 表达式</h2><p>函数的返回值可以 auto，但参数还是要一一声明的。在 lambda 表达式里则更进一步，在参数声明时就可以使用 <code>auto</code>（包括 <code>auto&amp;&amp;</code> 等形式）。不过，它的功能也不那么神秘，就是给你自动声明了模板而已。毕竟，在 lambda 表达式的定义过程中是没法写 <code>template</code> 关键字的。</p><p>还是拿例子说话：</p><pre><code class="language-c++">template &lt;typename T1,
+          typename T2&gt;
+auto sum(T1 x, T2 y)
+{
+  return x + y;
+}
+</code></pre><p>跟上面的函数等价的 lambda 表达式是：</p><pre><code class="language-c++">auto sum = <a href="auto x, auto y"></a>
+{
+  return x + y;
+}
+</code></pre><p>是不是反而更简单了？😂</p><p>你可能要问，这么写有什么用呢？问得好。简单来说，答案是可组合性。上面这个 <code>sum</code>，就跟标准库里的 <code>plus</code> 模板一样，是可以传递给其他接受函数对象的函数的，而 <code>+</code> 本身则不行。下面的例子虽然略有点无聊，也可以演示一下：</p><pre><code class="language-c++">#include &lt;array&gt;    // std::array
+#include &lt;iostream&gt; // std::cout/endl
+#include &lt;numeric&gt;  // std::accumulate
+
+using namespace std;
+
+int main()
+{
+  array a{1, 2, 3, 4, 5};
+  auto s = accumulate(
+    a.begin(), a.end(), 0,
+    <a href="auto x, auto y"></a> {
+      return x + y;
+    });
+  cout &lt;&lt; s &lt;&lt; endl;
+}
+</code></pre><p>虽然函数名字叫 <code>accumulate</code>——累加——但它的行为是通过第四个参数可修改的。我们把上面的加号 <code>+</code> 改成星号 <code>*</code>，上面的计算就从从 1 加到 5 变成了算 5 的阶乘了。</p><h2>bind 模板</h2><p>我们上面提到了 <code>bind1st</code> 和 <code>bind2nd</code> 目前已经从 C++ 标准里移除。原因实际上有两个：</p><ul>
+<li>它的功能可以被 lambda 表达式替代</li>
+<li>有了一个更强大的 <code>bind</code> 模板 <span class="orange">[5]</span></li>
+</ul><p>拿我们之前给出的例子：</p><pre><code class="language-c++">transform(v.begin(), v.end(),
+          v.begin(),
+          bind2nd(plus&lt;int&gt;(), 2));
+</code></pre><p>现在我们可以写成：</p><pre><code class="language-c++">using namespace std::
+  placeholders;  // for _1, _2...
+transform(v.begin(), v.end(),
+          v.begin(),
+          bind(plus&lt;&gt;(), _1, 2));
+</code></pre><p>原先我们只能把一个给定的参数绑定到第一个参数或第二个参数上，现在则可以非常自由地适配各种更复杂的情况！当然，<code>bind</code> 的参数数量，必须是第一个参数（函数对象）所需的参数数量加一。而 <code>bind</code> 的结果的参数数量则没有限制——你可以无聊地写出 <code>bind(plus&lt;&gt;(), _1, _3)(1, 2, 3)</code>，而结果是 4（完全忽略第二个参数）。</p><p>你可能会问，它的功能是不是可以被 lambda 表达式替代呢。回答是“是”。对 <code>bind</code> 只需要稍微了解一下就好——在 C++14 之后的年代里，已经没有什么地方必须要使用 <code>bind</code> 了。</p><h2>function 模板</h2><p>每一个 lambda 表达式都是一个单独的类型，所以只能使用 <code>auto</code> 或模板参数来接收结果。在很多情况下，我们需要使用一个更方便的通用类型来接收，这时我们就可以使用 <code>function</code> 模板 <span class="orange">[6]</span>。<code>function</code> 模板的参数就是函数的类型，一个函数对象放到 <code>function</code> 里之后，外界可以观察到的就只剩下它的参数、返回值类型和执行效果了。注意 <code>function</code> 对象的创建还是比较耗资源的，所以请你只在用 <code>auto</code> 等方法解决不了问题的时候使用这个模板。</p><p>下面是个简单的例子。</p><pre><code class="language-c++">map&lt;string, function&lt;int(int, int)&gt;&gt;
+  op_dict{
+    {"+",
+     <a href="int x, int y"></a> {
+       return x + y;
+     }},
+    {"-",
+     <a href="int x, int y"></a> {
+       return x - y;
+     }},
+    {"*",
+     <a href="int x, int y"></a> {
+       return x * y;
+     }},
+    {"/",
+     <a href="int x, int y"></a> {
+       return x / y;
+     }},
+  };
+</code></pre><p>这儿，由于要把函数对象存到一个 <code>map</code> 里，我们必须使用 <code>function</code> 模板。随后，我们就可以用类似于 <code>op_dict.at("+")(1, 6)</code> 这样的方式来使用 <code>function</code> 对象。这种方式对表达式的解析处理可能会比较有用。</p><h2>内容小结</h2><p>在这一讲中，我们了解了函数对象和 lambda 表达式的基本概念，并简单介绍了 <code>bind</code> 模板和 <code>function</code> 模板。它们在泛型编程和函数式编程中都是重要的基础组成部分，你应该熟练掌握。</p><h2>课后思考</h2><p>请：</p><ol>
+<li>尝试一下，把文章的 lambda 表达式改造成完全不使用 lambda。</li>
+<li>体会一下，lambda 表达式带来了哪些表达上的好处。</li>
+</ol><p>欢迎留言和我分享你的想法。</p><h2><span class="reference">参考资料</span></h2><p><span class="reference">[1] Wikipedia, “Function object”. <a href="https://en.wikipedia.org/wiki/Function_object">https://en.wikipedia.org/wiki/Function_object</a> </span></p><p><span class="reference">[1a] 维基百科, “函数对象”. <a href="https://zh.wikipedia.org/zh-cn/%E5%87%BD%E6%95%B0%E5%AF%B9%E8%B1%A1">https://zh.wikipedia.org/zh-cn/函数对象</a> </span></p><p><span class="reference">[2] Wikipedia, “Anonymous function”.<a href="https://en.wikipedia.org/wiki/Anonymous_function">https://en.wikipedia.org/wiki/Anonymous_function</a> </span></p><p><span class="reference">[2a] 维基百科, “匿名函数”. <a href="https://zh.wikipedia.org/zh-cn/%E5%8C%BF%E5%90%8D%E5%87%BD%E6%95%B0">https://zh.wikipedia.org/zh-cn/匿名函数</a> </span></p><p><span class="reference">[3] Wikipedia, “Lambda calculus”. <a href="https://en.wikipedia.org/wiki/Lambda_calculus">https://en.wikipedia.org/wiki/Lambda_calculus</a> </span></p><p><span class="reference">[3a] 维基百科, “λ演算”. <a href="https://zh.wikipedia.org/zh-cn/%CE%9B%E6%BC%94%E7%AE%97">https://zh.wikipedia.org/zh-cn/Λ演算</a> </span></p><p><span class="reference">[4] Wikipedia, “Currying”. <a href="https://en.wikipedia.org/wiki/Currying">https://en.wikipedia.org/wiki/Currying</a> </span></p><p><span class="reference">[4a] 维基百科, “柯里化”. <a href="https://zh.wikipedia.org/zh-cn/%E6%9F%AF%E9%87%8C%E5%8C%96">https://zh.wikipedia.org/zh-cn/柯里化</a> </span></p><p><span class="reference">[5] cppreference.com, “std::bind”. <a href="https://en.cppreference.com/w/cpp/utility/functional/bind">https://en.cppreference.com/w/cpp/utility/functional/bind</a> </span></p><p><span class="reference">[5a] cppreference.com, “std::bind”. <a href="https://zh.cppreference.com/w/cpp/utility/functional/bind">https://zh.cppreference.com/w/cpp/utility/functional/bind</a> </span></p><p><span class="reference">[6] cppreference.com, “std::function”. <a href="https://en.cppreference.com/w/cpp/utility/functional/function">https://en.cppreference.com/w/cpp/utility/functional/function</a> </span></p><p><span class="reference">[6a] cppreference.com, “std::function”. <a href="https://zh.cppreference.com/w/cpp/utility/functional/function">https://zh.cppreference.com/w/cpp/utility/functional/function</a> </span></p><h2>精选留言：</h2>
+        <ul>
+        
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            总统老唐  2020-01-01 09:29:53
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            2020第一课，吴老师新年好 [2赞]
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2020-01-01 10:25:30</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">谢谢🙏。在这儿也顺祝所有的同学们新年好！😇🎈🎊</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            李亮亮  2020-01-02 20:56:25
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            Microsoft Visual Studio Community 2019  版本 16.4.2，语言标准：C++17 例子编译不过，水平又菜，不会改。 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2020-01-02 22:12:31</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">是说有线程的那个例子吗？我刚又试了，没问题的。<br><br>你是不是没有设定语言标准为 c++17？但你评论里又说设了……不设是确实不行的。<br><br>我编译的命令行是：<br><br>cl &#47;EHsc &#47;std:c++17 test16.cpp<br><br>如果你遇到错误了，又不贴出错误信息，别人也没法帮你啊……</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            廖熊猫  2020-01-02 14:23:05
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            老师新年快乐。<br>lambda表达式大概是生成了一个匿名的struct吧，实现了operator(), 捕获的话对应struct上的字段。 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2020-01-02 19:01:04</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">新年快乐。<br><br>对，概念上就是这样。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            tt  2020-01-02 08:57:35
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            1、感觉lambda表达式就是C++中的闭包。<br><br>2、lambda表达式可以立即进行求职，这一点和JavaScript里的立即执行函数（Imdiately Invoked Function Expression，IIFE）一样。在JavaScript里，它是用来解决作用域缺陷的。<br><br>感觉在动态语言里被用到极致的闭包等特性，因为C++的强大、完备，在C++里很普通。<br><br>lambda的定义对应一个匿名函数对象，捕获就是构造这个对象时某种方式的初始化过程，用lambda表达式隐藏了这个过程，只保留了这个意思，更直观和写意。<br><br>老师，我对协程很感兴趣，C++会有协程么？隐约感觉捕获变量这个东西是不是可以用在实现协程上？<br><br>最后，祝老师新年快乐！ 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2020-01-02 19:00:36</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">对，就是闭包。<br><br>Stackful 协程见 Boost.Coroutine2。Stackless 协程已经进入 C++20，第 30 讲讨论。🤓<br><br>新年快乐！</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            禾桃  2020-01-01 23:25:47
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            &quot;请自行运行一下代码，并把 *this 改成 this，看看输出会有什么不同。&quot;<br><br>int get_count()<br>{<br>    static int count = 0;<br>    return ++count;<br>}<br><br>class task {<br>public:<br>    task(int data) : data_(data) { cout &lt;&lt; __func__ &lt;&lt; &quot;|&quot; &lt;&lt; this &lt;&lt; endl; }<br>    auto lazy_launch()<br>    {<br>        return<br>            &#47;&#47; *this 标明按值捕获外围对象<br>            &#47;&#47; 变量名 = 表达式 标明按值捕获表达式的结果<br>                [this, count = get_count()]()<br>                        mutable { &#47;&#47; mutable 标记使捕获的内容可更改<br>                    cout &lt;&lt; __func__ &lt;&lt; &quot;|&quot; &lt;&lt; this &lt;&lt; endl;<br>                    ostringstream oss;<br>                    oss &lt;&lt; &quot;Done work &quot; &lt;&lt; data_<br>                        &lt;&lt; &quot; (No. &quot; &lt;&lt; count<br>                        &lt;&lt; &quot;) in thread &quot;<br>                        &lt;&lt; this_thread::get_id()<br>                        &lt;&lt; &#39;\n&#39;;<br>                    msg_ = oss.str();<br>                    calculate();<br>                };<br>    }<br>    void calculate()<br>    {<br>        this_thread::sleep_for(100ms);<br>        cout &lt;&lt; msg_;<br>    }<br><br>private:<br>    int data_;<br>    string msg_;<br>};<br><br>int main()<br>{<br>    auto t = task{37};<br>    thread t1{t.lazy_launch()};<br>    thread t2{t.lazy_launch()};<br>    t1.join();<br>    t2.join();<br>}<br><br> 打印输出<br>task|0x7ffe6f0e7120<br>operator()|0x7ffe6f0e7120<br>operator()|0x7ffe6f0e7120<br>Done work 37 (No. 2) in thread 140331800897280 <br>Done work 37 (No. 2) in thread 140331800897280<br><br>不太明白为什么，<br>#1 t1, t2这两个thread有同样的thread id(140331800897280)？<br>#2 为什么 count在， t1, t2运行时，打印出的都是2(No. 2)？<br><br>多谢！ 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2020-01-02 09:48:26</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">就是让你想一想的呀。提示：按引用捕获的后果。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            罗乾林  2020-01-01 17:35:48
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            编译器遇到lambda 表达式时，产生一个匿名的函数对象，各种捕获相当于按值或者按引用设置给匿名对象的成员字段。<br>不对的地方，望老师指正。<br>对function&lt;int(int, int)&gt;这货怎么实现的比较好奇，大多数模板参数都是类型，做的都是是类型推导，这货居然是int(int, int) 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2020-01-02 09:43:47</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">lambda表达式的理解没啥问题。<br><br>int(int, int) 也是一个类型：一个接受两个整数参数、返回一个整数的函数。function 的主要复杂性，应该是需要处理函数、函数指针、函数对象等各种情况。函数对象的大小不确定，因而 function 需要在堆上分配内存。operator() 我记得相当于一个虚函数调用的复杂度。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            hello world  2020-01-01 16:56:05
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            请问老师后续会讲关于类对象及虚函数表相关知识吗，这块比较薄弱 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2020-01-01 18:08:57</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">不会。谈这个的书和文章够多了。</div>
+</div>
+            
+    </div>
+</li>
+            
+<br/>
+
+<li>
+    <div>
+        <div style="color: #888;font-size:15.25px;font-weight:400;            line-height:1.2">
+            viper  2020-01-01 10:19:37
+        </div>
+        <div style="color:#353535;font-weight:400;white-space:normal;            word-break:break-all;line-height:1.6">
+            老师，为什么上面会说用add_2去调用那三模版函数返回值都是2，不该是4吗？ 
+        </div>
+        <br/>
+<div>
+    <div style="color:#888;font-size:15.25px;font-weight:400;        line-height:1.2">作者回复2020-01-02 11:43:50</div>
+    <div style="color:#353535;font-weight:400;white-space:normal;        word-break:break-all;line-height:1.6">谢谢反馈。已更正。</div>
+</div>
+            
+    </div>
+</li>
+            </ul>
+</div>
+</body>
+</html>
