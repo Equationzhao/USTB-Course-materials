@@ -1,0 +1,234 @@
+<?xml version="1.0"?>
+<Project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Guid="8908a810-ed3c-4d37-91a4-7bd490954fbc" SettingsBundleGuid="37b303ec-9805-439c-b7db-33ef2a065e9d" Version="4.0.0.0" Owner="ANTIQUEWIN2\Equationzhao" ProjectTemplateGuid="10004f3b-4acf-4425-a3e3-38d3b3514276" ReferenceProjectGuid="00000000-0000-0000-0000-000000000000">
+  <LanguageDirections>
+    <LanguageDirection Guid="d4504d90-9f47-4a78-b69a-cd82d5e95ef1" SettingsBundleGuid="c6a767c1-1296-4e2f-b021-e8032c36efba" TargetLanguageCode="zh-CN" SourceLanguageCode="en-US">
+      <AutoSuggestDictionaries />
+      <CascadeItem OverrideParent="false" StopSearchingWhenResultsFound="false" />
+    </LanguageDirection>
+  </LanguageDirections>
+  <TermbaseConfiguration>
+    <Termbases>
+      <Name>1</Name>
+      <SettingsXml>&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;TermbaseSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;Path&gt;C:\Users\Equationzhao\Documents\Studio 2021\Termbases\1.sdltb&lt;/Path&gt;
+  &lt;IsOpen&gt;false&lt;/IsOpen&gt;
+  &lt;Filter&gt;0&lt;/Filter&gt;
+  &lt;FilterHighlight&gt;false&lt;/FilterHighlight&gt;
+  &lt;Layout&gt;0&lt;/Layout&gt;
+  &lt;Local&gt;true&lt;/Local&gt;
+  &lt;IsCustom&gt;false&lt;/IsCustom&gt;
+&lt;/TermbaseSettings&gt;</SettingsXml>
+      <Enabled>true</Enabled>
+    </Termbases>
+    <LanguageIndexMappings>
+      <Language>en-US</Language>
+      <Index>English</Index>
+    </LanguageIndexMappings>
+    <LanguageIndexMappings>
+      <Language>zh-CN</Language>
+      <Index>Chinese</Index>
+    </LanguageIndexMappings>
+    <RecognitionOptions>
+      <ShowWithNoAvailableTranslation>false</ShowWithNoAvailableTranslation>
+      <MinimumMatchValue>70</MinimumMatchValue>
+      <SearchDepth>200</SearchDepth>
+      <SearchOrder>Parallel</SearchOrder>
+    </RecognitionOptions>
+  </TermbaseConfiguration>
+  <SettingsBundles>
+    <SettingsBundle Guid="37b303ec-9805-439c-b7db-33ef2a065e9d">
+      <SettingsBundle>
+        <SettingsGroup Id="TerminologyProviderSettings">
+          <Setting Id="TermbasesOrder">
+            <ArrayOfstring xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+            </ArrayOfstring>
+          </Setting>
+          <Setting Id="Termbases">
+            <ArrayOfTermbase xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.datacontract.org/2004/07/Sdl.ProjectApi.Implementation.Xml">
+            </ArrayOfTermbase>
+          </Setting>
+        </SettingsGroup>
+        <SettingsGroup Id="PublishProjectOperationSettings">
+          <Setting Id="ServerUri" />
+          <Setting Id="OrganizationPath" />
+        </SettingsGroup>
+        <SettingsGroup Id="ProjectPlanningSettings">
+          <Setting Id="ServerUri" />
+          <Setting Id="OrganizationPath" />
+          <Setting Id="Assignments" />
+        </SettingsGroup>
+        <SettingsGroup Id="FileViewServiceSettings">
+          <Setting Id="SelectedTargetLanguageCode">zh-CN</Setting>
+        </SettingsGroup>
+        <SettingsGroup Id="Plugin.AnyTM.SourceLanguages">
+          <Setting Id="HasMixedSourceLanguages">False</Setting>
+          <Setting Id="AutoDetectSourceLanguage">True</Setting>
+          <Setting Id="SourceLanguages">en-US</Setting>
+        </SettingsGroup>
+      </SettingsBundle>
+    </SettingsBundle>
+  </SettingsBundles>
+  <InitialTaskTemplate Description="ComplexTask_Prepare_NoProjectTM_Description" Name="ComplexTask_Prepare_NoProjectTM_Name" Id="Sdl.ProjectApi.AutomaticTask.Prepare.NoProjectTM">
+    <SubTaskTemplates>
+      <SubTaskTemplate TaskTemplateId="Sdl.ProjectApi.AutomaticTasks.Conversion" />
+      <SubTaskTemplate TaskTemplateId="Sdl.ProjectApi.AutomaticTasks.Split" />
+      <SubTaskTemplate TaskTemplateId="Sdl.ProjectApi.AutomaticTasks.PerfectMatch" />
+      <SubTaskTemplate TaskTemplateId="Sdl.ProjectApi.AutomaticTasks.Translate" />
+      <SubTaskTemplate TaskTemplateId="Sdl.ProjectApi.AutomaticTasks.Analysis" />
+    </SubTaskTemplates>
+  </InitialTaskTemplate>
+  <AnalysisBands>
+    <AnalysisBand MinimumMatchValue="50" />
+    <AnalysisBand MinimumMatchValue="75" />
+    <AnalysisBand MinimumMatchValue="85" />
+    <AnalysisBand MinimumMatchValue="95" />
+  </AnalysisBands>
+  <ManualTaskTemplates />
+  <Users>
+    <User UserId="ANTIQUEWIN2\Equationzhao" FullName="fancheng zhao" Description="" Email="equationzhao@foxmail.com" PhoneNumber="" EmailType="Smtp" />
+  </Users>
+  <CascadeItem OverrideParent="true" StopSearchingWhenResultsFound="false">
+    <CascadeEntryItem PerformConcordanceSearch="true" Penalty="0" PerformUpdate="true" PerformNormalSearch="true">
+      <MainTranslationProviderItem Uri="sdltm.file:///C:/Users/Equationzhao/Documents/Studio 2021/Translation Memories/1.sdltm" Enabled="true" />
+    </CascadeEntryItem>
+  </CascadeItem>
+  <GeneralProjectInfo IsInPlace="false" IsCloudBased="false" IsImported="false" Name="final" CreatedAt="2021-12-14T04:53:18.3994849Z" StartedAt="2021-12-14T04:55:52.1050538Z" Status="Started" CreatedBy="ANTIQUEWIN2\Equationzhao" />
+  <SourceLanguageCode>en-US</SourceLanguageCode>
+  <ProjectFiles>
+    <ProjectFile Guid="55ffd6f4-43aa-4325-b2c6-656ac26018d1" Path="" Role="Translatable" Name="E-我们该如何阻止抗生素耐药性.txt" ParentProjectFileGuid="00000000-0000-0000-0000-000000000000" FilterDefinitionId="Plain Text v 1.0.0.0">
+      <SpecificTargetLanguages />
+      <LanguageFiles>
+        <LanguageFile Guid="46b60233-936d-4ed9-9d37-06ae9165f80b" SettingsBundleGuid="bc6a8a41-df01-4db8-b25f-a1bc79dd57e9" LanguageCode="en-US">
+          <FileVersions>
+            <FileVersion Guid="761b39f4-706c-47b7-bf35-08e8703a81e2" VersionNumber="1" Size="14249" FileName="E-我们该如何阻止抗生素耐药性.txt" PhysicalPath="en-US\E-我们该如何阻止抗生素耐药性.txt" CreatedBy="ANTIQUEWIN2\Equationzhao" CreatedAt="2021-12-14T04:54:52.7684141Z" FileTimeStamp="2021-12-02T03:43:23.2728339Z" IsAutoUpload="false" />
+            <FileVersion Guid="289fab6b-010c-4c9c-b688-e86bdd5044b0" VersionNumber="2" Size="44002" FileName="E-我们该如何阻止抗生素耐药性.txt.sdlxliff" PhysicalPath="en-US\E-我们该如何阻止抗生素耐药性.txt.sdlxliff" Comment="" CreatedBy="ANTIQUEWIN2\Equationzhao" CreatedAt="2021-12-14T04:55:52.3280563Z" FileTimeStamp="2021-12-14T04:55:52.3260538Z" IsAutoUpload="false" />
+          </FileVersions>
+          <AnalysisStatistics WordCountStatus="None" AnalysisStatus="None">
+            <Total Words="0" Characters="0" Segments="0" Placeables="0" Tags="0" />
+            <Repetitions Words="0" Characters="0" Segments="0" Placeables="0" Tags="0" />
+            <Perfect Words="0" Characters="0" Segments="0" Placeables="0" Tags="0" />
+            <InContextExact Words="0" Characters="0" Segments="0" Placeables="0" Tags="0" />
+            <Exact Words="0" Characters="0" Segments="0" Placeables="0" Tags="0" />
+            <Fuzzy>
+              <CountData Words="0" Characters="0" Segments="0" Placeables="0" Tags="0" />
+              <CountData Words="0" Characters="0" Segments="0" Placeables="0" Tags="0" />
+              <CountData Words="0" Characters="0" Segments="0" Placeables="0" Tags="0" />
+              <CountData Words="0" Characters="0" Segments="0" Placeables="0" Tags="0" />
+            </Fuzzy>
+            <New Words="0" Characters="0" Segments="0" Placeables="0" Tags="0" />
+            <NewBaseline Words="0" Characters="0" Segments="0" Placeables="0" Tags="0" />
+            <NewLearnings Words="0" Characters="0" Segments="0" Placeables="0" Tags="0" />
+            <Locked Words="0" Characters="0" Segments="0" Placeables="0" Tags="0" />
+          </AnalysisStatistics>
+          <ChildFiles />
+        </LanguageFile>
+        <LanguageFile Guid="dc9c8b7a-b92d-4ed1-98e5-88621aff7829" SettingsBundleGuid="e904ae1f-7a9e-4504-a22c-c402f7ad987b" LanguageCode="zh-CN">
+          <FileVersions>
+            <FileVersion Guid="16aec1b0-9a7f-42c3-8977-d4f48d847698" VersionNumber="3" Size="44002" FileName="E-我们该如何阻止抗生素耐药性.txt.sdlxliff" PhysicalPath="zh-CN\E-我们该如何阻止抗生素耐药性.txt.sdlxliff" CreatedBy="ANTIQUEWIN2\Equationzhao" CreatedAt="2021-12-14T04:55:52.3350639Z" FileTimeStamp="2021-12-14T04:55:52.3260538Z" IsAutoUpload="false" />
+            <FileVersion Guid="7ee22cf9-faa1-4ad9-980c-4ee77aeed179" VersionNumber="4" Size="54565" FileName="E-我们该如何阻止抗生素耐药性.txt.sdlxliff" PhysicalPath="zh-CN\E-我们该如何阻止抗生素耐药性.txt.sdlxliff" Comment="Created by '应用 PerfectMatch+预翻译文件+分析文件'" CreatedBy="ANTIQUEWIN2\Equationzhao" CreatedAt="2021-12-14T04:55:53.4490533Z" FileTimeStamp="2021-12-14T04:55:53.442056Z" IsAutoUpload="false" />
+          </FileVersions>
+          <AnalysisStatistics WordCountFileTimeStamp="2021-12-14T04:55:53.442056Z" WordCountStatus="Complete" AnalysisFileTimeStamp="2021-12-14T04:55:53.442056Z" AnalysisStatus="Complete">
+            <Total Words="2298" Characters="11863" Segments="115" Placeables="66" Tags="0" />
+            <Repetitions Words="0" Characters="0" Segments="0" Placeables="0" Tags="0" />
+            <Perfect Words="0" Characters="0" Segments="0" Placeables="0" Tags="0" />
+            <InContextExact Words="0" Characters="0" Segments="0" Placeables="0" Tags="0" />
+            <Exact Words="0" Characters="0" Segments="0" Placeables="0" Tags="0" />
+            <Fuzzy>
+              <CountData Words="0" Characters="0" Segments="0" Placeables="0" Tags="0" />
+              <CountData Words="0" Characters="0" Segments="0" Placeables="0" Tags="0" />
+              <CountData Words="0" Characters="0" Segments="0" Placeables="0" Tags="0" />
+              <CountData Words="0" Characters="0" Segments="0" Placeables="0" Tags="0" />
+            </Fuzzy>
+            <New Words="2298" Characters="11863" Segments="115" Placeables="66" Tags="0" />
+            <NewBaseline Words="0" Characters="0" Segments="0" Placeables="0" Tags="0" />
+            <NewLearnings Words="0" Characters="0" Segments="0" Placeables="0" Tags="0" />
+            <Locked Words="0" Characters="0" Segments="0" Placeables="0" Tags="0" />
+          </AnalysisStatistics>
+          <ConfirmationStatistics FileTimeStamp="2021-12-14T11:35:46.1675032Z" Status="Complete">
+            <Unspecified Words="1826" Characters="9448" Segments="88" Placeables="59" Tags="0" />
+            <Draft Words="0" Characters="0" Segments="0" Placeables="0" Tags="0" />
+            <Translated Words="472" Characters="2415" Segments="27" Placeables="7" Tags="0" />
+            <RejectedTranslation Words="0" Characters="0" Segments="0" Placeables="0" Tags="0" />
+            <ApprovedTranslation Words="0" Characters="0" Segments="0" Placeables="0" Tags="0" />
+            <RejectedSignOff Words="0" Characters="0" Segments="0" Placeables="0" Tags="0" />
+            <ApprovedSignOff Words="0" Characters="0" Segments="0" Placeables="0" Tags="0" />
+          </ConfirmationStatistics>
+          <ChildFiles />
+        </LanguageFile>
+      </LanguageFiles>
+      <PreviousBilingualFiles />
+    </ProjectFile>
+  </ProjectFiles>
+  <Tasks>
+    <AutomaticTask Guid="6483def5-ce7a-4a96-8af7-89c7a233f300" Status="Completed" PercentComplete="100" CompletedAt="2021-12-14T04:54:52.8504167Z" CreatedAt="2021-12-14T04:54:52.7874175Z" PredecessorTaskGuid="00000000-0000-0000-0000-000000000000" StartedAt="2021-12-14T04:54:52.8294141Z" CreatedBy="ANTIQUEWIN2\Equationzhao">
+      <TaskTemplateIds>
+        <TaskTemplateId>Sdl.ProjectApi.AutomaticTasks.Scan</TaskTemplateId>
+      </TaskTemplateIds>
+      <Files>
+        <TaskFile Guid="e60470ac-69da-4e55-90c0-177fe73f9179" Completed="true" ParentTaskFileGuid="00000000-0000-0000-0000-000000000000" LanguageFileGuid="46b60233-936d-4ed9-9d37-06ae9165f80b" Purpose="WorkFile">
+          <Result Guid="00000000-0000-0000-0000-000000000000" />
+        </TaskFile>
+      </Files>
+      <OutputFiles>
+        <OutputFile LanguageFileGuid="46b60233-936d-4ed9-9d37-06ae9165f80b" Purpose="WorkFile" />
+      </OutputFiles>
+      <Reports />
+      <Parameters />
+      <Result Guid="00000000-0000-0000-0000-000000000000" />
+    </AutomaticTask>
+    <AutomaticTask Guid="4b37530f-ccec-40b0-b253-5d2b91118a20" Status="Completed" ComplexTaskTemplateId="Sdl.ProjectApi.AutomaticTask.Prepare.NoProjectTM" PercentComplete="100" CompletedAt="2021-12-14T04:55:52.3280563Z" CreatedAt="2021-12-14T04:55:52.1250528Z" PredecessorTaskGuid="00000000-0000-0000-0000-000000000000" StartedAt="2021-12-14T04:55:52.154055Z" CreatedBy="ANTIQUEWIN2\Equationzhao">
+      <TaskTemplateIds>
+        <TaskTemplateId>Sdl.ProjectApi.AutomaticTasks.Conversion</TaskTemplateId>
+      </TaskTemplateIds>
+      <Files>
+        <TaskFile Guid="83935a3b-f299-446e-9684-efee14cc5f31" Completed="true" ParentTaskFileGuid="00000000-0000-0000-0000-000000000000" LanguageFileGuid="46b60233-936d-4ed9-9d37-06ae9165f80b" Purpose="WorkFile">
+          <Result Guid="00000000-0000-0000-0000-000000000000" />
+        </TaskFile>
+      </Files>
+      <OutputFiles>
+        <OutputFile LanguageFileGuid="46b60233-936d-4ed9-9d37-06ae9165f80b" Purpose="WorkFile" />
+      </OutputFiles>
+      <Reports />
+      <Parameters />
+      <Result Guid="00000000-0000-0000-0000-000000000000" />
+    </AutomaticTask>
+    <AutomaticTask Guid="50458d1d-b511-4acc-bfb0-0f39e9886453" Status="Completed" ComplexTaskTemplateId="Sdl.ProjectApi.AutomaticTask.Prepare.NoProjectTM" PercentComplete="100" CompletedAt="2021-12-14T04:55:52.338055Z" CreatedAt="2021-12-14T04:55:52.1250528Z" PredecessorTaskGuid="4b37530f-ccec-40b0-b253-5d2b91118a20" StartedAt="2021-12-14T04:55:52.3310556Z" CreatedBy="ANTIQUEWIN2\Equationzhao">
+      <TaskTemplateIds>
+        <TaskTemplateId>Sdl.ProjectApi.AutomaticTasks.Split</TaskTemplateId>
+      </TaskTemplateIds>
+      <Files>
+        <TaskFile Guid="dcc5fc8e-7398-4585-88e8-20203c5ba271" Completed="true" ParentTaskFileGuid="00000000-0000-0000-0000-000000000000" LanguageFileGuid="46b60233-936d-4ed9-9d37-06ae9165f80b" Purpose="WorkFile">
+          <Result Guid="00000000-0000-0000-0000-000000000000" />
+        </TaskFile>
+      </Files>
+      <OutputFiles>
+        <OutputFile LanguageFileGuid="dc9c8b7a-b92d-4ed1-98e5-88621aff7829" Purpose="WorkFile" />
+      </OutputFiles>
+      <Reports />
+      <Parameters />
+      <Result Guid="00000000-0000-0000-0000-000000000000" />
+    </AutomaticTask>
+    <AutomaticTask Guid="3b175df6-e810-488a-bd87-59e89fcc3843" Status="Completed" ComplexTaskTemplateId="Sdl.ProjectApi.AutomaticTask.Prepare.NoProjectTM" PercentComplete="100" CompletedAt="2021-12-14T04:55:53.4805988Z" CreatedAt="2021-12-14T04:55:52.1250528Z" PredecessorTaskGuid="50458d1d-b511-4acc-bfb0-0f39e9886453" StartedAt="2021-12-14T04:55:52.3440592Z" CreatedBy="ANTIQUEWIN2\Equationzhao">
+      <TaskTemplateIds>
+        <TaskTemplateId>Sdl.ProjectApi.AutomaticTasks.PerfectMatch</TaskTemplateId>
+        <TaskTemplateId>Sdl.ProjectApi.AutomaticTasks.Translate</TaskTemplateId>
+        <TaskTemplateId>Sdl.ProjectApi.AutomaticTasks.Analysis</TaskTemplateId>
+      </TaskTemplateIds>
+      <Files>
+        <TaskFile Guid="0c51cfdc-3ee1-4351-9396-7d32a6a03e13" Completed="true" ParentTaskFileGuid="00000000-0000-0000-0000-000000000000" LanguageFileGuid="dc9c8b7a-b92d-4ed1-98e5-88621aff7829" Purpose="WorkFile">
+          <Result Guid="00000000-0000-0000-0000-000000000000" />
+        </TaskFile>
+      </Files>
+      <OutputFiles>
+        <OutputFile LanguageFileGuid="dc9c8b7a-b92d-4ed1-98e5-88621aff7829" Purpose="WorkFile" />
+      </OutputFiles>
+      <Reports>
+        <Report Guid="ff3b8f4a-b3c2-45e6-a30b-ba34b67cdaa1" Name="预翻译文件报告" Description="将翻译记忆库应用到文件的结果。" TaskTemplateId="Sdl.ProjectApi.AutomaticTasks.Translate" LanguageDirectionGuid="d4504d90-9f47-4a78-b69a-cd82d5e95ef1" PhysicalPath="Reports\预翻译文件 en-US_zh-CN.xml" />
+        <Report Guid="c16de23f-2578-4323-8d02-d368107c2e09" Name="分析文件报告" Description="统计数据显示可通过应用翻译记忆库获得的预期利用。" TaskTemplateId="Sdl.ProjectApi.AutomaticTasks.Analysis" LanguageDirectionGuid="d4504d90-9f47-4a78-b69a-cd82d5e95ef1" PhysicalPath="Reports\分析文件 en-US_zh-CN.xml" />
+      </Reports>
+      <Parameters />
+      <Result Guid="00000000-0000-0000-0000-000000000000" />
+    </AutomaticTask>
+  </Tasks>
+</Project>
