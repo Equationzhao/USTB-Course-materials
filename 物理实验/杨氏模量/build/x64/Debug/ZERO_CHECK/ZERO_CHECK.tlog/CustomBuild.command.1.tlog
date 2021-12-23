@@ -1,0 +1,10 @@
+^C:\USERS\EQUATIONZHAO\DESKTOP\物理实验\杨氏模量\BUILD\CMAKEFILES\3A7FB93B54A60ADB4268499A2E0CCEB8\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Equationzhao/Desktop/物理实验/杨氏模量 -BC:/Users/Equationzhao/Desktop/物理实验/杨氏模量/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/Equationzhao/Desktop/物理实验/杨氏模量/build/calculate.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

@@ -1,0 +1,8 @@
+Disks are constructed from platters. 
+30550 19762 
+144 143 140 135 128 119 108 95 80 
+42 0 
+8 160 vmGMwSLa
+MIBGLQ
+2 7 6 5 4 1 3
+40 

@@ -1,0 +1,15 @@
+"计算机科学与物理学的不同点就是... 它根本不是一门科学。" —— 理查德·费曼
+"Computer science... differs from physics in that it is not actually a science." - Richard Feynman
+Tested at 2019:05:12 18:42:58
+
+Testing Status
+================================================
+Vector Test . . .[15 points] - passed
+Vector Advanced .[15 points] - passed
+Memory Test . . .[20 points] - passed
+Linked List . . .[20 points] - passed
+Special Case. . .[30 points] - passed
+
+Total Score
+================================================
+100

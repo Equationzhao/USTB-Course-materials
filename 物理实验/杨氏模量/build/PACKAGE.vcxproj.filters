@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Equationzhao\Desktop\物理实验\杨氏模量\build\CMakeFiles\3a7fb93b54a60adb4268499a2e0cceb8\PACKAGE_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{3D86D86E-847B-3DA0-8C6D-588714C4DF86}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

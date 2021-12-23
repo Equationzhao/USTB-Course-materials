@@ -1,0 +1,16 @@
+"计算机科学领域的任何问题都可以通过增加一个间接的中间层来解决。"
+"Any problem in computer science can be solved with another level of indirection."
+Tested at 2019:05:13 20:32:46
+
+Testing Status
+================================================
+Queue&Stack(Hard)[20 points] - passed
+Queue Constructor[20 points] - passed
+Editor(Edge Case)[20 points] - passed
+Editor(Easy). . .[20 points] - passed
+CompareStackQueue[20 points] - passed
+Integrity Test. .[ 0    point] - passed
+
+Total Score
+================================================
+100

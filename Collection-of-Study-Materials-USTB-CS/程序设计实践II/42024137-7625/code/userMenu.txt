@@ -1,0 +1,8 @@
+<i>Sign in		<u>Sign Up
+Choose the Type of the account you want to sign up for.
+<s> SavingsAccount		<c> CreditAccount		<e> exit
+Type in Your Id: 
+Type in Your Password: 
+Config password:
+The password did not match the re-typed password!
+Account not found

@@ -1,0 +1,16 @@
+"计算机科学领域的任何问题都可以通过增加一个间接的中间层来解决。"
+"Any problem in computer science can be solved with another level of indirection."
+Tested at 2019:06:12 21:43:58
+
+Testing Status
+================================================
+Basic Test 1. . .[20 points] - passed
+Basic Test 2. . .[20 points] - passed
+Memory Test 1 . .[10 points] - passed
+Memory Test 2 . .[10 points] - passed
+Medium Test . . .[20 points] - FAILED
+Time Limit Test .[20 points] - passed
+
+Total Score
+================================================
+80

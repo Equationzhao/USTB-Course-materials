@@ -1,0 +1,17 @@
+"计算机科学既不是数学也不是电子工程学。" —— 艾伦·佩利
+"Computer science is neither mathematics nor electrical engineering." - Alan Perlis
+Tested at 2019:05:14 19:21:12
+
+Testing Status
+================================================
+Hard Hashtable. .[15 points] - passed
+Easy Hashtable. .[15 points] - passed
+Memory Test 1 . .[15 points] - passed
+Memory Test 2 . .[15 points] - passed
+word_check test 1[10 points] - passed
+word_check test 2[20 points] - passed
+Time Limit Test .[10 points] - passed
+
+Total Score
+================================================
+100

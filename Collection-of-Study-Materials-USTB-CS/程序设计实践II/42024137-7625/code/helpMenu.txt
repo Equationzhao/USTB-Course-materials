@@ -1,0 +1,2 @@
+<a>add account    <d>deposit    <w>withdraw    <s>show    <c>change day    <n>next month    <q>query    <e>exit
+
